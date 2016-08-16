@@ -138,27 +138,24 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         final int metaFromState = block.getMetaFromState(blockState);
         final BlockFaceData blockFaceData = carvable.getBlockFaceData();
         final VariationFaceData variationFaceData = blockFaceData.getForMeta(metaFromState);
-        final IChiselFace northFace = variationFaceData.getFaceForSide(EnumFacing.NORTH);
 
         final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
         final IBakedModel model = blockRenderer.getModelForState(blockState);
 
-        final List<BakedQuad> eastQuads = model.getQuads(blockState, EnumFacing.EAST, 0);
-        //Scale & Translate east quads.
-        final List<BakedQuad> westQuads = model.getQuads(blockState, EnumFacing.WEST, 0);
-        final List<BakedQuad> northQuads = model.getQuads(blockState, EnumFacing.NORTH, 0);
-        final List<BakedQuad> southQuads = model.getQuads(blockState, EnumFacing.SOUTH, 0);
-        final List<BakedQuad> upQuads = model.getQuads(blockState, EnumFacing.UP, 0);
-        final List<BakedQuad> downQuads = model.getQuads(blockState, EnumFacing.DOWN, 0);
-
         ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID);
-        for (final IChiselTexture<?> chiselTexture : northFace.getTextureList())
+        for (final EnumFacing value : EnumFacing.VALUES)
         {
-            final IBlockRenderContext blockRenderContext = chiselTexture.getType().getBlockRenderContext(world, new BlockPos(1, 1, 1));
-            for (final BakedQuad quad : Iterables.concat(eastQuads, westQuads, northQuads, eastQuads, southQuads, upQuads, downQuads))
+            final IChiselFace chiselFace = variationFaceData.getFaceForSide(value);
+            final List<BakedQuad> northQuads = model.getQuads(blockState, value, 0);
+
+            for (final IChiselTexture<?> chiselTexture : chiselFace.getTextureList())
             {
-                final List<BakedQuad> bakedQuads = chiselTexture.transformQuad(quad, blockRenderContext, 1);
-                bodyBox.addCustomQuads(bakedQuads);
+                final IBlockRenderContext blockRenderContext = chiselTexture.getType().getBlockRenderContext(world, new BlockPos(1, 1, 1));
+                for (final BakedQuad quad : northQuads)
+                {
+                    final List<BakedQuad> bakedQuads = chiselTexture.transformQuad(quad, blockRenderContext, 1);
+                    bodyBox.addCustomQuads(bakedQuads);
+                }
             }
         }
         ForgeHooksClient.setRenderLayer(null);
