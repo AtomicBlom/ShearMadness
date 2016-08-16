@@ -1,13 +1,17 @@
 package com.github.atomicblom.chiselsheep.client.renderer.entity.layers;
 
+import com.github.atomicblom.chiselsheep.ChiselSheepMod;
+import com.github.atomicblom.chiselsheep.capability.IChiseledSheepCapability;
 import com.github.atomicblom.chiselsheep.client.renderer.entity.ModelBox2;
 import com.github.atomicblom.chiselsheep.client.renderer.entity.RenderChiselSheep;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.ModelSheep1;
+import net.minecraft.client.model.TextureOffset;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.entity.layers.LayerSheepWool;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.ResourceLocation;
@@ -19,27 +23,41 @@ import java.util.UUID;
 @SideOnly(Side.CLIENT)
 public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
 {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/pig/pig.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/cow/cow.png");
     private final RenderChiselSheep sheepRenderer;
     private final ModelSheep1 sheepModel;
+
+    private ModelBox bodyBox;
 
     public LayerSheepChiselWool(RenderChiselSheep sheepRendererIn)
     {
         this.sheepRenderer = sheepRendererIn;
         sheepModel  = new ModelSheep1();
-        sheepModel.body = new ModelRenderer(sheepModel, 28, 8);
-        sheepModel.body.setRotationPoint(0.0F, 5.0F, 2.0F);
-        sheepModel.body.cubeList.add(new ModelBox2(sheepModel.body));
     }
 
     public void doRenderLayer(EntitySheep entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
         if (!entitylivingbaseIn.getSheared() && !entitylivingbaseIn.isInvisible())
         {
-            NetHandlerPlayClient handler = (NetHandlerPlayClient)FMLClientHandler.instance().getClientPlayHandler();
-
-            //final ResourceLocation atomicBlom = handler.getPlayerInfo(UUID.fromString("58d506e2-7ee7-4774-8b22-c7a57eda488b")).getLocationSkin();
-            this.sheepRenderer.bindTexture(new ResourceLocation("textures/entity/steve.png"));
+            IChiseledSheepCapability capability = entitylivingbaseIn.getCapability(ChiselSheepMod.CHISELED_SHEEP_CAPABILITY, null);
+            if (capability.isChiseled()) {
+                if (!(bodyBox instanceof ModelBox2)) {
+                    sheepModel.body = new ModelRenderer(sheepModel, 28, 8);
+                    sheepModel.body.setRotationPoint(0.0F, 5.0F, 2.0F);
+                    bodyBox = new ModelBox2(sheepModel.body);
+                    sheepModel.body.cubeList.add(bodyBox);
+                }
+                this.sheepRenderer.bindTexture(new ResourceLocation("textures/entity/steve.png"));
+            } else {
+                if ((bodyBox instanceof ModelBox2)) {
+                    sheepModel.body = new ModelRenderer(sheepModel, 28, 8);
+                    sheepModel.body.addBox(-4.0F, -10.0F, -7.0F, 8, 16, 6, 1.75F);
+                    bodyBox = new ModelBox(sheepModel.body, 28, 8, -4.0F, -10.0F, -7.0F, 8, 16, 6, 1.75F);
+                    sheepModel.body.setRotationPoint(0.0F, 5.0F, 2.0F);
+                    sheepModel.body.cubeList.add(bodyBox);
+                }
+                this.sheepRenderer.bindTexture(TEXTURE);
+            }
 
             if (entitylivingbaseIn.hasCustomName() && "jeb_".equals(entitylivingbaseIn.getCustomNameTag()))
             {

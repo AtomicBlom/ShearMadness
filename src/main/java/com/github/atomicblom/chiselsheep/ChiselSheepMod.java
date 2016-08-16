@@ -1,23 +1,29 @@
 package com.github.atomicblom.chiselsheep;
 
+import com.github.atomicblom.chiselsheep.capability.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityList;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
+
+import java.util.concurrent.Callable;
 
 @Mod(modid = ChiselSheepMod.MODID, version = ChiselSheepMod.VERSION)
 public class ChiselSheepMod
@@ -28,10 +34,27 @@ public class ChiselSheepMod
     @SidedProxy(clientSide = "com.github.atomicblom.chiselsheep.ClientProxy", serverSide = "com.github.atomicblom.chiselsheep.CommonProxy")
     public static IProxy proxy;
 
+    public static Capability<IChiseledSheepCapability> CHISELED_SHEEP_CAPABILITY;
+
+    @CapabilityInject(IChiseledSheepCapability.class)
+    public static void OnCapabilityRegistered(Capability<IChiseledSheepCapability> capability) {
+        CHISELED_SHEEP_CAPABILITY = capability;
+    }
+
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(this);
+        CapabilityManager.INSTANCE.register(IChiseledSheepCapability.class, ChiseledSheepCapability.ExtentionStorage.instance, new Callable<IChiseledSheepCapability>() {
+            @Override
+            public IChiseledSheepCapability call() throws Exception {
+                return new ChiseledSheepCapability();
+            }
+        });
+    }
+
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-        MinecraftForge.EVENT_BUS.register(this);
         proxy.registerRenderers();
     }
 
@@ -48,8 +71,12 @@ public class ChiselSheepMod
 
         final RayTraceResult mouseOver = Minecraft.getMinecraft().objectMouseOver;
         if (mouseOver != null && mouseOver.typeOfHit == Type.ENTITY) {
-            if (chiselOk && mouseOver.entityHit.getClass().equals(EntitySheep.class))
+            Entity entity = mouseOver.entityHit;
+
+            if (chiselOk && entity.hasCapability(CHISELED_SHEEP_CAPABILITY, null))
             {
+                IChiseledSheepCapability capability = entity.getCapability(CHISELED_SHEEP_CAPABILITY, null);
+
                 event.setCanceled(true);
                 final NBTTagCompound tagCompound = itemStack.getTagCompound();
                 if (tagCompound != null)
@@ -57,13 +84,22 @@ public class ChiselSheepMod
                     final NBTTagCompound chiselTarget = tagCompound.getCompoundTag("chiselTarget");
                     if (chiselTarget.hasKey("id"))
                     {
+                        capability.setChiselBlockUnlocalizedName(chiselTarget.getString("id"));
                         //Add Capability
                     } else
                     {
                         //Remove capability
+                        capability.setChiseled(false);
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onCapabilityAttaching(AttachCapabilitiesEvent.Entity event) {
+        if (event.getEntity().getClass().equals(EntitySheep.class)) {
+            event.addCapability(new ResourceLocation(ChiselSheepMod.MODID, "chiselledSheep"), new Provider());
         }
     }
 }
