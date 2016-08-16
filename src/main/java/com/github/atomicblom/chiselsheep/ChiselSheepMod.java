@@ -82,15 +82,20 @@ public class ChiselSheepMod
                 if (tagCompound != null)
                 {
                     final NBTTagCompound chiselTarget = tagCompound.getCompoundTag("chiselTarget");
+
                     if (chiselTarget.hasKey("id"))
                     {
-                        capability.setChiselItemStack(itemStack.copy());
-                        //Add Capability
-                    } else
-                    {
-                        //Remove capability
+                        final ItemStack chiselItemStack = ItemStack.loadItemStackFromNBT(chiselTarget);
+                        capability.setChiselItemStack(chiselItemStack.copy());
+                        final String displayName = chiselItemStack.getDisplayName();
+                        entity.setCustomNameTag(displayName);
+                    } else {
                         capability.setChiseled(false);
+                        entity.setCustomNameTag("Cow Sheep");
                     }
+                } else {
+                    capability.setChiseled(false);
+                    entity.setCustomNameTag("Cow Sheep");
                 }
             }
         }
