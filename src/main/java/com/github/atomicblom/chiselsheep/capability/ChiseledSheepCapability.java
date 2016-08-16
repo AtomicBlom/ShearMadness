@@ -1,5 +1,6 @@
 package com.github.atomicblom.chiselsheep.capability;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -9,22 +10,21 @@ import net.minecraftforge.common.capabilities.Capability;
  * Created by steblo on 16/08/2016.
  */
 public class ChiseledSheepCapability implements IChiseledSheepCapability {
-    private String chiselBlockUnlocalizedName = "";
+    private ItemStack itemStack;
     private boolean isChiseled = false;
 
     @Override
-    public String getChiselBlockUnlocalizedName() {
-        return chiselBlockUnlocalizedName;
-    }
-
-    @Override
-    public void setChiselBlockUnlocalizedName(String chiselBlockUnlocalizedName) {
-        if (chiselBlockUnlocalizedName == null || "".equals(chiselBlockUnlocalizedName)) {
+    public void setChiselItemStack(ItemStack itemStack) {
+        if (itemStack == null) {
             setChiseled(false);
         } else {
             setChiseled(true);
-            this.chiselBlockUnlocalizedName = chiselBlockUnlocalizedName;
+            this.itemStack = itemStack;
         }
+    }
+
+    public ItemStack getChiselItemStack() {
+        return itemStack;
     }
 
     public boolean isChiseled() {
@@ -33,7 +33,7 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability {
 
     public void setChiseled(boolean chiseled) {
         if (!chiseled) {
-            chiselBlockUnlocalizedName = "";
+            itemStack = null;
         }
         isChiseled = chiseled;
     }
@@ -43,12 +43,12 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability {
 
         @Override
         public NBTBase writeNBT(Capability<IChiseledSheepCapability> capability, IChiseledSheepCapability instance, EnumFacing side) {
-            // return an NBT tag
-
             NBTTagCompound compound = new NBTTagCompound();
             compound.setBoolean("isChiseled", instance.isChiseled());
             if (instance.isChiseled()) {
-                compound.setString("chiselBlock", instance.getChiselBlockUnlocalizedName());
+                NBTTagCompound targetTag = new NBTTagCompound();
+                instance.getChiselItemStack().writeToNBT(targetTag);
+                compound.setTag("chiselDefinition", targetTag);
             }
             return compound;
         }
@@ -59,8 +59,8 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability {
 
             instance.setChiseled(compound.getBoolean("isChiseled"));
             if (instance.isChiseled()) {
-                // load from the NBT tag
-                instance.setChiselBlockUnlocalizedName(compound.getString("chiselBlock"));
+                ItemStack stack = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("chiselDefinition"));
+                instance.setChiselItemStack(stack);
             }
         }
     }

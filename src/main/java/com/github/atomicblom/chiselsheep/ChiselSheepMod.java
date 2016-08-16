@@ -84,7 +84,7 @@ public class ChiselSheepMod
                     final NBTTagCompound chiselTarget = tagCompound.getCompoundTag("chiselTarget");
                     if (chiselTarget.hasKey("id"))
                     {
-                        capability.setChiselBlockUnlocalizedName(chiselTarget.getString("id"));
+                        capability.setChiselItemStack(itemStack.copy());
                         //Add Capability
                     } else
                     {

@@ -14,10 +14,14 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerSheepWool;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import team.chisel.api.carving.CarvingUtils;
+import team.chisel.api.carving.ICarvingVariation;
+
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
@@ -41,6 +45,8 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         {
             IChiseledSheepCapability capability = entitylivingbaseIn.getCapability(ChiselSheepMod.CHISELED_SHEEP_CAPABILITY, null);
             if (capability.isChiseled()) {
+                ItemStack itemStack = capability.getChiselItemStack();
+                ICarvingVariation variation = CarvingUtils.getChiselRegistry().getVariation(itemStack);
                 if (!(bodyBox instanceof ModelBox2)) {
                     sheepModel.body = new ModelRenderer(sheepModel, 28, 8);
                     sheepModel.body.setRotationPoint(0.0F, 5.0F, 2.0F);
@@ -57,24 +63,24 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                     sheepModel.body.cubeList.add(bodyBox);
                 }
                 this.sheepRenderer.bindTexture(TEXTURE);
-            }
 
-            if (entitylivingbaseIn.hasCustomName() && "jeb_".equals(entitylivingbaseIn.getCustomNameTag()))
-            {
-                int i1 = 25;
-                int i = entitylivingbaseIn.ticksExisted / 25 + entitylivingbaseIn.getEntityId();
-                int j = EnumDyeColor.values().length;
-                int k = i % j;
-                int l = (i + 1) % j;
-                float f = ((float)(entitylivingbaseIn.ticksExisted % 25) + partialTicks) / 25.0F;
-                float[] afloat1 = EntitySheep.getDyeRgb(EnumDyeColor.byMetadata(k));
-                float[] afloat2 = EntitySheep.getDyeRgb(EnumDyeColor.byMetadata(l));
-                GlStateManager.color(afloat1[0] * (1.0F - f) + afloat2[0] * f, afloat1[1] * (1.0F - f) + afloat2[1] * f, afloat1[2] * (1.0F - f) + afloat2[2] * f);
-            }
-            else
-            {
-                float[] afloat = EntitySheep.getDyeRgb(entitylivingbaseIn.getFleeceColor());
-                GlStateManager.color(afloat[0], afloat[1], afloat[2]);
+                if (entitylivingbaseIn.hasCustomName() && "jeb_".equals(entitylivingbaseIn.getCustomNameTag()))
+                {
+                    int i1 = 25;
+                    int i = entitylivingbaseIn.ticksExisted / 25 + entitylivingbaseIn.getEntityId();
+                    int j = EnumDyeColor.values().length;
+                    int k = i % j;
+                    int l = (i + 1) % j;
+                    float f = ((float)(entitylivingbaseIn.ticksExisted % 25) + partialTicks) / 25.0F;
+                    float[] afloat1 = EntitySheep.getDyeRgb(EnumDyeColor.byMetadata(k));
+                    float[] afloat2 = EntitySheep.getDyeRgb(EnumDyeColor.byMetadata(l));
+                    GlStateManager.color(afloat1[0] * (1.0F - f) + afloat2[0] * f, afloat1[1] * (1.0F - f) + afloat2[1] * f, afloat1[2] * (1.0F - f) + afloat2[2] * f);
+                }
+                else
+                {
+                    float[] afloat = EntitySheep.getDyeRgb(entitylivingbaseIn.getFleeceColor());
+                    GlStateManager.color(afloat[0], afloat[1], afloat[2]);
+                }
             }
 
             this.sheepModel.setModelAttributes(this.sheepRenderer.getMainModel());
