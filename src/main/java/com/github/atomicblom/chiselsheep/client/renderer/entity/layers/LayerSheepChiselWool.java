@@ -147,8 +147,8 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         {
             final IChiselFace chiselFace = variationFaceData.getFaceForSide(value);
             final List<BakedQuad> northQuads = model.getQuads(blockState, value, 0);
-
-            for (final IChiselTexture<?> chiselTexture : chiselFace.getTextureList())
+            bodyBox.addCustomQuads(northQuads);
+            /*for (final IChiselTexture<?> chiselTexture : chiselFace.getTextureList())
             {
                 final IBlockRenderContext blockRenderContext = chiselTexture.getType().getBlockRenderContext(world, new BlockPos(1, 1, 1));
                 for (final BakedQuad quad : northQuads)
@@ -156,7 +156,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                     final List<BakedQuad> bakedQuads = chiselTexture.transformQuad(quad, blockRenderContext, 1);
                     bodyBox.addCustomQuads(bakedQuads);
                 }
-            }
+            }*/
         }
         ForgeHooksClient.setRenderLayer(null);
 
