@@ -37,7 +37,15 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
+repositories {
+    maven {
+        name = "chisel"
+        url = "http://maven.tterrag.com/"
+    }
+}
+
 dependencies {
+
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
@@ -58,7 +66,7 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+    deobfCompile 'team.chisel:Chisel:MC1.9.4-0.0.6.37'
 }
 
 processResources
@@ -78,5 +86,20 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+
+apply plugin: 'idea'
+
+allprojects {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+idea {
+    project {
+        jdkName = sourceCompatibility
+        languageLevel = sourceCompatibility
     }
 }
