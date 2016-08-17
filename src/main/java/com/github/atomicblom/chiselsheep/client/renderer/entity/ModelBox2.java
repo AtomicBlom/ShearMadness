@@ -14,6 +14,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector4f;
+import javax.vecmath.Matrix4d;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector2f;
+import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +28,14 @@ import java.util.List;
  */
 public class ModelBox2 extends ModelBox
 {
-    private TexturedQuad[] quadList;
-    List<BakedQuad> allBakedQuads = new ArrayList<BakedQuad>();
+    private final Matrix4f quadTransform;
+    private TexturedQuad[] quadList = null;
+    private List<BakedQuad> allBakedQuads = new ArrayList<>();
 
-    public ModelBox2(ModelRenderer renderer)
+    public ModelBox2(ModelRenderer renderer, Matrix4f quadTransform)
     {
         super(renderer, 0, 0, 0, 0, 0, 0, 0, 0, 0, false);
+        this.quadTransform = quadTransform;
     }
 
     public void addCustomQuads(List<BakedQuad> bakedQuads)
@@ -40,11 +48,11 @@ public class ModelBox2 extends ModelBox
     {
         if (quadList == null) {
 
-            List<TexturedQuad> outputQuads = new ArrayList<TexturedQuad>();
+            final List<TexturedQuad> outputQuads = new ArrayList<>();
 
             for (final BakedQuad bakedQuad : allBakedQuads)
             {
-                VertexConsumer consumer = new VertexConsumer(renderer.getVertexFormat());
+                final VertexConsumer consumer = new VertexConsumer(renderer.getVertexFormat());
                 bakedQuad.pipe(consumer);
                 outputQuads.add(consumer.getOutputQuad());
             }
@@ -53,7 +61,7 @@ public class ModelBox2 extends ModelBox
             quadList = outputQuads.toArray(quadList);
         }
 
-        for (TexturedQuad texturedquad : quadList)
+        for (final TexturedQuad texturedquad : quadList)
         {
             texturedquad.draw(renderer, scale);
         }
@@ -62,19 +70,18 @@ public class ModelBox2 extends ModelBox
     private class VertexConsumer implements IVertexConsumer {
 
         private final VertexFormat vertexFormat;
-        private PositionTextureVertex[] vertices = new PositionTextureVertex[4];
-        //private final List<TexturedQuad> outputQuads = new ArrayList<TexturedQuad>();
+        private final PositionTextureVertex[] vertices = new PositionTextureVertex[4];
 
-        private int currentVertexIndex = 0;
-        private Vec3d currentPosition;
+        private int currentVertexIndex = -1;
+        private Vec3d currentPosition = null;
         private float currentU;
         private float currentV;
 
-        public TexturedQuad getOutputQuad() {
+        TexturedQuad getOutputQuad() {
             return new TexturedQuad(vertices);
         }
 
-        public VertexConsumer(VertexFormat vertexFormat)
+        VertexConsumer(VertexFormat vertexFormat)
         {
             this.vertexFormat = vertexFormat;
         }
@@ -112,29 +119,40 @@ public class ModelBox2 extends ModelBox
         @Override
         public void put(int element, float... data)
         {
+            if (element == 0) {
+                ++currentVertexIndex;
+            }
+
             final VertexFormatElement element1 = vertexFormat.getElement(element);
             switch (element1.getUsage()) {
                 case POSITION:
                     if (data.length < 3) {
                         currentPosition = null;
+                        return;
                     }
-                    currentPosition = new Vec3d(data[0], data[1], data[2]);
+                    final Vector4f tempVec3 = new Vector4f(data[0], data[1], data[2], 1);
+                    final Vector4f transform = Matrix4f.transform(quadTransform, tempVec3, null);
+                    currentPosition = new Vec3d(transform.x, transform.y, transform.z);
+
                     break;
                 case UV:
-                    if (data.length != 2) {
+                    if (data.length != 4) {
                         currentU = 0;
+                        currentV = 0;
+                        return;
                     }
                     currentU = data[0];
                     currentV = data[1];
                     break;
-                case PADDING:
-                    //Finished?
-                    vertices[currentVertexIndex] = new PositionTextureVertex(currentPosition, currentU, currentV);
-                    currentPosition = null;
-                    currentU = 0.0f;
-                    currentV = 0.0f;
-                    ++currentVertexIndex;
+                default:
                     break;
+            }
+
+            if (element == vertexFormat.getElementCount() - 1) {
+                vertices[currentVertexIndex] = new PositionTextureVertex(currentPosition, currentU, currentV);
+                currentPosition = null;
+                currentU = 0.0f;
+                currentV = 0.0f;
             }
         }
     }
