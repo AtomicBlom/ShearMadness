@@ -14,28 +14,25 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
-import javax.vecmath.Matrix4d;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector2f;
-import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by codew on 15/08/2016.
- */
 public class ModelBox2 extends ModelBox
 {
-    private final Matrix4f quadTransform;
+    private final Matrix4f positionTransform;
+    private Matrix3f textureTransform;
     private TexturedQuad[] quadList = null;
     private List<BakedQuad> allBakedQuads = new ArrayList<>();
 
-    public ModelBox2(ModelRenderer renderer, Matrix4f quadTransform)
+    public ModelBox2(ModelRenderer renderer, Matrix4f positionTransform, Matrix3f textureTransform)
     {
         super(renderer, 0, 0, 0, 0, 0, 0, 0, 0, 0, false);
-        this.quadTransform = quadTransform;
+        this.positionTransform = positionTransform;
+        this.textureTransform = textureTransform;
     }
 
     public void addCustomQuads(List<BakedQuad> bakedQuads)
@@ -43,6 +40,7 @@ public class ModelBox2 extends ModelBox
         allBakedQuads.addAll(bakedQuads);
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public void render(VertexBuffer renderer, float scale)
     {
@@ -74,8 +72,7 @@ public class ModelBox2 extends ModelBox
 
         private int currentVertexIndex = -1;
         private Vec3d currentPosition = null;
-        private float currentU;
-        private float currentV;
+        private Vector3f currentTexture = null;
 
         TexturedQuad getOutputQuad() {
             return new TexturedQuad(vertices);
@@ -130,29 +127,29 @@ public class ModelBox2 extends ModelBox
                         currentPosition = null;
                         return;
                     }
-                    final Vector4f tempVec3 = new Vector4f(data[0], data[1], data[2], 1);
-                    final Vector4f transform = Matrix4f.transform(quadTransform, tempVec3, null);
+                    final Vector4f position = new Vector4f(data[0], data[1], data[2], 1);
+                    final Vector4f transform = Matrix4f.transform(positionTransform, position, null);
                     currentPosition = new Vec3d(transform.x, transform.y, transform.z);
 
                     break;
                 case UV:
-                    if (data.length != 4) {
-                        currentU = 0;
-                        currentV = 0;
+                    if (data.length < 2) {
+                        currentTexture = null;
                         return;
                     }
-                    currentU = data[0];
-                    currentV = data[1];
+
+                    final Vector3f uvs = new Vector3f(data[0], data[1], 1);
+                    final Vector3f transformedTexture = Matrix3f.transform(textureTransform, uvs, null);
+                    currentTexture = new Vector3f(transformedTexture.x, transformedTexture.y, transformedTexture.z);
                     break;
                 default:
                     break;
             }
 
             if (element == vertexFormat.getElementCount() - 1) {
-                vertices[currentVertexIndex] = new PositionTextureVertex(currentPosition, currentU, currentV);
+                vertices[currentVertexIndex] = new PositionTextureVertex(currentPosition, currentTexture.x, currentTexture.y);
                 currentPosition = null;
-                currentU = 0.0f;
-                currentV = 0.0f;
+                currentTexture = null;
             }
         }
     }
