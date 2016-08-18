@@ -3,7 +3,7 @@ package com.github.atomicblom.chiselsheep.client.renderer.entity.layers;
 import com.github.atomicblom.chiselsheep.ChiselSheepMod;
 import com.github.atomicblom.chiselsheep.capability.IChiseledSheepCapability;
 import com.github.atomicblom.chiselsheep.client.renderer.entity.FakeWorld;
-import com.github.atomicblom.chiselsheep.client.renderer.entity.ModelBox2;
+import com.github.atomicblom.chiselsheep.client.renderer.entity.EntityMesh;
 import com.github.atomicblom.chiselsheep.client.renderer.entity.RenderChiselSheep;
 import com.sun.javafx.geom.Vec3f;
 import net.minecraft.block.state.IBlockState;
@@ -12,14 +12,12 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.ModelSheep1;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -31,11 +29,9 @@ import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import team.chisel.api.carving.CarvingUtils;
-import team.chisel.api.carving.ICarvingGroup;
 import team.chisel.api.carving.ICarvingVariation;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @SideOnly(Side.CLIENT)
@@ -65,31 +61,32 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
             if (capability.isChiseled()) {
                 ItemStack itemStack = capability.getChiselItemStack();
                 ICarvingVariation variation = CarvingUtils.getChiselRegistry().getVariation(itemStack);
-                Item item = itemStack.getItem();
-                if (item instanceof ItemBlock) {
 
-                }
-
+                ModelSheep1 bodyModelRenderer;
                 if (variation == null) {
-                    ICarvingGroup group = CarvingUtils.getChiselRegistry().getGroup(itemStack);
-                    List<ICarvingVariation> variations = group.getVariations();
-                }
+                    //got to figure out how to store this kind of model.
 
-                ModelSheep1 bodyModelRenderer = modelMap.get(variation);
-                if (bodyModelRenderer == null) {
                     bodyModelRenderer = new ModelSheep1();
-                    //if (variation.getBlock() instanceof ICarvable) {
-                    bodyModelRenderer.body = getChiselBodyModelRenderer(variation, bodyPartDefinition);
-                    bodyModelRenderer.head = getChiselBodyModelRenderer(variation, headPartDefinition);
-                    bodyModelRenderer.leg1 = getChiselBodyModelRenderer(variation, leg1PartDefinition);
-                    bodyModelRenderer.leg2 = getChiselBodyModelRenderer(variation, leg2PartDefinition);
-                    bodyModelRenderer.leg3 = getChiselBodyModelRenderer(variation, leg3PartDefinition);
-                    bodyModelRenderer.leg4 = getChiselBodyModelRenderer(variation, leg4PartDefinition);
-                    modelMap.put(variation, bodyModelRenderer);
-                    //} else {
-                    //    sheepModel = defaultBody;
-                    //    sheepRenderer.bindTexture(TEXTURE);
-                    //}
+
+                    bodyModelRenderer.body = getChiselBodyModelRenderer(itemStack, sheep, bodyPartDefinition);
+                    bodyModelRenderer.head = getChiselBodyModelRenderer(itemStack, sheep, headPartDefinition);
+                    bodyModelRenderer.leg1 = getChiselBodyModelRenderer(itemStack, sheep, leg1PartDefinition);
+                    bodyModelRenderer.leg2 = getChiselBodyModelRenderer(itemStack, sheep, leg2PartDefinition);
+                    bodyModelRenderer.leg3 = getChiselBodyModelRenderer(itemStack, sheep, leg3PartDefinition);
+                    bodyModelRenderer.leg4 = getChiselBodyModelRenderer(itemStack, sheep, leg4PartDefinition);
+                } else {
+                    bodyModelRenderer = modelMap.get(variation);
+                    if (bodyModelRenderer == null) {
+                        bodyModelRenderer = new ModelSheep1();
+
+                        bodyModelRenderer.body = getChiselBodyModelRenderer(variation, bodyPartDefinition);
+                        bodyModelRenderer.head = getChiselBodyModelRenderer(variation, headPartDefinition);
+                        bodyModelRenderer.leg1 = getChiselBodyModelRenderer(variation, leg1PartDefinition);
+                        bodyModelRenderer.leg2 = getChiselBodyModelRenderer(variation, leg2PartDefinition);
+                        bodyModelRenderer.leg3 = getChiselBodyModelRenderer(variation, leg3PartDefinition);
+                        bodyModelRenderer.leg4 = getChiselBodyModelRenderer(variation, leg4PartDefinition);
+                        modelMap.put(variation, bodyModelRenderer);
+                    }
                 }
                 sheepModel = bodyModelRenderer;
                 sheepRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -115,34 +112,47 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         return testMatrix;
     }
 
+    private ModelRenderer getChiselBodyModelRenderer(ItemStack item, EntitySheep entity, PartDefinition partDefinition)
+    {
+        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+        IBakedModel itemModel = renderItem.getItemModelMesher().getItemModel(item);
+        itemModel = itemModel.getOverrides().handleItemState(itemModel, item, Minecraft.getMinecraft().theWorld, entity);
+
+        return getModelRenderer(partDefinition, null, itemModel);
+    }
+
     private ModelRenderer getChiselBodyModelRenderer(ICarvingVariation variation, PartDefinition partDefinition)
     {
-        final ModelRenderer bodyModelRenderer = new ModelRenderer(sheepModel, 28, 8);
-        bodyModelRenderer.setRotationPoint(
+        final IBlockState blockState = variation.getBlockState();
+        final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+        final IBakedModel model = blockRenderer.getModelForState(blockState);
+
+        return getModelRenderer(partDefinition, blockState, model);
+    }
+
+    private ModelRenderer getModelRenderer(PartDefinition partDefinition, IBlockState blockState, IBakedModel model) {
+        final ModelRenderer renderer = new ModelRenderer(sheepModel, 28, 8);
+        renderer.setRotationPoint(
                 partDefinition.rotationPoint.x,
                 partDefinition.rotationPoint.y,
                 partDefinition.rotationPoint.z
         );
 
-        final ModelBox2 bodyBox = new ModelBox2(
-                bodyModelRenderer,
+        final EntityMesh box = new EntityMesh(
+                renderer,
                 partDefinition.positionTransform,
                 partDefinition.textureTransform);
-        bodyModelRenderer.cubeList.add(bodyBox);
-        final IBlockState blockState = variation.getBlockState();
-
-        final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        final IBakedModel model = blockRenderer.getModelForState(blockState);
+        renderer.cubeList.add(box);
 
         ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID);
         for (final EnumFacing value : EnumFacing.VALUES)
         {
-            final List<BakedQuad> northQuads = model.getQuads(blockState, value, 0);
-            bodyBox.addCustomQuads(northQuads);
+            box.addCustomQuads(model.getQuads(blockState, value, 0));
         }
+        box.addCustomQuads(model.getQuads(blockState, null, 0));
         ForgeHooksClient.setRenderLayer(null);
 
-        return bodyModelRenderer;
+        return renderer;
     }
 
     private static final PartDefinition bodyPartDefinition;

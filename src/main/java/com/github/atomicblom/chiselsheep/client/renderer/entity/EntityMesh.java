@@ -21,14 +21,14 @@ import org.lwjgl.util.vector.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModelBox2 extends ModelBox
+public class EntityMesh extends ModelBox
 {
     private final Matrix4f positionTransform;
     private Matrix3f textureTransform;
     private TexturedQuad[] quadList = null;
     private List<BakedQuad> allBakedQuads = new ArrayList<>();
 
-    public ModelBox2(ModelRenderer renderer, Matrix4f positionTransform, Matrix3f textureTransform)
+    public EntityMesh(ModelRenderer renderer, Matrix4f positionTransform, Matrix3f textureTransform)
     {
         super(renderer, 0, 0, 0, 0, 0, 0, 0, 0, 0, false);
         this.positionTransform = positionTransform;
