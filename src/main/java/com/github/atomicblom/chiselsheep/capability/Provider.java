@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 public class Provider implements ICapabilityProvider, INBTSerializable<NBTBase> {
 
     @CapabilityInject(IChiseledSheepCapability.class)
-    private static Capability<IChiseledSheepCapability> CAPABILITY = null;
+    public static Capability<IChiseledSheepCapability> CAPABILITY = null;
 
     private IChiseledSheepCapability capability;
 

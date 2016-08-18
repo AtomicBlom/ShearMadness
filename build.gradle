@@ -66,7 +66,7 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    deobfCompile 'team.chisel:Chisel:MC1.9.4-0.0.6.37'
+    compile 'team.chisel:Chisel:MC1.9.4-0.0.6.37'
 }
 
 processResources

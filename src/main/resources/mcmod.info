@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "chiselsheep",
+  "name": "Chisel Sheep",
+  "description": "That thing you've always wanted to do with a chisel.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "http://github.com/AtomicBlom/ChiselSheep",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["AtomicBlom"],
+  "credits": "Everyone who offered suggestions.",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -62,6 +63,8 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                 ItemStack itemStack = capability.getChiselItemStack();
                 ICarvingVariation variation = CarvingUtils.getChiselRegistry().getVariation(itemStack);
 
+                createPartDefinitions();
+
                 ModelSheep1 bodyModelRenderer;
                 if (variation == null) {
                     //got to figure out how to store this kind of model.
@@ -75,7 +78,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                     bodyModelRenderer.leg3 = getChiselBodyModelRenderer(itemStack, sheep, leg3PartDefinition);
                     bodyModelRenderer.leg4 = getChiselBodyModelRenderer(itemStack, sheep, leg4PartDefinition);
                 } else {
-                    bodyModelRenderer = modelMap.get(variation);
+                    bodyModelRenderer = null;//modelMap.get(variation);
                     if (bodyModelRenderer == null) {
                         bodyModelRenderer = new ModelSheep1();
 
@@ -107,6 +110,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
     private static Matrix4f createPartMatrix(Vector3f size, Vector3f additionalTranslate) {
         size = size.translate(-0.5f, -0.5f, -0.5f);
         Matrix4f testMatrix = new Matrix4f();
+        testMatrix.rotate((float)Math.toRadians(180), new Vector3f(1, 0, 0));
         testMatrix.translate((Vector3f)Vector3f.add((Vector3f)new Vector3f(size).scale(0.5f), additionalTranslate, null).negate());
         testMatrix.scale(size);
         return testMatrix;
@@ -142,6 +146,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                 renderer,
                 partDefinition.positionTransform,
                 partDefinition.textureTransform);
+
         renderer.cubeList.add(box);
 
         ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID);
@@ -155,19 +160,26 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         return renderer;
     }
 
-    private static final PartDefinition bodyPartDefinition;
-    private static final PartDefinition headPartDefinition;
-    private static final PartDefinition leg1PartDefinition;
-    private static final PartDefinition leg2PartDefinition;
-    private static final PartDefinition leg3PartDefinition;
-    private static final PartDefinition leg4PartDefinition;
+    private static PartDefinition bodyPartDefinition;
+    private static PartDefinition headPartDefinition;
+    private static PartDefinition leg1PartDefinition;
+    private static PartDefinition leg2PartDefinition;
+    private static PartDefinition leg3PartDefinition;
+    private static PartDefinition leg4PartDefinition;
 
     static {
+        createPartDefinitions();
+    }
+
+    private static void createPartDefinitions()
+    {
+        final Matrix4f rotate = new Matrix4f().rotate((float)Math.toRadians(-90), new Vector3f(1, 0, 0));
         bodyPartDefinition = new PartDefinition(
                 new Vec3f(0.0f, 5.0f, 2.0f),
-                createPartMatrix(
-                        new Vector3f(12, 20, 10),
-                        new Vector3f(0, 2, 4)),
+                Matrix4f.mul(
+                        createPartMatrix(
+                                new Vector3f(12, 20, 10),
+                                new Vector3f(0, -2 , -14 )), rotate, null),
                 new Matrix3f()
         );
 
@@ -175,39 +187,39 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                 new Vec3f(0.0f, 6.0f, -8.0f),
                 createPartMatrix(
                         new Vector3f(8, 8, 8),
-                        new Vector3f(0, 1, 1)),
+                        new Vector3f(0, -1, -1)),
                 new Matrix3f()
         );
 
         leg1PartDefinition = new PartDefinition(
                 new Vec3f(-3.0f, 12.0f, 7.0f),
                 createPartMatrix(
-                        new Vector3f(5.6f, 8, 5.6f),
-                        new Vector3f(0, -2.75f, 0.1f)),
+                        new Vector3f(5.6f, 7.4f, 5.6f),
+                        new Vector3f(0, 3, 0.1f)),
                 new Matrix3f()
         );
 
         leg2PartDefinition = new PartDefinition(
                 new Vec3f(3.0f, 12.0f, 7.0f),
                 createPartMatrix(
-                        new Vector3f(5.6f, 8, 5.6f),
-                        new Vector3f(0, -2.75f, 0.1f)),
+                        new Vector3f(5.6f, 7.4f, 5.6f),
+                        new Vector3f(0, 3, 0.1f)),
                 new Matrix3f()
         );
 
         leg3PartDefinition = new PartDefinition(
                 new Vec3f(-3.0f, 12.0f, -5.0f),
                 createPartMatrix(
-                        new Vector3f(5.6f, 8, 5.6f),
-                        new Vector3f(0, -2.75f, 0.1f)),
+                        new Vector3f(5.6f, 7.4f, 5.6f),
+                        new Vector3f(0, 3, 0.1f)),
                 new Matrix3f()
         );
 
         leg4PartDefinition = new PartDefinition(
                 new Vec3f(3.0f, 12.0f, -5.0f),
                 createPartMatrix(
-                        new Vector3f(5.6f, 8, 5.6f),
-                        new Vector3f(0, -2.75f, 0.1f)),
+                        new Vector3f(5.6f, 7.4f, 5.6f),
+                        new Vector3f(0, 3, 0.1f)),
                 new Matrix3f()
         );
     }
