@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
+@SuppressWarnings("ALL")
 @ObjectHolder("chisel")
 public class ChiselLibrary
 {

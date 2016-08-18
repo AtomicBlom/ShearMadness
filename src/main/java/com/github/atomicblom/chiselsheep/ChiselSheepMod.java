@@ -1,29 +1,24 @@
 package com.github.atomicblom.chiselsheep;
 
 import com.github.atomicblom.chiselsheep.capability.ChiseledSheepCapability;
+import com.github.atomicblom.chiselsheep.capability.ChiseledSheepCapabilitySerializer;
 import com.github.atomicblom.chiselsheep.capability.IChiseledSheepCapability;
-import com.github.atomicblom.chiselsheep.capability.Provider;
+import com.github.atomicblom.chiselsheep.capability.ChiseledSheepCapabilityProvider;
 import com.github.atomicblom.chiselsheep.networking.CheckSheepChiseledRequestMessage;
 import com.github.atomicblom.chiselsheep.networking.CheckSheepChiseledRequestMessageHandler;
 import com.github.atomicblom.chiselsheep.networking.SheepChiseledMessage;
 import com.github.atomicblom.chiselsheep.networking.SheepChiseledMessageHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -34,8 +29,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SuppressWarnings("MethodMayBeStatic")
 @Mod(modid = ChiselSheepMod.MODID, version = ChiselSheepMod.VERSION)
 public class ChiselSheepMod
 {
@@ -47,19 +42,12 @@ public class ChiselSheepMod
     @SidedProxy(clientSide = "com.github.atomicblom.chiselsheep.ClientProxy", serverSide = "com.github.atomicblom.chiselsheep.CommonProxy")
     public static IProxy proxy;
 
-    public static Capability<IChiseledSheepCapability> CHISELED_SHEEP_CAPABILITY;
-
-    @CapabilityInject(IChiseledSheepCapability.class)
-    public static void OnCapabilityRegistered(Capability<IChiseledSheepCapability> capability) {
-        CHISELED_SHEEP_CAPABILITY = capability;
-    }
-
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
         CHANNEL.registerMessage(CheckSheepChiseledRequestMessageHandler.class, CheckSheepChiseledRequestMessage.class, 0, Side.SERVER);
         CHANNEL.registerMessage(SheepChiseledMessageHandler.class, SheepChiseledMessage.class, 1, Side.CLIENT);
-        CapabilityManager.INSTANCE.register(IChiseledSheepCapability.class, ChiseledSheepCapability.ExtentionStorage.instance, ChiseledSheepCapability::new);
+        CapabilityManager.INSTANCE.register(IChiseledSheepCapability.class, ChiseledSheepCapabilitySerializer.instance, ChiseledSheepCapability::new);
     }
 
     @EventHandler
@@ -70,128 +58,65 @@ public class ChiselSheepMod
 
     @SubscribeEvent
     public void onAttack(AttackEntityEvent event) {
-        final ItemStack itemStack = event.getEntityPlayer().inventory.getCurrentItem();
-        boolean chiselOk = false;
-        if (itemStack != null) {
-            final Item item = itemStack.getItem();
-            if (ChiselLibrary.isChisel(item)) {
-                chiselOk = true;
-            }
-        }
-
-        //final RayTraceResult mouseOver = Minecraft.getMinecraft().objectMouseOver;
-        //if (chiselOk && mouseOver != null && mouseOver.typeOfHit == Type.ENTITY) {
-        Entity entity = event.getTarget();
-
-            //TryChiselSheepMessage message = new TryChiselSheepMessage(entity.getEntityId());
-            //CHANNEL.sendToServer(message);
-
-        //}
+        final Entity entity = event.getTarget();
+        if (entity == null) return;
 
         final EntityPlayer serverPlayer = event.getEntityPlayer();
         ItemStack activeStack = serverPlayer.inventory.getCurrentItem();
-        boolean isChisel = false;
+        boolean attackedWithChisel = false;
         if (activeStack != null && ChiselLibrary.isChisel(activeStack.getItem())) {
-            isChisel = true;
+            attackedWithChisel = true;
         } else {
             activeStack = serverPlayer.inventory.offHandInventory[0];
             if (activeStack != null && ChiselLibrary.isChisel(activeStack.getItem())) {
-                isChisel = true;
+                attackedWithChisel = true;
             }
         }
-        if (!isChisel) { return; }
+        if (!attackedWithChisel) { return; }
+
         event.setCanceled(true);
-        //final Entity entity = ctx.getServerHandler().playerEntity.getServerWorld().getEntityByID(message.getSheepUUID());
 
-        if (entity != null && entity.hasCapability(CHISELED_SHEEP_CAPABILITY, null))
+        if (entity.hasCapability(ChiseledSheepCapabilityProvider.CHISELED_SHEEP, null))
         {
-            final IChiseledSheepCapability capability = entity.getCapability(CHISELED_SHEEP_CAPABILITY, null);
+            final IChiseledSheepCapability capability = entity.getCapability(ChiseledSheepCapabilityProvider.CHISELED_SHEEP, null);
 
-            final NBTTagCompound tagCompound = activeStack.getTagCompound();
-            if (tagCompound != null)
-            {
-                final NBTTagCompound chiselTarget = tagCompound.getCompoundTag("chiselTarget");
+            updateCapability(activeStack, capability);
 
-                if (chiselTarget.hasKey("id"))
-                {
-                    final ItemStack chiselItemStack = ItemStack.loadItemStackFromNBT(chiselTarget);
-                    capability.setChiselItemStack(chiselItemStack.copy());
-                } else {
-                    capability.setChiseled(false);
-                }
-            } else {
-                capability.setChiseled(false);
-            }
-
-            ChiselSheepMod.CHANNEL.sendToAll(new SheepChiseledMessage(entity));
+            CHANNEL.sendToAll(new SheepChiseledMessage(entity));
         }
     }
 
-    /*@SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public void onRightClick(RightClickItem event) {
-        if (event.getSide() != Side.CLIENT) {
-            return;
-        }
+    private void updateCapability(ItemStack activeStack, IChiseledSheepCapability capability)
+    {
+        final NBTTagCompound tagCompound = activeStack.getTagCompound();
+        if (tagCompound != null)
+        {
+            final NBTTagCompound chiselTarget = tagCompound.getCompoundTag("chiselTarget");
 
-        final ItemStack itemStack = event.getItemStack();
-        boolean chiselOk = false;
-        if (itemStack != null) {
-            final Item item = itemStack.getItem();
-            if (item == ChiselLibrary.chisel_iron || item == ChiselLibrary.chisel_diamond) {
-                chiselOk = true;
+            if (chiselTarget.hasKey("id"))
+            {
+                final ItemStack chiselItemStack = ItemStack.loadItemStackFromNBT(chiselTarget);
+                capability.setChiselItemStack(chiselItemStack.copy());
+            } else {
+                capability.setChiseled(false);
             }
+        } else {
+            capability.setChiseled(false);
         }
-
-        final RayTraceResult mouseOver = Minecraft.getMinecraft().objectMouseOver;
-        if (chiselOk && mouseOver != null && mouseOver.typeOfHit == Type.ENTITY) {
-            Entity entity = mouseOver.entityHit;
-
-            TryChiselSheepMessage message = new TryChiselSheepMessage(entity.getEntityId());
-            CHANNEL.sendToServer(message);
-            event.setCanceled(true);
-        }
-    }*/
+    }
 
     @SubscribeEvent
     public void onEntityJoinWorldEvent(EntityJoinWorldEvent event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT){
-            CheckSheepChiseledRequestMessage message = new CheckSheepChiseledRequestMessage(event.getEntity());
-            CHANNEL.sendToServer(message);
+            CHANNEL.sendToServer(new CheckSheepChiseledRequestMessage(event.getEntity()));
         }
     }
 
     @SubscribeEvent
     public void onCapabilityAttaching(AttachCapabilitiesEvent.Entity event) {
         if (event.getEntity().getClass().equals(EntitySheep.class)) {
-            event.addCapability(new ResourceLocation(ChiselSheepMod.MODID, "chiselledSheep"), new Provider());
-            /*if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            {
-                Entity entity = event.getEntity();
-
-                Minecraft.getMinecraft().addScheduledTask(() -> {
-                    if (entity.getUniqueID() == null) {
-                        System.out.println("Attempt to check an entity that hasn't finished initialization");
-                        return;
-                    }
-
-                });
-
-
-            }*/
+            event.addCapability(new ResourceLocation(MODID, "chiseledSheep"), new ChiseledSheepCapabilityProvider());
         }
     }
-
-    @SubscribeEvent
-    @SideOnly(Side.SERVER)
-    public void onPlayerStartTrackingEntity(StartTracking event) {
-
-        /*final boolean hasCapability = event.getTarget().hasCapability(Provider.CAPABILITY, null);
-        if (hasCapability) {
-            SheepChiseledMessage message = new SheepChiseledMessage(event.getTarget());
-            CHANNEL.sendTo(message, (EntityPlayerMP) event.getEntityPlayer());
-        }*/
-    }
-
 }

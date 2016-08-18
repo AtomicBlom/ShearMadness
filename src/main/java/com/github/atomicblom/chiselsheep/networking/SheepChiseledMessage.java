@@ -1,7 +1,7 @@
 package com.github.atomicblom.chiselsheep.networking;
 
 import com.github.atomicblom.chiselsheep.capability.IChiseledSheepCapability;
-import com.github.atomicblom.chiselsheep.capability.Provider;
+import com.github.atomicblom.chiselsheep.capability.ChiseledSheepCapabilityProvider;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -14,11 +14,12 @@ public class SheepChiseledMessage implements IMessage
     private boolean isChiselled;
     private ItemStack itemStack;
 
+    @SuppressWarnings("unused")
     public SheepChiseledMessage(){}
 
     public SheepChiseledMessage(Entity sheep) {
         sheepId = sheep.getEntityId();
-        final IChiseledSheepCapability capability = sheep.getCapability(Provider.CAPABILITY, null);
+        final IChiseledSheepCapability capability = sheep.getCapability(ChiseledSheepCapabilityProvider.CHISELED_SHEEP, null);
         isChiselled = capability.isChiseled();
         itemStack = capability.getChiselItemStack();
     }
@@ -35,17 +36,17 @@ public class SheepChiseledMessage implements IMessage
         itemStack = ByteBufUtils.readItemStack(buf);
     }
 
-    public int getSheepId()
+    int getSheepId()
     {
         return sheepId;
     }
 
-    public boolean isChiselled()
+    boolean isChiselled()
     {
         return isChiselled;
     }
 
-    public ItemStack getChiselItemStack()
+    ItemStack getChiselItemStack()
     {
         return itemStack;
     }

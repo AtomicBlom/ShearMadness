@@ -1,10 +1,7 @@
-package com.github.atomicblom.chiselsheep.client.renderer.entity.layers;
+package com.github.atomicblom.chiselsheep.client.renderer.entity;
 
-import com.github.atomicblom.chiselsheep.ChiselSheepMod;
 import com.github.atomicblom.chiselsheep.capability.IChiseledSheepCapability;
-import com.github.atomicblom.chiselsheep.client.renderer.entity.FakeWorld;
-import com.github.atomicblom.chiselsheep.client.renderer.entity.EntityMesh;
-import com.github.atomicblom.chiselsheep.client.renderer.entity.RenderChiselSheep;
+import com.github.atomicblom.chiselsheep.capability.ChiseledSheepCapabilityProvider;
 import com.sun.javafx.geom.Vec3f;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -16,13 +13,11 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -43,7 +38,6 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
     private ModelSheep1 sheepModel;
 
     private final Map<ICarvingVariation, ModelSheep1> modelMap = new HashMap<>();
-    final FakeWorld world = new FakeWorld();
 
     private final ModelSheep1 defaultBody;
 
@@ -58,7 +52,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
     {
         if (!sheep.getSheared() && !sheep.isInvisible())
         {
-            IChiseledSheepCapability capability = sheep.getCapability(ChiselSheepMod.CHISELED_SHEEP_CAPABILITY, null);
+            IChiseledSheepCapability capability = sheep.getCapability(ChiseledSheepCapabilityProvider.CHISELED_SHEEP, null);
             if (capability.isChiseled()) {
                 ItemStack itemStack = capability.getChiselItemStack();
                 ICarvingVariation variation = CarvingUtils.getChiselRegistry().getVariation(itemStack);
@@ -97,7 +91,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                 sheepModel = defaultBody;
                 sheepRenderer.bindTexture(TEXTURE);
 
-                float[] afloat = EntitySheep.getDyeRgb(sheep.getFleeceColor());
+                final float[] afloat = EntitySheep.getDyeRgb(sheep.getFleeceColor());
                 GlStateManager.color(afloat[0], afloat[1], afloat[2]);
             }
 
@@ -107,18 +101,26 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         }
     }
 
+    private static final float NintyDegrees = 3.141592653589793f;
+
     private static Matrix4f createPartMatrix(Vector3f size, Vector3f additionalTranslate) {
-        size = size.translate(-0.5f, -0.5f, -0.5f);
-        Matrix4f testMatrix = new Matrix4f();
-        testMatrix.rotate((float)Math.toRadians(180), new Vector3f(1, 0, 0));
-        testMatrix.translate((Vector3f)Vector3f.add((Vector3f)new Vector3f(size).scale(0.5f), additionalTranslate, null).negate());
-        testMatrix.scale(size);
-        return testMatrix;
+        Vector3f adjustedSize = size.translate(-0.5f, -0.5f, -0.5f);
+        final Matrix4f matrix = new Matrix4f();
+
+        matrix.rotate(NintyDegrees, new Vector3f(1, 0, 0));
+        matrix.translate(
+                (Vector3f)Vector3f.add(
+                        (Vector3f)new Vector3f(adjustedSize).scale(0.5f),
+                        additionalTranslate,
+                        null
+                ).negate());
+        matrix.scale(adjustedSize);
+        return matrix;
     }
 
     private ModelRenderer getChiselBodyModelRenderer(ItemStack item, EntitySheep entity, PartDefinition partDefinition)
     {
-        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+        final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         IBakedModel itemModel = renderItem.getItemModelMesher().getItemModel(item);
         itemModel = itemModel.getOverrides().handleItemState(itemModel, item, Minecraft.getMinecraft().theWorld, entity);
 
@@ -224,25 +226,10 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         );
     }
 
+    @Override
     public boolean shouldCombineTextures()
     {
         return true;
     }
-
-    private class SheepVariant {
-        public ModelRenderer body;
-    }
 }
 
-class PartDefinition {
-    final Vec3f rotationPoint;
-    final Matrix4f positionTransform;
-    final Matrix3f textureTransform;
-
-    PartDefinition(Vec3f rotationPoint, Matrix4f positionTransform, Matrix3f textureTransform) {
-
-        this.rotationPoint = rotationPoint;
-        this.positionTransform = positionTransform;
-        this.textureTransform = textureTransform;
-    }
-}

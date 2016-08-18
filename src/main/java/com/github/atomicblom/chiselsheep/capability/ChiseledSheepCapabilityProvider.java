@@ -6,40 +6,40 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
-
 import javax.annotation.Nullable;
 
-public class Provider implements ICapabilityProvider, INBTSerializable<NBTBase> {
+public class ChiseledSheepCapabilityProvider implements ICapabilityProvider, INBTSerializable<NBTBase> {
 
     @CapabilityInject(IChiseledSheepCapability.class)
-    public static Capability<IChiseledSheepCapability> CAPABILITY = null;
+    public static final Capability<IChiseledSheepCapability> CHISELED_SHEEP = null;
 
-    private IChiseledSheepCapability capability;
+    private final IChiseledSheepCapability capability;
 
-    public Provider() {
+    public ChiseledSheepCapabilityProvider() {
         capability = new ChiseledSheepCapability();
     }
 
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability == CAPABILITY;
+        return capability == CHISELED_SHEEP;
     }
 
     @Override
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-        if (capability == CAPABILITY) {
-            return (T)this.capability;
+        if (capability == CHISELED_SHEEP) {
+            return CHISELED_SHEEP.cast(this.capability);
         }
         return null;
     }
 
     @Override
     public NBTBase serializeNBT() {
-        return ChiseledSheepCapability.ExtentionStorage.instance.writeNBT(CAPABILITY, capability, null);
+        return ChiseledSheepCapabilitySerializer.instance.writeNBT(CHISELED_SHEEP, capability, null);
     }
 
     @Override
     public void deserializeNBT(NBTBase nbt) {
-        ChiseledSheepCapability.ExtentionStorage.instance.readNBT(CAPABILITY, capability, null, nbt);
+        ChiseledSheepCapabilitySerializer.instance.readNBT(CHISELED_SHEEP, capability, null, nbt);
     }
 }
+

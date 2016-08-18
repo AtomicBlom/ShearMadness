@@ -37,33 +37,5 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability {
         }
         isChiseled = chiseled;
     }
-
-    public static class ExtentionStorage implements Capability.IStorage<IChiseledSheepCapability> {
-        public static final ExtentionStorage instance = new ExtentionStorage();
-
-        @Override
-        public NBTBase writeNBT(Capability<IChiseledSheepCapability> capability, IChiseledSheepCapability instance, EnumFacing side) {
-            NBTTagCompound compound = new NBTTagCompound();
-            compound.setBoolean("isChiseled", instance.isChiseled());
-            if (instance.isChiseled()) {
-                NBTTagCompound targetTag = new NBTTagCompound();
-                instance.getChiselItemStack().writeToNBT(targetTag);
-                compound.setTag("chiselDefinition", targetTag);
-            }
-            return compound;
-        }
-
-        @Override
-        public void readNBT(Capability<IChiseledSheepCapability> capability, IChiseledSheepCapability instance, EnumFacing side, NBTBase nbt) {
-            NBTTagCompound compound = (NBTTagCompound)nbt;
-
-            instance.setChiseled(compound.getBoolean("isChiseled"));
-            if (instance.isChiseled()) {
-                ItemStack stack = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("chiselDefinition"));
-                instance.setChiselItemStack(stack);
-            }
-        }
-    }
-
 }
 

@@ -5,5 +5,5 @@ package com.github.atomicblom.chiselsheep;
  */
 public interface IProxy
 {
-    public void registerRenderers();
+    void registerRenderers();
 }

@@ -10,6 +10,7 @@ public class CheckSheepChiseledRequestMessage implements IMessage
 {
     private String sheepUUID;
 
+    @SuppressWarnings("unused")
     public CheckSheepChiseledRequestMessage(){}
 
     public CheckSheepChiseledRequestMessage(Entity sheep) {
