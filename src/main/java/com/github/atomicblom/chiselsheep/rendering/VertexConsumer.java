@@ -1,4 +1,4 @@
-package com.github.atomicblom.chiselsheep.client.renderer.entity;
+package com.github.atomicblom.chiselsheep.rendering;
 
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;

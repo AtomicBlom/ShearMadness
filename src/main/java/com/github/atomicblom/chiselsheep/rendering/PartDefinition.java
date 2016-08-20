@@ -1,4 +1,4 @@
-package com.github.atomicblom.chiselsheep.client.renderer.entity;
+package com.github.atomicblom.chiselsheep.rendering;
 
 import com.sun.javafx.geom.Vec3f;
 import org.lwjgl.util.vector.Matrix3f;

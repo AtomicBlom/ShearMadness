@@ -1,4 +1,4 @@
-package com.github.atomicblom.chiselsheep.client.renderer.entity;
+package com.github.atomicblom.chiselsheep.rendering;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -20,7 +20,7 @@ public class RenderChiselSheep extends RenderLiving<EntitySheep>
     }
 
     /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
+     * Returns the location of an rendering's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
     @Override
     protected ResourceLocation getEntityTexture(EntitySheep entity)

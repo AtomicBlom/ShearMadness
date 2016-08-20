@@ -1,4 +1,4 @@
-package com.github.atomicblom.chiselsheep.client.renderer.entity;
+package com.github.atomicblom.chiselsheep.rendering;
 
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;

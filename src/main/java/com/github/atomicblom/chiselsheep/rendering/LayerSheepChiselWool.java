@@ -1,4 +1,4 @@
-package com.github.atomicblom.chiselsheep.client.renderer.entity;
+package com.github.atomicblom.chiselsheep.rendering;
 
 import com.github.atomicblom.chiselsheep.capability.IChiseledSheepCapability;
 import com.github.atomicblom.chiselsheep.capability.ChiseledSheepCapabilityProvider;

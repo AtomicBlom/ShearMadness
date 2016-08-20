@@ -1,6 +1,6 @@
-package com.github.atomicblom.chiselsheep;
+package com.github.atomicblom.chiselsheep.proxy;
 
-import com.github.atomicblom.chiselsheep.client.renderer.entity.RenderChiselSheep;
+import com.github.atomicblom.chiselsheep.rendering.RenderChiselSheep;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelSheep2;
 import net.minecraft.client.renderer.entity.RenderManager;
