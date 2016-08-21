@@ -1,6 +1,6 @@
 package com.github.atomicblom.chiselsheep.configuration.client;
 
-import com.github.atomicblom.chiselsheep.Reference;
+import com.github.atomicblom.chiselsheep.utility.Reference;
 import com.github.atomicblom.chiselsheep.configuration.ConfigurationHandler;
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.GuiScreen;
@@ -18,7 +18,6 @@ public class ConfigGUI extends GuiConfig
                 GuiConfig.getAbridgedConfigPath(ConfigurationHandler.INSTANCE.getConfig().toString()));
     }
 
-    @SuppressWarnings("unchecked")
     private static List<IConfigElement> getConfigElements()
     {
         final List<IConfigElement> configElements = Lists.newArrayList();

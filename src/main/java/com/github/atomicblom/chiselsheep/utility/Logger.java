@@ -1,6 +1,5 @@
 package com.github.atomicblom.chiselsheep.utility;
 
-import com.github.atomicblom.chiselsheep.Reference;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 

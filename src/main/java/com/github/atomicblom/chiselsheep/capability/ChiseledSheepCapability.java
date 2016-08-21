@@ -33,13 +33,11 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability
             itemStack = null;
         }
         isChiseled = chiseled;
-    }    public ItemStack getChiselItemStack()
+    }
+
+    public ItemStack getChiselItemStack()
     {
         return itemStack;
     }
-
-
-
-
 }
 

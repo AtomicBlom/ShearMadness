@@ -1,18 +1,22 @@
 package com.github.atomicblom.chiselsheep;
 
+import com.github.atomicblom.chiselsheep.capability.ChiseledSheepCapabilityProvider;
 import com.github.atomicblom.chiselsheep.capability.IChiseledSheepCapability;
 import com.github.atomicblom.chiselsheep.configuration.Settings;
+import com.github.atomicblom.chiselsheep.networking.SheepChiseledMessage;
 import com.github.atomicblom.chiselsheep.utility.ItemStackUtils;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+
+import static com.github.atomicblom.chiselsheep.ChiselSheepMod.CHANNEL;
 
 /**
  * Created by codew on 21/08/2016.
  */
 public class Shearing
 {
-    static void ShearSheep(ItemStack itemStack, EntitySheep sheep, IChiseledSheepCapability capability)
+    public static void ShearSheep(ItemStack itemStack, EntitySheep sheep, IChiseledSheepCapability capability)
     {
         if (Settings.Shearing.getBehaviour() == Settings.ShearBehaviour.CannotShear) {
             //TODO: Play shear cancelled Sound.
@@ -30,6 +34,11 @@ public class Shearing
 
         sheep.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, 1.0F);
         itemStack.damageItem(1, sheep);
+
+        if (Settings.Shearing.getBehaviour() == Settings.ShearBehaviour.RevertSheep) {
+            capability.setChiseled(false);
+            CHANNEL.sendToAll(new SheepChiseledMessage(sheep));
+        }
     }
 
 }

@@ -16,7 +16,7 @@ import static com.github.atomicblom.chiselsheep.ChiselSheepMod.CHANNEL;
  */
 public class Chiseling
 {
-    public static void ChiselSheep(Entity target, Entity sheep, EntityPlayer entityPlayer, ItemStack activeStack)
+    public static void ChiselSheep(Entity sheep, EntityPlayer entityPlayer, ItemStack activeStack)
     {
         if (sheep.hasCapability(ChiseledSheepCapabilityProvider.CHISELED_SHEEP, null))
         {
@@ -27,7 +27,7 @@ public class Chiseling
                 activeStack.damageItem(1, entityPlayer);
                 CHANNEL.sendToAll(new SheepChiseledMessage(sheep));
 
-                if (!target.worldObj.isRemote && chiselItemStack != null)
+                if (!sheep.worldObj.isRemote && chiselItemStack != null)
                 {
                     ItemStackUtils.dropItem(sheep, chiselItemStack);
                 }

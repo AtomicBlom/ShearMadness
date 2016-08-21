@@ -1,4 +1,4 @@
-package com.github.atomicblom.chiselsheep;
+package com.github.atomicblom.chiselsheep.utility;
 
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;

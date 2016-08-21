@@ -5,9 +5,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import java.util.Random;
 
-/**
- * Created by codew on 21/08/2016.
- */
 public class ItemStackUtils
 {
 

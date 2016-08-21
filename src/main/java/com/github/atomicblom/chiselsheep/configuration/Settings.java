@@ -1,8 +1,11 @@
 package com.github.atomicblom.chiselsheep.configuration;
 
-import com.github.atomicblom.chiselsheep.Reference;
+import com.github.atomicblom.chiselsheep.utility.Reference;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
+import static net.minecraftforge.common.config.Property.Type.STRING;
 
 @SuppressWarnings("BooleanMethodNameMustStartWithQuestion")
 public enum Settings
@@ -35,7 +38,15 @@ public enum Settings
         public static ShearBehaviour getBehaviour() { return behaviour; }
 
         private static void syncConfig(Configuration config) {
-            String behaviour = config.getString("behaviour", CATEGORY, "RevertSheep", getLocalizedComment("behaviour"));
+
+            String[] validNames = new String[ShearBehaviour.values().length];
+            for (int i = 0; i < ShearBehaviour.values().length; i++)
+            {
+                validNames[i] = ShearBehaviour.values()[i].name();
+            }
+
+            String behaviour = config.getString("behaviour", CATEGORY, "RevertSheep", getLocalizedComment("behaviour"), validNames);
+
             Shearing.behaviour = ShearBehaviour.valueOf(behaviour);
         }
     }
@@ -45,7 +56,5 @@ public enum Settings
         ChiselFarm,
         CannotShear
         //FacadeWool,
-
-
     }
 }

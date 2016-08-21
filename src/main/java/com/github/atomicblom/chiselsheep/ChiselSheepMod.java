@@ -9,6 +9,7 @@ import com.github.atomicblom.chiselsheep.networking.CheckSheepChiseledRequestMes
 import com.github.atomicblom.chiselsheep.networking.SheepChiseledMessage;
 import com.github.atomicblom.chiselsheep.networking.SheepChiseledMessageHandler;
 import com.github.atomicblom.chiselsheep.proxy.IProxy;
+import com.github.atomicblom.chiselsheep.utility.Reference;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
@@ -21,20 +22,20 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 @SuppressWarnings("MethodMayBeStatic")
-@Mod(modid = Reference.MOD_ID, version = Reference.VERSION)
+@Mod(modid = Reference.MOD_ID, version = Reference.VERSION, guiFactory = Reference.MOD_GUI_FACTORY)
 public class ChiselSheepMod
 {
     public static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
 
     @SidedProxy(clientSide = "com.github.atomicblom.chiselsheep.proxy.ClientProxy", serverSide = "com.github.atomicblom.chiselsheep.proxy.CommonProxy")
-    public static IProxy proxy;
+    private static IProxy proxy;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         ConfigurationHandler.init(event.getSuggestedConfigurationFile());
 
-        MinecraftForge.EVENT_BUS.register(EventManagement.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(proxy);
         CHANNEL.registerMessage(CheckSheepChiseledRequestMessageHandler.class, CheckSheepChiseledRequestMessage.class, 0, Side.SERVER);
         CHANNEL.registerMessage(SheepChiseledMessageHandler.class, SheepChiseledMessage.class, 1, Side.CLIENT);
         CapabilityManager.INSTANCE.register(IChiseledSheepCapability.class, ChiseledSheepCapabilitySerializer.instance, ChiseledSheepCapability::new);

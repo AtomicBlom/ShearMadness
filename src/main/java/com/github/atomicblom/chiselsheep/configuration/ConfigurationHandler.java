@@ -1,6 +1,6 @@
 package com.github.atomicblom.chiselsheep.configuration;
 
-import com.github.atomicblom.chiselsheep.Reference;
+import com.github.atomicblom.chiselsheep.utility.Reference;
 import com.github.atomicblom.chiselsheep.utility.Logger;
 import com.google.common.base.Objects;
 import net.minecraftforge.common.MinecraftForge;
