@@ -1,14 +1,14 @@
 [
 {
-  "modid": "chiselsheep",
-  "name": "Chisel Sheep",
+  "modid": "shearmadness",
+  "name": "Shear Madness",
   "description": "That thing you've always wanted to do with a chisel.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "http://github.com/AtomicBlom/ChiselSheep",
+  "url": "http://github.com/AtomicBlom/ShearMadness",
   "updateUrl": "",
   "authorList": ["AtomicBlom"],
-  "credits": "Everyone who offered suggestions.",
+  "credits": "TTFTCUTS for the name, and Everyone who offered suggestions.",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
