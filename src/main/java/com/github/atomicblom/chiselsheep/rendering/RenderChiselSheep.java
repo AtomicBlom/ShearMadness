@@ -20,7 +20,8 @@ public class RenderChiselSheep extends RenderLiving<EntitySheep>
     }
 
     /**
-     * Returns the location of an rendering's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
+     * Returns the location of an rendering's texture. Doesn't seem to be called unless you call
+     * Render.bindEntityTexture.
      */
     @Override
     protected ResourceLocation getEntityTexture(EntitySheep entity)

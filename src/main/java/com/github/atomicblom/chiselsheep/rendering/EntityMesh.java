@@ -16,8 +16,8 @@ class EntityMesh extends ModelBox
 {
     private final Matrix4f positionTransform;
     private final Matrix3f textureTransform;
-    private TexturedQuad[] quadList = null;
     private final List<BakedQuad> allBakedQuads = new ArrayList<>(6);
+    private TexturedQuad[] quadList = null;
 
     EntityMesh(ModelRenderer renderer, Matrix4f positionTransform, Matrix3f textureTransform)
     {
@@ -35,7 +35,8 @@ class EntityMesh extends ModelBox
     @SideOnly(Side.CLIENT)
     public void render(VertexBuffer renderer, float scale)
     {
-        if (quadList == null) {
+        if (quadList == null)
+        {
 
             final List<TexturedQuad> outputQuads = new ArrayList<>(6);
 

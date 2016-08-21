@@ -28,16 +28,16 @@ class VertexConsumer implements IVertexConsumer
     private Vec3d currentPosition = null;
     private Vector3f currentTexture = null;
 
-    TexturedQuad getOutputQuad()
-    {
-        return new TexturedQuad(vertices);
-    }
-
     VertexConsumer(VertexFormat vertexFormat, Matrix4f positionTransform, Matrix3f textureTransform)
     {
         this.vertexFormat = vertexFormat;
         this.positionTransform = positionTransform;
         this.textureTransform = textureTransform;
+    }
+
+    TexturedQuad getOutputQuad()
+    {
+        return new TexturedQuad(vertices);
     }
 
     @Override
