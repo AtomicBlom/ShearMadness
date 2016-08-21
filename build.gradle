@@ -39,7 +39,7 @@ idea {
 ///////////////////////////////////////////////////
 version = config.mod_version
 group = config.group_name
-archivesBaseName = "[${config.minecraft_version}]${config.mod_id}"
+archivesBaseName = "${config.mod_id}-${config.minecraft_version}"
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
