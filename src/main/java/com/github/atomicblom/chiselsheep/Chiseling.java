@@ -25,10 +25,10 @@ public class Chiseling
             if (updateCapability(activeStack, capability, entityPlayer.isCreative()))
             {
                 activeStack.damageItem(1, entityPlayer);
-                CHANNEL.sendToAll(new SheepChiseledMessage(sheep));
 
                 if (!sheep.worldObj.isRemote && chiselItemStack != null)
                 {
+                    CHANNEL.sendToAll(new SheepChiseledMessage(sheep));
                     ItemStackUtils.dropItem(sheep, chiselItemStack);
                 }
             }
@@ -114,7 +114,7 @@ public class Chiseling
         {
             return false;
         }
-        if (newChisel.isItemStackDamageable() && newChisel.getMetadata() != currentChisel.getMetadata())
+        if (!newChisel.isItemStackDamageable() && newChisel.getMetadata() != currentChisel.getMetadata())
         {
             return false;
         }
