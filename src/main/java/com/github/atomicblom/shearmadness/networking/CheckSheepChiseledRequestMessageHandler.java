@@ -2,6 +2,7 @@ package com.github.atomicblom.shearmadness.networking;
 
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.utility.Logger;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -27,6 +28,7 @@ public class CheckSheepChiseledRequestMessageHandler implements IMessageHandler<
         }
         if (capability.isChiseled())
         {
+            Logger.info("Notifying sheep chiseled - entity %s", entity.toString());
             return new SheepChiseledMessage(entity);
         }
 

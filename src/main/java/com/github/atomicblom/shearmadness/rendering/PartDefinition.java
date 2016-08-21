@@ -1,16 +1,16 @@
 package com.github.atomicblom.shearmadness.rendering;
 
-import com.sun.javafx.geom.Vec3f;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 class PartDefinition
 {
-    private final Vec3f rotationPoint;
+    private final Vector3f rotationPoint;
     private final Matrix4f positionTransform;
     private final Matrix3f textureTransform;
 
-    PartDefinition(Vec3f rotationPoint, Matrix4f positionTransform, Matrix3f textureTransform)
+    PartDefinition(Vector3f rotationPoint, Matrix4f positionTransform, Matrix3f textureTransform)
     {
 
         this.rotationPoint = rotationPoint;
@@ -18,7 +18,7 @@ class PartDefinition
         this.textureTransform = textureTransform;
     }
 
-    Vec3f getRotationPoint()
+    Vector3f getRotationPoint()
     {
         return rotationPoint;
     }

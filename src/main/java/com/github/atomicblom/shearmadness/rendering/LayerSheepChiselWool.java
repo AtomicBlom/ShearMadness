@@ -2,7 +2,6 @@ package com.github.atomicblom.shearmadness.rendering;
 
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
-import com.sun.javafx.geom.Vec3f;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelRenderer;
@@ -76,9 +75,9 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
 
     private static void createPartDefinitions()
     {
-        final Matrix4f rotate = new Matrix4f().rotate(NintyDegrees, new Vector3f(1, 0, 0));
+        final Matrix4f rotate = new Matrix4f().rotate((float) Math.toRadians(-90), new Vector3f(1, 0, 0));
         bodyPartDefinition = new PartDefinition(
-                new Vec3f(0.0f, 5.0f, 2.0f),
+                new Vector3f(0.0f, 5.0f, 2.0f),
                 Matrix4f.mul(
                         createPartMatrix(
                                 new Vector3f(12, 20, 10),
@@ -87,7 +86,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         );
 
         headPartDefinition = new PartDefinition(
-                new Vec3f(0.0f, 6.0f, -8.0f),
+                new Vector3f(0.0f, 6.0f, -8.0f),
                 createPartMatrix(
                         new Vector3f(8, 8, 8),
                         new Vector3f(0, -1, -1)),
@@ -95,7 +94,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         );
 
         leg1PartDefinition = new PartDefinition(
-                new Vec3f(-3.0f, 12.0f, 7.0f),
+                new Vector3f(-3.0f, 12.0f, 7.0f),
                 createPartMatrix(
                         new Vector3f(5.6f, 7.4f, 5.6f),
                         new Vector3f(0, 3, 0.1f)),
@@ -103,7 +102,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         );
 
         leg2PartDefinition = new PartDefinition(
-                new Vec3f(3.0f, 12.0f, 7.0f),
+                new Vector3f(3.0f, 12.0f, 7.0f),
                 createPartMatrix(
                         new Vector3f(5.6f, 7.4f, 5.6f),
                         new Vector3f(0, 3, 0.1f)),
@@ -111,7 +110,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         );
 
         leg3PartDefinition = new PartDefinition(
-                new Vec3f(-3.0f, 12.0f, -5.0f),
+                new Vector3f(-3.0f, 12.0f, -5.0f),
                 createPartMatrix(
                         new Vector3f(5.6f, 7.4f, 5.6f),
                         new Vector3f(0, 3, 0.1f)),
@@ -119,7 +118,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         );
 
         leg4PartDefinition = new PartDefinition(
-                new Vec3f(3.0f, 12.0f, -5.0f),
+                new Vector3f(3.0f, 12.0f, -5.0f),
                 createPartMatrix(
                         new Vector3f(5.6f, 7.4f, 5.6f),
                         new Vector3f(0, 3, 0.1f)),

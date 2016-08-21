@@ -10,9 +10,9 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import java.util.List;
 
-class ConfigGUI extends GuiConfig
+public class ConfigGUI extends GuiConfig
 {
-    ConfigGUI(GuiScreen parent)
+    public ConfigGUI(GuiScreen parent)
     {
         super(parent, getConfigElements(), Reference.MOD_ID, false, false,
                 GuiConfig.getAbridgedConfigPath(ConfigurationHandler.INSTANCE.getConfig().toString()));

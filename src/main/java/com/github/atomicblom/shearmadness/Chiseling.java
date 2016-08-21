@@ -26,10 +26,13 @@ public final class Chiseling
             {
                 activeStack.damageItem(1, entityPlayer);
 
-                if (!sheep.worldObj.isRemote && chiselItemStack != null)
+                if (!sheep.worldObj.isRemote)
                 {
                     CHANNEL.sendToAll(new SheepChiseledMessage(sheep));
-                    ItemStackUtils.dropItem(sheep, chiselItemStack);
+                    if (chiselItemStack != null)
+                    {
+                        ItemStackUtils.dropItem(sheep, chiselItemStack);
+                    }
                 }
             }
         }

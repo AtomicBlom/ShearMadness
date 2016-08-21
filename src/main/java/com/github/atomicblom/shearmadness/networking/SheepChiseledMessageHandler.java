@@ -2,6 +2,7 @@ package com.github.atomicblom.shearmadness.networking;
 
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.utility.Logger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -14,7 +15,9 @@ public class SheepChiseledMessageHandler implements IMessageHandler<SheepChisele
     @Override
     public IMessage onMessage(SheepChiseledMessage message, MessageContext ctx)
     {
-        final Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(message.getSheepId());
+        final int sheepId = message.getSheepId();
+        final Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(sheepId);
+        Logger.info("Attempting to get sheep %d - entity %s", sheepId, entity.toString());
         if (entity == null)
         {
             return null;
