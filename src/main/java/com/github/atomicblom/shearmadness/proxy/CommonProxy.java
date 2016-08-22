@@ -55,7 +55,7 @@ public class CommonProxy implements IProxy
     {
         //Process for chiseling a sheep
         final Entity sheep = event.getTarget();
-        if (sheep == null) return;
+        if (sheep == null || !(sheep instanceof EntitySheep)) return;
 
         final EntityPlayer entityPlayer = event.getEntityPlayer();
         ItemStack activeStack = entityPlayer.inventory.getCurrentItem();
