@@ -7,15 +7,21 @@ import com.github.atomicblom.shearmadness.Shearing;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import java.util.List;
 
 @SuppressWarnings("MethodMayBeStatic")
 public class CommonProxy implements IProxy
@@ -83,6 +89,31 @@ public class CommonProxy implements IProxy
         event.setCanceled(true);
 
         Chiseling.chiselSheep(sheep, entityPlayer, activeStack);
+    }
+
+    @SubscribeEvent
+    public void onLivingDrop(LivingDropsEvent event) {
+        final Entity entity = event.getEntity();
+        if (entity.hasCapability(CapabilityProvider.CHISELED_SHEEP, null)) {
+            final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+            if (capability.isChiseled())
+            {
+                final List<EntityItem> drops = event.getDrops();
+                drops.removeIf(entityItem ->
+                {
+                    final Item item = entityItem.getEntityItem().getItem();
+                    if (item instanceof ItemBlock)
+                    {
+                        if (((ItemBlock) item).block == Blocks.WOOL)
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+                drops.add(new EntityItem(entity.worldObj, entity.posX, entity.posY, entity.posZ, capability.getChiselItemStack().copy()));
+            }
+        }
     }
 
     @SubscribeEvent
