@@ -76,6 +76,10 @@ public class CommonProxy implements IProxy
             return;
         }
 
+        if (!sheep.hasCapability(CapabilityProvider.CHISELED_SHEEP, null)) {
+            return;
+        }
+
         event.setCanceled(true);
 
         Chiseling.chiselSheep(sheep, entityPlayer, activeStack);
