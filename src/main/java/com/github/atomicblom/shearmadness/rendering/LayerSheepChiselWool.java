@@ -13,6 +13,8 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -170,6 +172,17 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                 }
                 sheepModel = bodyModelRenderer;
                 sheepRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+
+                final Item item = itemStack.getItem();
+                if (item instanceof ItemBlock)
+                {
+                    final int colorMultiplier = Minecraft.getMinecraft().getBlockColors().colorMultiplier(((ItemBlock) item).block.getDefaultState(), sheep.worldObj, sheep.getPosition(), 0);
+                    float red = (float)(colorMultiplier >> 16 & 255) / 255.0F;
+                    float green = (float)(colorMultiplier >> 8 & 255) / 255.0F;
+                    float blue = (float)(colorMultiplier & 255) / 255.0F;
+                    GlStateManager.color(red, green, blue);
+                }
+
             } else
             {
                 sheepModel = defaultBody;
