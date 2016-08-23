@@ -43,13 +43,8 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
     private static PartDefinition leg3PartDefinition;
     private static PartDefinition leg4PartDefinition;
 
-    static
-    {
-        createPartDefinitions();
-    }
-
     private final RenderChiselSheep sheepRenderer;
-    private final Map<ICarvingVariation, ModelSheep1> modelMap = new HashMap<>(16);
+    private final Map<Integer, ModelSheep1> modelMap = new HashMap<>(16);
     private final ModelSheep1 defaultBody;
     private ModelSheep1 sheepModel;
     public LayerSheepChiselWool(RenderChiselSheep sheepRendererIn)
@@ -57,75 +52,6 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         sheepRenderer = sheepRendererIn;
         defaultBody = new ModelSheep1();
         sheepModel = defaultBody;
-    }
-
-    private static Matrix4f createPartMatrix(Vector3f size, Vector3f additionalTranslate)
-    {
-        final Vector3f adjustedSize = size.translate(-0.5f, -0.5f, -0.5f);
-        final Matrix4f matrix = new Matrix4f();
-
-        matrix.rotate(NintyDegrees, new Vector3f(1, 0, 0));
-        matrix.translate(
-                (Vector3f) Vector3f.add(
-                        (Vector3f) new Vector3f(adjustedSize).scale(0.5f),
-                        additionalTranslate,
-                        null
-                ).negate());
-        matrix.scale(adjustedSize);
-        return matrix;
-    }
-
-    private static void createPartDefinitions()
-    {
-        final Matrix4f rotate = new Matrix4f().rotate((float) Math.toRadians(-90), new Vector3f(1, 0, 0));
-        bodyPartDefinition = new PartDefinition(
-                new Vector3f(0.0f, 5.0f, 2.0f),
-                Matrix4f.mul(
-                        createPartMatrix(
-                                new Vector3f(12, 20, 10),
-                                new Vector3f(0, -2, -14)), rotate, null),
-                new Matrix3f()
-        );
-
-        headPartDefinition = new PartDefinition(
-                new Vector3f(0.0f, 6.0f, -8.0f),
-                createPartMatrix(
-                        new Vector3f(8, 8, 8),
-                        new Vector3f(0, -1, -1)),
-                new Matrix3f()
-        );
-
-        leg1PartDefinition = new PartDefinition(
-                new Vector3f(-3.0f, 12.0f, 7.0f),
-                createPartMatrix(
-                        new Vector3f(5.6f, 7.4f, 5.6f),
-                        new Vector3f(0, 3, 0.1f)),
-                new Matrix3f()
-        );
-
-        leg2PartDefinition = new PartDefinition(
-                new Vector3f(3.0f, 12.0f, 7.0f),
-                createPartMatrix(
-                        new Vector3f(5.6f, 7.4f, 5.6f),
-                        new Vector3f(0, 3, 0.1f)),
-                new Matrix3f()
-        );
-
-        leg3PartDefinition = new PartDefinition(
-                new Vector3f(-3.0f, 12.0f, -5.0f),
-                createPartMatrix(
-                        new Vector3f(5.6f, 7.4f, 5.6f),
-                        new Vector3f(0, 3, 0.1f)),
-                new Matrix3f()
-        );
-
-        leg4PartDefinition = new PartDefinition(
-                new Vector3f(3.0f, 12.0f, -5.0f),
-                createPartMatrix(
-                        new Vector3f(5.6f, 7.4f, 5.6f),
-                        new Vector3f(0, 3, 0.1f)),
-                new Matrix3f()
-        );
     }
 
     @Override
@@ -143,32 +69,28 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                 createPartDefinitions();
 
                 ModelSheep1 bodyModelRenderer;
-                if (variation == null)
+                bodyModelRenderer = modelMap.get(capability.getItemIdentifier());
+                if (bodyModelRenderer == null)
                 {
-                    //TODO: got to figure out how to store this kind of model.
                     bodyModelRenderer = new ModelSheep1();
-
-                    bodyModelRenderer.body = getChiselBodyModelRenderer(itemStack, sheep, bodyPartDefinition);
-                    bodyModelRenderer.head = getChiselBodyModelRenderer(itemStack, sheep, headPartDefinition);
-                    bodyModelRenderer.leg1 = getChiselBodyModelRenderer(itemStack, sheep, leg1PartDefinition);
-                    bodyModelRenderer.leg2 = getChiselBodyModelRenderer(itemStack, sheep, leg2PartDefinition);
-                    bodyModelRenderer.leg3 = getChiselBodyModelRenderer(itemStack, sheep, leg3PartDefinition);
-                    bodyModelRenderer.leg4 = getChiselBodyModelRenderer(itemStack, sheep, leg4PartDefinition);
-                } else
-                {
-                    bodyModelRenderer = modelMap.get(variation);
-                    if (bodyModelRenderer == null)
+                    if (variation == null)
                     {
-                        bodyModelRenderer = new ModelSheep1();
-
+                        bodyModelRenderer.body = getChiselBodyModelRenderer(itemStack, sheep, bodyPartDefinition);
+                        bodyModelRenderer.head = getChiselBodyModelRenderer(itemStack, sheep, headPartDefinition);
+                        bodyModelRenderer.leg1 = getChiselBodyModelRenderer(itemStack, sheep, leg1PartDefinition);
+                        bodyModelRenderer.leg2 = getChiselBodyModelRenderer(itemStack, sheep, leg2PartDefinition);
+                        bodyModelRenderer.leg3 = getChiselBodyModelRenderer(itemStack, sheep, leg3PartDefinition);
+                        bodyModelRenderer.leg4 = getChiselBodyModelRenderer(itemStack, sheep, leg4PartDefinition);
+                    } else
+                    {
                         bodyModelRenderer.body = getChiselBodyModelRenderer(variation, bodyPartDefinition);
                         bodyModelRenderer.head = getChiselBodyModelRenderer(variation, headPartDefinition);
                         bodyModelRenderer.leg1 = getChiselBodyModelRenderer(variation, leg1PartDefinition);
                         bodyModelRenderer.leg2 = getChiselBodyModelRenderer(variation, leg2PartDefinition);
                         bodyModelRenderer.leg3 = getChiselBodyModelRenderer(variation, leg3PartDefinition);
                         bodyModelRenderer.leg4 = getChiselBodyModelRenderer(variation, leg4PartDefinition);
-                        modelMap.put(variation, bodyModelRenderer);
                     }
+                    modelMap.put(capability.getItemIdentifier(), bodyModelRenderer);
                 }
                 sheepModel = bodyModelRenderer;
                 sheepRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -177,10 +99,10 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                 if (item instanceof ItemBlock)
                 {
                     final int colorMultiplier = Minecraft.getMinecraft().getBlockColors().colorMultiplier(((ItemBlock) item).block.getDefaultState(), sheep.worldObj, sheep.getPosition(), 0);
-                    float red = (float)(colorMultiplier >> 16 & 255) / 255.0F;
-                    float green = (float)(colorMultiplier >> 8 & 255) / 255.0F;
-                    float blue = (float)(colorMultiplier & 255) / 255.0F;
-                    GlStateManager.color(red, green, blue);
+                    GlStateManager.color(
+                            (colorMultiplier >> 16 & 255) / 255.0F, //Red
+                            (colorMultiplier >> 8 & 255) / 255.0F, //Green
+                            (colorMultiplier & 255) / 255.0F); //Blue
                 }
 
             } else
@@ -247,6 +169,81 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         ForgeHooksClient.setRenderLayer(null);
 
         return renderer;
+    }
+
+    static
+    {
+        createPartDefinitions();
+    }
+
+    private static void createPartDefinitions()
+    {
+        final Matrix4f rotate = new Matrix4f().rotate((float) Math.toRadians(-90), new Vector3f(1, 0, 0));
+        bodyPartDefinition = new PartDefinition(
+                new Vector3f(0.0f, 5.0f, 2.0f),
+                Matrix4f.mul(
+                        createPartMatrix(
+                                new Vector3f(12, 20, 10),
+                                new Vector3f(0, -2, -14)), rotate, null),
+                new Matrix3f()
+        );
+
+        headPartDefinition = new PartDefinition(
+                new Vector3f(0.0f, 6.0f, -8.0f),
+                createPartMatrix(
+                        new Vector3f(8, 8, 8),
+                        new Vector3f(0, -1, -1)),
+                new Matrix3f()
+        );
+
+        leg1PartDefinition = new PartDefinition(
+                new Vector3f(-3.0f, 12.0f, 7.0f),
+                createPartMatrix(
+                        new Vector3f(5.6f, 7.4f, 5.6f),
+                        new Vector3f(0, 3, 0.1f)),
+                new Matrix3f()
+        );
+
+        leg2PartDefinition = new PartDefinition(
+                new Vector3f(3.0f, 12.0f, 7.0f),
+                createPartMatrix(
+                        new Vector3f(5.6f, 7.4f, 5.6f),
+                        new Vector3f(0, 3, 0.1f)),
+                new Matrix3f()
+        );
+
+        leg3PartDefinition = new PartDefinition(
+                new Vector3f(-3.0f, 12.0f, -5.0f),
+                createPartMatrix(
+                        new Vector3f(5.6f, 7.4f, 5.6f),
+                        new Vector3f(0, 3, 0.1f)),
+                new Matrix3f()
+        );
+
+        leg4PartDefinition = new PartDefinition(
+                new Vector3f(3.0f, 12.0f, -5.0f),
+                createPartMatrix(
+                        new Vector3f(5.6f, 7.4f, 5.6f),
+                        new Vector3f(0, 3, 0.1f)),
+                new Matrix3f()
+        );
+    }
+
+
+    private static Matrix4f createPartMatrix(Vector3f size, Vector3f additionalTranslate)
+    {
+        final Vector3f adjustedSize = size.translate(-0.5f, -0.5f, -0.5f);
+        final Matrix4f matrix = new Matrix4f();
+
+        matrix.rotate(NintyDegrees, new Vector3f(1, 0, 0));
+        matrix.translate(
+                (Vector3f) Vector3f.add(
+                        (Vector3f) new Vector3f(adjustedSize).scale(0.5f),
+                        additionalTranslate,
+                        null
+                ).negate());
+        matrix.scale(adjustedSize);
+        return matrix;
     }
 }
 

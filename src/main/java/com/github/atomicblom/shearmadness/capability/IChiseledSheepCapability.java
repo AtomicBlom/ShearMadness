@@ -11,4 +11,6 @@ public interface IChiseledSheepCapability
     ItemStack getChiselItemStack();
 
     void setChiselItemStack(ItemStack itemStack);
+
+    int getItemIdentifier();
 }
