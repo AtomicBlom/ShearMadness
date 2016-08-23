@@ -8,6 +8,7 @@ import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMe
 import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMessageHandler;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessageHandler;
+import com.github.atomicblom.shearmadness.proxy.BlockProxy;
 import com.github.atomicblom.shearmadness.proxy.IProxy;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,6 +31,12 @@ public class ChiselSheepMod
     @SidedProxy(clientSide = "com.github.atomicblom.shearmadness.proxy.ClientProxy", serverSide = "com.github.atomicblom.shearmadness.proxy.CommonProxy")
     private static IProxy proxy = null;
 
+    @SidedProxy(
+            modId = Reference.MOD_ID,
+            clientSide = "com.github.atomicblom.shearmadness.proxy.ClientBlockProxy",
+            serverSide = "com.github.atomicblom.shearmadness.proxy.BlockProxy")
+    public static BlockProxy BLOCK_PROXY;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -39,6 +46,8 @@ public class ChiselSheepMod
         CHANNEL.registerMessage(CheckSheepChiseledRequestMessageHandler.class, CheckSheepChiseledRequestMessage.class, 0, Side.SERVER);
         CHANNEL.registerMessage(SheepChiseledMessageHandler.class, SheepChiseledMessage.class, 1, Side.CLIENT);
         CapabilityManager.INSTANCE.register(IChiseledSheepCapability.class, ChiseledSheepCapabilityStorage.instance, ChiseledSheepCapability::new);
+
+        BLOCK_PROXY.registerBlocks();
     }
 
     @SuppressWarnings("ConstantConditions")
