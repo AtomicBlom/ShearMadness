@@ -1,10 +1,17 @@
-package com.github.atomicblom.shearmadness.rendering;
+package com.github.atomicblom.shearmadness.api.rendering;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
-class PartDefinition
+/**
+ * Defines a set of transforms for a part of the quadruped.
+ * texture transformation is not currently implemented.
+ */
+@SideOnly(Side.CLIENT)
+public class PartDefinition
 {
     private final Vector3f rotationPoint;
     private final Matrix4f positionTransform;
@@ -18,17 +25,17 @@ class PartDefinition
         this.textureTransform = textureTransform;
     }
 
-    Vector3f getRotationPoint()
+    public Vector3f getRotationPoint()
     {
         return rotationPoint;
     }
 
-    Matrix4f getPositionTransform()
+    public Matrix4f getPositionTransform()
     {
         return positionTransform;
     }
 
-    Matrix3f getTextureTransform()
+    public Matrix3f getTextureTransform()
     {
         return textureTransform;
     }

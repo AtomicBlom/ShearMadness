@@ -1,4 +1,4 @@
-package com.github.atomicblom.shearmadness.rendering;
+package com.github.atomicblom.shearmadness.api.rendering;
 
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
@@ -8,11 +8,17 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
+/**
+ * Pipes a BakedQuad into a TexturedQuad
+ */
+@SideOnly(Side.CLIENT)
 class VertexConsumer implements IVertexConsumer
 {
 

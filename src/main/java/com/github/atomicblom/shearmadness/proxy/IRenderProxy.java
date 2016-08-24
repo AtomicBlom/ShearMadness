@@ -1,6 +1,8 @@
 package com.github.atomicblom.shearmadness.proxy;
 
-public interface IProxy
+public interface IRenderProxy
 {
     void registerRenderers();
+
+    void fireRegistryEvent();
 }

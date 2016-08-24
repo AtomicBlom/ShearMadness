@@ -28,6 +28,7 @@ public class ModGuiFactory implements IModGuiFactory
 
     @SuppressWarnings("ReturnOfNull")
     @Override
+    @Deprecated
     public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
     {
         return null;

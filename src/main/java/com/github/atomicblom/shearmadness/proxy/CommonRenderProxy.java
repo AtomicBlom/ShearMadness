@@ -1,7 +1,6 @@
 package com.github.atomicblom.shearmadness.proxy;
 
 import com.github.atomicblom.shearmadness.ai.RedstoneSheepAI;
-import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMessage;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
 import com.github.atomicblom.shearmadness.Chiseling;
 import com.github.atomicblom.shearmadness.utility.Reference;
@@ -10,7 +9,6 @@ import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntitySheep;
@@ -29,10 +27,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.List;
 
-import static com.github.atomicblom.shearmadness.ChiselSheepMod.CHANNEL;
-
 @SuppressWarnings("MethodMayBeStatic")
-public class CommonProxy implements IProxy
+public class CommonRenderProxy implements IRenderProxy
 {
     @Override
     public void registerRenderers()
@@ -143,4 +139,6 @@ public class CommonProxy implements IProxy
             tasks.addTask(0, new RedstoneSheepAI(event.getEntity()));
         }
     }
+
+    public void fireRegistryEvent() {}
 }

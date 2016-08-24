@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 /**
  * Created by codew on 23/08/2016.
  */
-public class BlockProxy
+public class CommonBlockProxy
 {
     public void registerBlocks() {
         registerBlockAndItem(new InvisibleRedstoneBlock(), Reference.Blocks.InvisibleRedstone);

@@ -1,4 +1,4 @@
-package com.github.atomicblom.shearmadness.rendering;
+package com.github.atomicblom.shearmadness.api.rendering;
 
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -12,21 +12,31 @@ import org.lwjgl.util.vector.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
 
-class EntityMesh extends ModelBox
+/**
+ * A version of ModelBox that converts BakedQuads to TexturedQuads (as used in entities).
+ * Add BakedQuads using the addCustomQuads method.
+ * Note that TexturedQuads only have Position and UV information, other data will be discarded.
+ */
+@SideOnly(Side.CLIENT)
+public class EntityMesh extends ModelBox
 {
     private final Matrix4f positionTransform;
     private final Matrix3f textureTransform;
     private final List<BakedQuad> allBakedQuads = new ArrayList<>(6);
     private TexturedQuad[] quadList = null;
 
-    EntityMesh(ModelRenderer renderer, Matrix4f positionTransform, Matrix3f textureTransform)
+    public EntityMesh(ModelRenderer renderer, Matrix4f positionTransform, Matrix3f textureTransform)
     {
         super(renderer, 0, 0, 0, 0, 0, 0, 0, 0, 0, false);
         this.positionTransform = positionTransform;
         this.textureTransform = textureTransform;
     }
 
-    void addCustomQuads(List<BakedQuad> bakedQuads)
+    /**
+     * Add a BakedQuad to the mesh. It will be processed in batch when the model is rendered for the first time.
+     * @param bakedQuads
+     */
+    public void addCustomQuads(List<BakedQuad> bakedQuads)
     {
         allBakedQuads.addAll(bakedQuads);
     }
