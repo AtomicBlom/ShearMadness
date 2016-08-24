@@ -10,6 +10,7 @@ import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessageHandler;
 import com.github.atomicblom.shearmadness.proxy.CommonBlockProxy;
 import com.github.atomicblom.shearmadness.proxy.IRenderProxy;
+import com.github.atomicblom.shearmadness.utility.Logger;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.utility.ShearMadnessVariations;
 import net.minecraftforge.common.MinecraftForge;
@@ -25,7 +26,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 @SuppressWarnings("MethodMayBeStatic")
 @Mod(modid = Reference.MOD_ID, version = Reference.VERSION, guiFactory = Reference.MOD_GUI_FACTORY, dependencies = "required-after:chisel", acceptedMinecraftVersions = "[1.9.4, 1.11)")
-public class ChiselSheepMod
+public class ShearMadnessMod
 {
     public static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
 
@@ -40,10 +41,16 @@ public class ChiselSheepMod
             clientSide = "com.github.atomicblom.shearmadness.proxy.ClientBlockProxy",
             serverSide = "com.github.atomicblom.shearmadness.proxy.CommonBlockProxy")
     public static CommonBlockProxy BLOCK_PROXY;
+    public static boolean DEBUG = false;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        DEBUG = !System.getProperty("ShearMadnessDebug").isEmpty();
+        if (DEBUG) {
+            Logger.info("Shear Madness models will be recalculated each frame.");
+        }
+
         ConfigurationHandler.init(event.getSuggestedConfigurationFile());
 
         MinecraftForge.EVENT_BUS.register(proxy);

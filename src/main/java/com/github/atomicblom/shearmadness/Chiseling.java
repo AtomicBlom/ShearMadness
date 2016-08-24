@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import static com.github.atomicblom.shearmadness.ChiselSheepMod.CHANNEL;
+import static com.github.atomicblom.shearmadness.ShearMadnessMod.CHANNEL;
 
 @SuppressWarnings({"BooleanMethodNameMustStartWithQuestion", "UtilityClass"})
 public final class Chiseling

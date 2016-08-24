@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.modelmaker;
 
+import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.api.IModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
@@ -9,7 +10,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.ModelSheep1;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
@@ -27,6 +27,10 @@ public class DefaultModelMaker extends IModelMaker
     @Override
     public ModelQuadruped createModel(ItemStack itemStack, EntityLivingBase entity)
     {
+        if (ShearMadnessMod.DEBUG) {
+            transforms.defineParts();
+        }
+
         final ModelQuadruped quadrupedModel = new ModelSheep1();
         quadrupedModel.body = getChiselBodyModelRenderer(itemStack, entity, transforms.getBodyPartDefinition());
         quadrupedModel.head = getChiselBodyModelRenderer(itemStack, entity, transforms.getHeadPartDefinition());

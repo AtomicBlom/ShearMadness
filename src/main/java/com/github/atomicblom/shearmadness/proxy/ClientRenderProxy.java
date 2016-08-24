@@ -13,7 +13,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import static com.github.atomicblom.shearmadness.ChiselSheepMod.CHANNEL;
+import static com.github.atomicblom.shearmadness.ShearMadnessMod.CHANNEL;
 
 @SuppressWarnings("MethodMayBeStatic")
 public class ClientRenderProxy extends CommonRenderProxy

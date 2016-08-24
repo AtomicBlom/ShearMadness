@@ -1,19 +1,15 @@
 package com.github.atomicblom.shearmadness.rendering;
 
+import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.api.IModelMaker;
 import com.github.atomicblom.shearmadness.api.VariationRegistry;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelQuadruped;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.ModelSheep1;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.passive.EntitySheep;
@@ -23,11 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
-import team.chisel.api.carving.CarvingUtils;
-import team.chisel.api.carving.ICarvingVariation;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,7 +63,10 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                 {
                     final IModelMaker variationModelMaker = VariationRegistry.INSTANCE.getVariationModelMaker(itemStack);
                     quadrupedModel = variationModelMaker.createModel(itemStack, sheep);
-                    modelMap.put(capability.getItemIdentifier(), quadrupedModel);
+                    if (!ShearMadnessMod.DEBUG)
+                    {
+                        modelMap.put(capability.getItemIdentifier(), quadrupedModel);
+                    }
                 }
                 sheepModel = quadrupedModel;
                 sheepRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);

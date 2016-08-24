@@ -9,7 +9,7 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 
-import static com.github.atomicblom.shearmadness.ChiselSheepMod.CHANNEL;
+import static com.github.atomicblom.shearmadness.ShearMadnessMod.CHANNEL;
 
 /**
  * Created by codew on 21/08/2016.
