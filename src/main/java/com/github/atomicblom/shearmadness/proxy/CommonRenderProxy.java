@@ -19,21 +19,36 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import java.util.List;
 
 @SuppressWarnings("MethodMayBeStatic")
 public class CommonRenderProxy implements IRenderProxy
 {
+    private SoundEvent sheepChiseledSound;
+
     @Override
     public void registerRenderers()
     {
 
+    }
+
+    @Override
+    public void registerSounds()
+    {
+        sheepChiseledSound = registerSound("sheepchiseled");
+    }
+
+    private static SoundEvent registerSound(String soundName) {
+        final ResourceLocation soundID = new ResourceLocation(Reference.MOD_ID, soundName);
+        return GameRegistry.register(new SoundEvent(soundID).setRegistryName(soundID));
     }
 
     @SuppressWarnings({"ConstantConditions", "MethodWithMoreThanThreeNegations"})
@@ -141,4 +156,9 @@ public class CommonRenderProxy implements IRenderProxy
     }
 
     public void fireRegistryEvent() {}
+
+    public SoundEvent getSheepChiseledSound()
+    {
+        return sheepChiseledSound;
+    }
 }

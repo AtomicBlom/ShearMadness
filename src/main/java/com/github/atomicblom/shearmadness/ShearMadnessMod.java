@@ -34,7 +34,7 @@ public class ShearMadnessMod
             modId = Reference.MOD_ID,
             clientSide = "com.github.atomicblom.shearmadness.proxy.ClientRenderProxy",
             serverSide = "com.github.atomicblom.shearmadness.proxy.CommonRenderProxy")
-    private static IRenderProxy proxy = null;
+    public static IRenderProxy proxy = null;
 
     @SidedProxy(
             modId = Reference.MOD_ID,
@@ -62,6 +62,8 @@ public class ShearMadnessMod
         if (event.getSide() == Side.CLIENT) {
             MinecraftForge.EVENT_BUS.register(ShearMadnessVariations.INSTANCE);
         }
+        proxy.registerSounds();
+
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -70,5 +72,6 @@ public class ShearMadnessMod
     {
         proxy.registerRenderers();
         proxy.fireRegistryEvent();
+
     }
 }

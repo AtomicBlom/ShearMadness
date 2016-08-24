@@ -17,7 +17,7 @@ public class PartDefinition
     private final Matrix4f positionTransform;
     private final Matrix3f textureTransform;
 
-    PartDefinition(Vector3f rotationPoint, Matrix4f positionTransform, Matrix3f textureTransform)
+    public PartDefinition(Vector3f rotationPoint, Matrix4f positionTransform, Matrix3f textureTransform)
     {
 
         this.rotationPoint = rotationPoint;

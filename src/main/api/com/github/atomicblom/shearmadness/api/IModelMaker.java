@@ -40,6 +40,9 @@ public abstract class IModelMaker
     protected ModelRenderer getModelRenderer(PartDefinition partDefinition, IBlockState blockState, IBakedModel model)
     {
         final ModelRenderer renderer = new ModelRenderer(new ModelSheep1(), 28, 8);
+        if (partDefinition == null) {
+            return renderer;
+        }
         renderer.setRotationPoint(
                 partDefinition.getRotationPoint().x,
                 partDefinition.getRotationPoint().y,

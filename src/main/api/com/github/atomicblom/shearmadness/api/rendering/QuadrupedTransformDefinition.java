@@ -95,32 +95,32 @@ public class QuadrupedTransformDefinition
         return matrix;
     }
 
-    public PartDefinition getBodyPartDefinition()
+    public final PartDefinition getBodyPartDefinition()
     {
         return bodyPartDefinition;
     }
 
-    public PartDefinition getHeadPartDefinition()
+    public final PartDefinition getHeadPartDefinition()
     {
         return headPartDefinition;
     }
 
-    public PartDefinition getLeg1PartDefinition()
+    public final PartDefinition getLeg1PartDefinition()
     {
         return leg1PartDefinition;
     }
 
-    public PartDefinition getLeg2PartDefinition()
+    public final PartDefinition getLeg2PartDefinition()
     {
         return leg2PartDefinition;
     }
 
-    public PartDefinition getLeg3PartDefinition()
+    public final PartDefinition getLeg3PartDefinition()
     {
         return leg3PartDefinition;
     }
 
-    public PartDefinition getLeg4PartDefinition()
+    public final PartDefinition getLeg4PartDefinition()
     {
         return leg4PartDefinition;
     }

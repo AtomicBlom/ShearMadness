@@ -26,7 +26,6 @@ public class CommonBlockProxy
 
     protected Block configureBlock(Block block, ResourceLocation name) {
         return block.setRegistryName(name)
-                .setCreativeTab(Reference.CreativeTab)
                 .setUnlocalizedName(Localization.getUnlocalizedNameFor(block));
     }
 
