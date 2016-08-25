@@ -9,6 +9,7 @@ import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.Shearing;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
