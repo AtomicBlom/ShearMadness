@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.utility;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
@@ -10,6 +11,9 @@ public class ChiselLibrary
     public static final Item chisel_iron = null;
     public static final Item chisel_diamond = null;
     public static final Item chisel_hitech = null;
+
+    public static final Block technical = null;
+    public static final Block technical1 = null;
 
     public static boolean isChisel(Item item)
     {

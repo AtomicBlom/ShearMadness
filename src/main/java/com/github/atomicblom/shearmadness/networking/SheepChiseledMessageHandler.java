@@ -20,7 +20,7 @@ public class SheepChiseledMessageHandler implements IMessageHandler<SheepChisele
     {
         final int sheepId = message.getSheepId();
         final Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(sheepId);
-        Logger.info("Attempting to get sheep %d - entity %s", sheepId, entity.toString());
+
         if (entity == null)
         {
             return null;

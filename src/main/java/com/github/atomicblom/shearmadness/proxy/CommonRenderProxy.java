@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.proxy;
 
+import com.github.atomicblom.shearmadness.ai.FlyingSheepAI;
 import com.github.atomicblom.shearmadness.ai.GlowstoneSheepAI;
 import com.github.atomicblom.shearmadness.ai.RedstoneSheepAI;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
@@ -161,6 +162,7 @@ public class CommonRenderProxy implements IRenderProxy
             final EntityAITasks tasks = livingEntity.tasks;
             tasks.addTask(0, new RedstoneSheepAI(livingEntity));
             tasks.addTask(0, new GlowstoneSheepAI(livingEntity));
+            tasks.addTask(1, new FlyingSheepAI(livingEntity));
         }
     }
 
