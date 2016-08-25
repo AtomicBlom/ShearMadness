@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.proxy;
 
+import com.github.atomicblom.shearmadness.ai.GlowstoneSheepAI;
 import com.github.atomicblom.shearmadness.ai.RedstoneSheepAI;
 import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMessage;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
@@ -29,15 +30,26 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.List;
 
-import static com.github.atomicblom.shearmadness.ChiselSheepMod.CHANNEL;
-
 @SuppressWarnings("MethodMayBeStatic")
-public class CommonProxy implements IProxy
+public class CommonRenderProxy implements IRenderProxy
 {
+    private SoundEvent sheepChiseledSound;
+
     @Override
     public void registerRenderers()
     {
 
+    }
+
+    @Override
+    public void registerSounds()
+    {
+        sheepChiseledSound = registerSound("sheepchiseled");
+    }
+
+    private static SoundEvent registerSound(String soundName) {
+        final ResourceLocation soundID = new ResourceLocation(Reference.MOD_ID, soundName);
+        return GameRegistry.register(new SoundEvent(soundID).setRegistryName(soundID));
     }
 
     @SuppressWarnings({"ConstantConditions", "MethodWithMoreThanThreeNegations"})
@@ -139,8 +151,42 @@ public class CommonProxy implements IProxy
         final Entity entity = event.getEntity();
         if (entity instanceof EntitySheep)
         {
-            final EntityAITasks tasks = ((EntityLiving) event.getEntity()).tasks;
-            tasks.addTask(0, new RedstoneSheepAI(event.getEntity()));
+            final EntityLiving livingEntity = (EntityLiving) event.getEntity();
+            final EntityAITasks tasks = livingEntity.tasks;
+            tasks.addTask(0, new RedstoneSheepAI(livingEntity));
+            tasks.addTask(0, new GlowstoneSheepAI(livingEntity));
         }
+    }
+
+    @SubscribeEvent
+    public void onEntityLivingDeathEvent(LivingDeathEvent event) {
+        final Entity entity = event.getEntity();
+        if (entity.hasCapability(CapabilityProvider.CHISELED_SHEEP, null)) {
+            final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+            if (capability.isChiseled()) {
+                final EntityLiving living = (EntityLiving) entity;
+
+                final World world = entity.worldObj;
+                BlockPos invisibleBlock = entity.getPosition();
+                if (!living.isChild()) {
+                    invisibleBlock = invisibleBlock.up();
+                }
+                final IBlockState blockState = world.getBlockState(invisibleBlock);
+
+                final Block block = blockState.getBlock();
+                if (block == BlockLibrary.invisibleRedstone || block == BlockLibrary.invisibleGlowstone) {
+                    world.setBlockToAir(invisibleBlock);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void fireRegistryEvent() {}
+
+    @Override
+    public SoundEvent getSheepChiseledSound()
+    {
+        return sheepChiseledSound;
     }
 }

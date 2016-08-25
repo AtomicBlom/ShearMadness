@@ -19,6 +19,7 @@ public class Reference
         public static final String NORMAL_VARIANT = "normal";
 
         public static final ResourceLocation InvisibleRedstone = new ResourceLocation(MOD_ID, "invisibleRedstone");
+        public static final ResourceLocation InvisibleGlowstone = new ResourceLocation(MOD_ID, "invisibleGlowstone");
     }
 
 }

@@ -8,4 +8,5 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 public final class BlockLibrary {
 
     public static final Block invisibleRedstone = null;
+    public static final Block invisibleGlowstone = null;
 }
