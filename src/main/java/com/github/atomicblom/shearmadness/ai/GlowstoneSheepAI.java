@@ -2,6 +2,7 @@ package com.github.atomicblom.shearmadness.ai;
 
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.configuration.Settings;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
@@ -31,6 +32,13 @@ public class GlowstoneSheepAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
+        if (!Settings.Chiseling.allowGlowstone()) {
+            if (cachedIdIsGlowstone) {
+                resetPreviousBlock();
+            }
+            return false;
+        }
+
         if (capability == null) {
             capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
         }
@@ -56,22 +64,10 @@ public class GlowstoneSheepAI extends EntityAIBase
     {
         final BlockPos currentPos = entity.getPosition();
         if (!currentPos.equals(previousPos)) {
-            final World world = entity.worldObj;
-            BlockPos pos;
-            if (previousPos != null)
-            {
-                pos = previousPos;
-                if (!entity.isChild())
-                {
-                    pos = pos.up();
-                }
-                final IBlockState blockState = world.getBlockState(pos);
-                if (blockState.getBlock() == BlockLibrary.invisibleGlowstone)
-                {
-                    world.setBlockToAir(pos);
-                }
-            }
 
+            final World world = resetPreviousBlock();
+
+            BlockPos pos;
             pos = currentPos;
             if (!entity.isChild()) {
                 pos = pos.up();
@@ -83,6 +79,26 @@ public class GlowstoneSheepAI extends EntityAIBase
 
             previousPos = currentPos;
         }
+    }
+
+    private World resetPreviousBlock()
+    {
+        final World world = entity.worldObj;
+        BlockPos pos;
+        if (previousPos != null)
+        {
+            pos = previousPos;
+            if (!entity.isChild())
+            {
+                pos = pos.up();
+            }
+            final IBlockState blockState = world.getBlockState(pos);
+            if (blockState.getBlock() == BlockLibrary.invisibleGlowstone)
+            {
+                world.setBlockToAir(pos);
+            }
+        }
+        return world;
     }
 }
 

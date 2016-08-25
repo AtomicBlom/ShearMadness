@@ -33,8 +33,34 @@ public enum Settings
             }
 
             final String behaviour = config.getString("behaviour", CATEGORY, "RevertSheep", Reference.BEHAVIOUR_COMMENT, validNames);
-
             Shearing.behaviour = ShearBehaviour.valueOf(behaviour);
+        }
+    }
+
+    public enum Chiseling
+    {
+        INSTANCE;
+
+        public static final String CATEGORY = Configuration.CATEGORY_GENERAL + ".chiseling";
+
+        private static boolean allowGlowstone = false;
+        private static boolean allowRedstone = true;
+        private static boolean allowCactus = true;
+
+        public static boolean allowRedstone() {
+            return allowRedstone;
+        }
+        public static boolean allowGlowstone() {
+            return allowGlowstone;
+        }
+        public static boolean allowCactus() {
+            return allowCactus;
+        }
+
+        private static void syncConfig(Configuration config) {
+            Chiseling.allowRedstone = config.getBoolean("allowRedstone", CATEGORY, true, Reference.ALLOW_REDSTONE_COMMENT);
+            Chiseling.allowGlowstone = config.getBoolean("allowGlowstone", CATEGORY, false, Reference.ALLOW_GLOWSTONE_COMMENT);
+            Chiseling.allowCactus = config.getBoolean("allowCactus", CATEGORY, true, Reference.ALLOW_CACTUS_COMMENT);
         }
     }
 
