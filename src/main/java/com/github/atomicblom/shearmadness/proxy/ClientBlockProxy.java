@@ -6,7 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
 
-public class ClientBlockProxy extends BlockProxy
+public class ClientBlockProxy extends CommonBlockProxy
 {
     @Override
     protected Item configureItemBlock(ItemBlock block)

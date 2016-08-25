@@ -8,8 +8,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.SoundCategory;
 
-import static com.github.atomicblom.shearmadness.ChiselSheepMod.CHANNEL;
+import static com.github.atomicblom.shearmadness.ShearMadnessMod.CHANNEL;
 
 @SuppressWarnings({"BooleanMethodNameMustStartWithQuestion", "UtilityClass"})
 public final class Chiseling
@@ -29,6 +30,7 @@ public final class Chiseling
                 if (!sheep.worldObj.isRemote)
                 {
                     CHANNEL.sendToAll(new SheepChiseledMessage(sheep));
+
                     if (chiselItemStack != null)
                     {
                         ItemStackUtils.dropItem(sheep, chiselItemStack);

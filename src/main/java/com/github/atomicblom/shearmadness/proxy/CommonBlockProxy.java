@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 /**
  * Created by codew on 23/08/2016.
  */
-public class BlockProxy
+public class CommonBlockProxy
 {
     public void registerBlocks() {
         registerBlockAndItem(new InvisibleRedstoneBlock(), Reference.Blocks.InvisibleRedstone);
@@ -28,7 +28,6 @@ public class BlockProxy
 
     protected Block configureBlock(Block block, ResourceLocation name) {
         return block.setRegistryName(name)
-                .setCreativeTab(Reference.CreativeTab)
                 .setUnlocalizedName(Localization.getUnlocalizedNameFor(block));
     }
 

@@ -1,0 +1,11 @@
+{
+  "sheepchiseled": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "shearmadness:sheepchiseled"
+      }
+    ],
+    "subtitle": "subtitle.shearmadness:sheepchiseled"
+  }
+}

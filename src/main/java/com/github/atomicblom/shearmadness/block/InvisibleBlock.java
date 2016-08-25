@@ -27,12 +27,14 @@ public abstract class InvisibleBlock extends Block
 
     @Nullable
     @Override
+    @Deprecated
     public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos)
     {
         return Block.NULL_AABB;
     }
 
     @Override
+    @Deprecated
     public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn)
     {
     }
@@ -50,18 +52,21 @@ public abstract class InvisibleBlock extends Block
     }
 
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
         return EnumBlockRenderType.INVISIBLE;
     }
 
     @Override
+    @Deprecated
     public boolean isFullBlock(IBlockState state)
     {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state)
     {
         return false;
