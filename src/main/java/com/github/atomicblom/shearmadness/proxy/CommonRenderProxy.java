@@ -1,12 +1,14 @@
 package com.github.atomicblom.shearmadness.proxy;
 
 import com.github.atomicblom.shearmadness.ai.RedstoneSheepAI;
+import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
 import com.github.atomicblom.shearmadness.Chiseling;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.Shearing;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -20,8 +22,11 @@ import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
@@ -150,13 +155,38 @@ public class CommonRenderProxy implements IRenderProxy
         final Entity entity = event.getEntity();
         if (entity instanceof EntitySheep)
         {
-            final EntityAITasks tasks = ((EntityLiving) event.getEntity()).tasks;
-            tasks.addTask(0, new RedstoneSheepAI(event.getEntity()));
+            final EntityLiving livingEntity = (EntityLiving) event.getEntity();
+            final EntityAITasks tasks = livingEntity.tasks;
+            tasks.addTask(0, new RedstoneSheepAI(livingEntity));
         }
     }
 
+    @SubscribeEvent
+    public void onEntityLivingDeathEvent(LivingDeathEvent event) {
+        final Entity entity = event.getEntity();
+        if (entity.hasCapability(CapabilityProvider.CHISELED_SHEEP, null)) {
+            final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+            if (capability.isChiseled()) {
+                final EntityLiving living = (EntityLiving) entity;
+
+                final World world = entity.worldObj;
+                BlockPos invisibleBlock = entity.getPosition();
+                if (!living.isChild()) {
+                    invisibleBlock = invisibleBlock.up();
+                }
+                final IBlockState blockState = world.getBlockState(invisibleBlock);
+
+                if (blockState.getBlock() == BlockLibrary.invisibleRedstone) {
+                    world.setBlockToAir(invisibleBlock);
+                }
+            }
+        }
+    }
+
+    @Override
     public void fireRegistryEvent() {}
 
+    @Override
     public SoundEvent getSheepChiseledSound()
     {
         return sheepChiseledSound;
