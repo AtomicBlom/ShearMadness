@@ -46,6 +46,9 @@ public enum Settings
         private static boolean allowGlowstone = false;
         private static boolean allowRedstone = true;
         private static boolean allowCactus = true;
+        private static boolean allowTNT = true;
+        private static boolean allowFireDamage = true;
+
 
         public static boolean allowRedstone() {
             return allowRedstone;
@@ -56,11 +59,20 @@ public enum Settings
         public static boolean allowCactus() {
             return allowCactus;
         }
+        public static boolean allowTNT() {
+            return allowTNT;
+        }
+        public static boolean allowFireDamage() {
+            return allowFireDamage;
+        }
+
 
         private static void syncConfig(Configuration config) {
             Chiseling.allowRedstone = config.getBoolean("allowRedstone", CATEGORY, true, Reference.ALLOW_REDSTONE_COMMENT);
             Chiseling.allowGlowstone = config.getBoolean("allowGlowstone", CATEGORY, false, Reference.ALLOW_GLOWSTONE_COMMENT);
             Chiseling.allowCactus = config.getBoolean("allowCactus", CATEGORY, true, Reference.ALLOW_CACTUS_COMMENT);
+            Chiseling.allowTNT = config.getBoolean("allowTNT", CATEGORY, true, Reference.ALLOW_TNT_COMMENT);
+            Chiseling.allowFireDamage = config.getBoolean("allowFireDamage", CATEGORY, true, Reference.ALLOW_FIRE_DAMAGE_COMMENT);
         }
     }
 

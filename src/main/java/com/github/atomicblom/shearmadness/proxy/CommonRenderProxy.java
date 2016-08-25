@@ -163,6 +163,7 @@ public class CommonRenderProxy implements IRenderProxy
             tasks.addTask(1, new FlyingSheepAI(livingEntity));
             tasks.addTask(1, new CactusSheepAI(livingEntity));
             tasks.addTask(1, new FireDamageSheepAI(livingEntity));
+            tasks.addTask(1, new TNTSheepAI(livingEntity));
         }
     }
 

@@ -14,10 +14,12 @@ public class Reference
             "* RevertSheep - will change the sheep back to a normal sheep (default).\n" +
             "* ChiselFarm  - will allow the sheep to produce chiseled blocks (warning, this currently allows duping ores).\n" +
             "* CannotShear - You cannot shear the sheep while chiseled.\n";
-    public static final String ALLOW_REDSTONE_COMMENT = "Setting this to true means sheep chiseled with redstone will trigger Redstone circuits.";
-    public static final String ALLOW_GLOWSTONE_COMMENT = "Setting this to true means sheep chiseled with glowstone will light up the area around them.\n" +
+    public static final String ALLOW_REDSTONE_COMMENT = "Chiseled redstone sheep will trigger Redstone circuits.";
+    public static final String ALLOW_GLOWSTONE_COMMENT = "Chiseled glowstone sheep will light up the area around them.\n" +
             "WARNING: testing shows this creates a lot of chunk recalculation. I do not recommend this option.";
-    public static final String ALLOW_CACTUS_COMMENT = "Setting this to true will allow sheep chiseled with cactus to damage players and destroy items.";
+    public static final String ALLOW_CACTUS_COMMENT = "Chiseled Cactus sheep will deal damage players and destroy items.";
+    public static final String ALLOW_TNT_COMMENT = "Chiseled TNT Sheep will be explode if exposed to active redstone.";
+    public static final String ALLOW_FIRE_DAMAGE_COMMENT = "Chiseled Magma sheep will deal fire damage when touched.";
 
     public static final class Blocks {
         public static final String NORMAL_VARIANT = "normal";

@@ -3,29 +3,32 @@ package com.github.atomicblom.shearmadness.ai;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.Settings;
-import net.minecraft.entity.Entity;
+import com.github.atomicblom.shearmadness.utility.BlockLibrary;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 /**
  * Created by codew on 23/08/2016.
  */
-public class FireDamageSheepAI extends EntityAIBase
+public class TNTSheepAI extends EntityAIBase
 {
     private final EntityLiving entity;
     private IChiseledSheepCapability capability = null;
     private int lastCheckedId = 0;
-    private boolean cachedIdIsMagma = false;
+    private boolean cachedIdIsTNT = false;
     private BlockPos previousPos = null;
-    private AxisAlignedBB searchBox;
+    private Long primedTime;
 
-    public FireDamageSheepAI(EntityLiving entity)
+
+    public TNTSheepAI(EntityLiving entity)
     {
         this.entity = entity;
     }
@@ -33,7 +36,7 @@ public class FireDamageSheepAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (!Settings.Chiseling.allowFireDamage()) {
+        if (!Settings.Chiseling.allowTNT()) {
             return false;
         }
 
@@ -44,38 +47,43 @@ public class FireDamageSheepAI extends EntityAIBase
         if (!capability.isChiseled()) return false;
 
         if (capability.getItemIdentifier() != lastCheckedId) {
-            cachedIdIsMagma = false;
+            cachedIdIsTNT = false;
             final Item item = capability.getChiselItemStack().getItem();
             if (item instanceof ItemBlock) {
-                if (((ItemBlock) item).block == Blocks.MAGMA) {
-                    cachedIdIsMagma = true;
+                if (((ItemBlock) item).block == Blocks.TNT) {
+                    cachedIdIsTNT = true;
                 }
             }
             lastCheckedId = capability.getItemIdentifier();
         }
 
-        return cachedIdIsMagma;
+        return cachedIdIsTNT;
     }
+
+    //BlockPos[] neighbours = new BlockPos[6];
+    BlockPos aboveCurrentPosition;
 
     @Override
     public void updateTask()
     {
         final BlockPos currentPos = entity.getPosition();
-        if (searchBox == null || !currentPos.equals(previousPos))
-        {
-            searchBox = new AxisAlignedBB(entity.getPosition().add(-2, -2, -2), entity.getPosition().add(2, 2, 2));
+        if (!currentPos.equals(previousPos)) {
+            aboveCurrentPosition = currentPos.up();
+            previousPos = currentPos;
         }
 
-        for (final Entity nearbyEntity : entity.worldObj.getEntitiesWithinAABBExcludingEntity(entity, searchBox))
-        {
-            final double distance = entity.getDistanceSqToEntity(nearbyEntity);
-
-            if (distance < 1.2) {
-                nearbyEntity.attackEntityFrom(DamageSource.hotFloor, 1.0f);
-            }
+        boolean blockPowered = entity.worldObj.isBlockPowered(currentPos);
+        if (!entity.isChild()) {
+            blockPowered |= entity.worldObj.isBlockPowered(aboveCurrentPosition);
+        }
+        if (blockPowered) {
+            primedTime = entity.worldObj.getTotalWorldTime();
 
         }
 
+        if (primedTime != null && entity.worldObj.getTotalWorldTime() > primedTime + 80) {
+            entity.worldObj.createExplosion(null, entity.posX, entity.posY + (double)(entity.height / 16.0F), entity.posZ, 4.0F, true);
+        }
     }
 }
 
