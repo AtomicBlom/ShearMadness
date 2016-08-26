@@ -1,6 +1,7 @@
 package com.github.atomicblom.shearmadness.proxy;
 
 import com.github.atomicblom.shearmadness.utility.Reference;
+import com.github.atomicblom.shearmadness.utility.Reference.Blocks;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -19,7 +20,7 @@ public class ClientBlockProxy extends CommonBlockProxy
                 0,
                 new ModelResourceLocation(
                         block.getRegistryName(),
-                        Reference.Blocks.NORMAL_VARIANT
+                        Blocks.NORMAL_VARIANT
                 )
         );
 

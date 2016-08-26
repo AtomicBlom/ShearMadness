@@ -30,6 +30,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class CommonForgeEventProxy
 
     @SuppressWarnings({"ConstantConditions", "MethodWithMoreThanThreeNegations"})
     @SubscribeEvent
-    public void onPlayerInteractionWithEntity(PlayerInteractEvent.EntityInteract event)
+    public void onPlayerInteractionWithEntity(EntityInteract event)
     {
         //Process for shearing a sheep
         if (event.getWorld().isRemote) return;

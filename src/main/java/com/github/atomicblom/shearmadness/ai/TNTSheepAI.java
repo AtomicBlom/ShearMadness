@@ -3,6 +3,7 @@ package com.github.atomicblom.shearmadness.ai;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.Settings;
+import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.init.Blocks;
@@ -31,7 +32,7 @@ public class TNTSheepAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (!Settings.Behaviours.allowTNT()) {
+        if (!Behaviours.allowTNT()) {
             return false;
         }
 

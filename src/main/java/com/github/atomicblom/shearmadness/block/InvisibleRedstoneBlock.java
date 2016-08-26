@@ -15,12 +15,14 @@ public class InvisibleRedstoneBlock extends InvisibleBlock
     {
     }
 
+    @Override
     @Deprecated
     public boolean canProvidePower(IBlockState state)
     {
         return true;
     }
 
+    @Override
     @Deprecated
     public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side)
     {

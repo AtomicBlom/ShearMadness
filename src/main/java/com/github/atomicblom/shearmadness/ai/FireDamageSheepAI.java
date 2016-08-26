@@ -3,6 +3,7 @@ package com.github.atomicblom.shearmadness.ai;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.Settings;
+import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -22,7 +23,7 @@ public class FireDamageSheepAI extends EntityAIBase
     private IChiseledSheepCapability capability = null;
     private int lastCheckedId = 0;
     private boolean cachedIdIsMagma = false;
-    private BlockPos previousPos = null;
+    private final BlockPos previousPos = null;
     private AxisAlignedBB searchBox;
 
     public FireDamageSheepAI(EntityLiving entity)
@@ -33,7 +34,7 @@ public class FireDamageSheepAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (!Settings.Behaviours.allowFireDamage()) {
+        if (!Behaviours.allowFireDamage()) {
             return false;
         }
 

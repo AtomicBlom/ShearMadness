@@ -4,6 +4,7 @@ import com.github.atomicblom.shearmadness.block.InvisibleGlowstoneBlock;
 import com.github.atomicblom.shearmadness.block.InvisibleRedstoneBlock;
 import com.github.atomicblom.shearmadness.utility.Localization;
 import com.github.atomicblom.shearmadness.utility.Reference;
+import com.github.atomicblom.shearmadness.utility.Reference.Blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
@@ -15,8 +16,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class CommonBlockProxy
 {
     public void registerBlocks() {
-        registerBlockAndItem(new InvisibleRedstoneBlock(), Reference.Blocks.InvisibleRedstone);
-        registerBlockAndItem(new InvisibleGlowstoneBlock(), Reference.Blocks.InvisibleGlowstone);
+        registerBlockAndItem(new InvisibleRedstoneBlock(), Blocks.InvisibleRedstone);
+        registerBlockAndItem(new InvisibleGlowstoneBlock(), Blocks.InvisibleGlowstone);
     }
 
     private void registerBlockAndItem(Block block, ResourceLocation name) {

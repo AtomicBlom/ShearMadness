@@ -3,6 +3,7 @@ package com.github.atomicblom.shearmadness.ai;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.Settings;
+import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
@@ -32,7 +33,7 @@ public class RedstoneSheepAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (!Settings.Behaviours.allowRedstone()) {
+        if (!Behaviours.allowRedstone()) {
             if (cachedIdIsRedstone) {
                 resetPreviousBlock();
             }

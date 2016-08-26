@@ -34,9 +34,9 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability
             this.itemStack = itemStack;
             if (itemStack != null)
             {
-                this.itemIdentifier = ItemStackUtils.getHash(itemStack);
+                itemIdentifier = ItemStackUtils.getHash(itemStack);
             } else {
-                this.itemIdentifier = 0;
+                itemIdentifier = 0;
             }
 
 
