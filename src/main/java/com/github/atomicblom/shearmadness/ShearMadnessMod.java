@@ -10,7 +10,6 @@ import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessageHandler;
 import com.github.atomicblom.shearmadness.proxy.Proxies;
 import com.github.atomicblom.shearmadness.utility.Reference;
-import com.github.atomicblom.shearmadness.utility.ShearMadnessVariations;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
@@ -48,7 +47,6 @@ public class ShearMadnessMod
 
     }
 
-    @SuppressWarnings("ConstantConditions")
     @EventHandler
     public void init(FMLInitializationEvent event)
     {

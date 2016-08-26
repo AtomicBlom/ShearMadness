@@ -2,7 +2,6 @@ package com.github.atomicblom.shearmadness.api;
 
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
 import com.github.atomicblom.shearmadness.modelmaker.DefaultModelMaker;
-import com.github.atomicblom.shearmadness.utility.Logger;
 import net.minecraft.item.ItemStack;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +14,7 @@ public class VariationRegistry implements IVariationRegistry
     private VariationRegistry() {}
 
     private final List<ShearMadnessVariation> variations = new LinkedList<>();
-    private final IModelMaker DEFAULT_HANDLER = new DefaultModelMaker();
+    private final IModelMaker defaultHandler = new DefaultModelMaker();
 
     @Override
     public void registerVariation(Function<ItemStack, Boolean> handlesVariant, IModelMaker variationModelMaker) {
@@ -33,15 +32,12 @@ public class VariationRegistry implements IVariationRegistry
         for (final ShearMadnessVariation variation : variations)
         {
             if (variation.canHandleItemStack(itemStack)) {
-                if (handler != null) {
-                    Logger.warning("itemStack handled by multiple variations: %s", itemStack);
-                    break;
-                }
                 handler = variation.getVariationModelMaker();
+                break;
             }
         }
         if (handler == null) {
-            handler = DEFAULT_HANDLER;
+            handler = defaultHandler;
         }
 
         return handler;

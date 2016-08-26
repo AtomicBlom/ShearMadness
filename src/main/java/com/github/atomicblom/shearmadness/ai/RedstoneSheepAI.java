@@ -3,7 +3,6 @@ package com.github.atomicblom.shearmadness.ai;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.Settings;
-import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
@@ -14,9 +13,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-/**
- * Created by codew on 23/08/2016.
- */
 public class RedstoneSheepAI extends EntityAIBase
 {
     private final EntityLiving entity;
@@ -33,7 +29,7 @@ public class RedstoneSheepAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (!Behaviours.allowRedstone()) {
+        if (!Settings.Behaviours.allowRedstone()) {
             if (cachedIdIsRedstone) {
                 resetPreviousBlock();
             }
@@ -67,9 +63,8 @@ public class RedstoneSheepAI extends EntityAIBase
         final BlockPos currentPos = entity.getPosition();
         if (!currentPos.equals(previousPos)) {
             final World world = resetPreviousBlock();
-            BlockPos pos;
 
-            pos = currentPos;
+            BlockPos pos = currentPos;
             if (!entity.isChild()) {
                 pos = pos.up();
             }
@@ -85,10 +80,9 @@ public class RedstoneSheepAI extends EntityAIBase
     private World resetPreviousBlock()
     {
         final World world = entity.worldObj;
-        BlockPos pos;
         if (previousPos != null)
         {
-            pos = previousPos;
+            BlockPos pos = previousPos;
             if (!entity.isChild())
             {
                 pos = pos.up();

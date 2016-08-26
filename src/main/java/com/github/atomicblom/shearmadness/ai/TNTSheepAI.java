@@ -3,7 +3,6 @@ package com.github.atomicblom.shearmadness.ai;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.Settings;
-import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.init.Blocks;
@@ -11,9 +10,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.math.BlockPos;
 
-/**
- * Created by codew on 23/08/2016.
- */
 public class TNTSheepAI extends EntityAIBase
 {
     private final EntityLiving entity;
@@ -21,18 +17,19 @@ public class TNTSheepAI extends EntityAIBase
     private int lastCheckedId = 0;
     private boolean cachedIdIsTNT = false;
     private BlockPos previousPos = null;
-    private Long primedTime;
-
+    private Long primedTime = null;
+    private BlockPos aboveCurrentPosition = null;
 
     public TNTSheepAI(EntityLiving entity)
     {
         this.entity = entity;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean shouldExecute()
     {
-        if (!Behaviours.allowTNT()) {
+        if (!Settings.Behaviours.allowTNT()) {
             return false;
         }
 
@@ -56,9 +53,6 @@ public class TNTSheepAI extends EntityAIBase
         return cachedIdIsTNT;
     }
 
-    //BlockPos[] neighbours = new BlockPos[6];
-    BlockPos aboveCurrentPosition;
-
     @Override
     public void updateTask()
     {
@@ -78,7 +72,7 @@ public class TNTSheepAI extends EntityAIBase
         }
 
         if (primedTime != null && entity.worldObj.getTotalWorldTime() > primedTime + 80) {
-            entity.worldObj.createExplosion(null, entity.posX, entity.posY + (double)(entity.height / 16.0F), entity.posZ, 4.0F, true);
+            entity.worldObj.createExplosion(null, entity.posX, entity.posY + entity.height / 16.0F, entity.posZ, 4.0F, true);
         }
     }
 }

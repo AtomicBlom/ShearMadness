@@ -2,45 +2,37 @@ package com.github.atomicblom.shearmadness.ai;
 
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
-import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
-import com.github.atomicblom.shearmadness.utility.Logger;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-import org.lwjgl.util.vector.Quaternion;
-import org.lwjgl.util.vector.Vector3f;
 import team.chisel.api.carving.CarvingUtils;
-import team.chisel.api.carving.ICarvingGroup;
 import team.chisel.api.carving.ICarvingVariation;
 import team.chisel.common.block.BlockCarvable;
+import java.util.Random;
 
-/**
- * Created by codew on 23/08/2016.
- */
 public class FlyingSheepAI extends EntityAIBase
 {
     private final EntityLiving entity;
+    private final Random random;
     private IChiseledSheepCapability capability = null;
     private int lastCheckedId = 0;
     private boolean cachedIdIsFan = false;
-    private double destinationYaw;
+    private float destinationYaw;
     private int framesTillNextTurn;
     private double destinationMotionY;
     private double currentMotionY;
 
     public FlyingSheepAI(EntityLiving entity)
     {
+
         this.entity = entity;
+        random = new Random();
     }
 
+    @SuppressWarnings({"ConstantConditions", "BooleanVariableAlwaysNegated"})
     @Override
     public boolean shouldExecute()
     {
@@ -49,7 +41,7 @@ public class FlyingSheepAI extends EntityAIBase
         }
 
         if (!capability.isChiseled()) return false;
-        boolean wasCachedIdFan = cachedIdIsFan;
+        final boolean wasCachedIdFan = cachedIdIsFan;
         if (capability.getItemIdentifier() != lastCheckedId) {
             lastCheckedId = capability.getItemIdentifier();
             cachedIdIsFan = false;
@@ -109,11 +101,11 @@ public class FlyingSheepAI extends EntityAIBase
 
         entity.setJumping(true);
 
-        entity.rotationYaw = updateRotation(entity.rotationYaw, destinationYaw, 2f);
+        entity.rotationYaw = updateRotation(entity.rotationYaw, destinationYaw, 2);
         if (MathHelper.wrapDegrees(entity.rotationYaw - destinationYaw) < 2) {
             if (framesTillNextTurn <= 0)
             {
-                destinationYaw = Math.random() * 360;//2 * Math.PI;
+                destinationYaw = random.nextFloat() * 360;//2 * Math.PI;
                 //Logger.info("New Turn Destination is %f", destinationYaw);
                 framesTillNextTurn = 200;
             } else {
@@ -121,33 +113,23 @@ public class FlyingSheepAI extends EntityAIBase
                 framesTillNextTurn--;
             }
         }
-
-
-        //entity.rotationYaw += 0.1f;
-        /*float f1 = MathHelper.sin(entity.rotationYaw * 0.017453292F);
-        float f2 = MathHelper.cos(entity.rotationYaw * 0.017453292F);
-        entity.motionX = forward * -f1;
-        entity.motionZ = forward * f2;
-        entity.limbSwing = 0;
-        entity.limbSwingAmount = 0;*/
-
     }
 
-    private float updateRotation(double angle, double targetAngle, double maxIncrease)
+    private static float updateRotation(float angle, float targetAngle, float maxIncrease)
     {
-        double f = MathHelper.wrapDegrees(targetAngle - angle);
+        float degrees = MathHelper.wrapDegrees(targetAngle - angle);
 
-        if (f > maxIncrease)
+        if (degrees > maxIncrease)
         {
-            f = maxIncrease;
+            degrees = maxIncrease;
         }
 
-        if (f < -maxIncrease)
+        if (degrees < -maxIncrease)
         {
-            f = -maxIncrease;
+            degrees = -maxIncrease;
         }
 
-        return (float)(angle + f);
+        return angle + degrees;
     }
 }
 

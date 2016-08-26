@@ -14,13 +14,14 @@ public class QuadrupedTransformDefinition
 {
     protected static final float NintyDegrees = 3.141592653589793f;
 
-    protected PartDefinition bodyPartDefinition;
-    protected PartDefinition headPartDefinition;
-    protected PartDefinition leg1PartDefinition;
-    protected PartDefinition leg2PartDefinition;
-    protected PartDefinition leg3PartDefinition;
-    protected PartDefinition leg4PartDefinition;
+    protected PartDefinition bodyPartDefinition = null;
+    protected PartDefinition headPartDefinition = null;
+    protected PartDefinition leg1PartDefinition = null;
+    protected PartDefinition leg2PartDefinition = null;
+    protected PartDefinition leg3PartDefinition = null;
+    protected PartDefinition leg4PartDefinition = null;
 
+    @SuppressWarnings({"OverridableMethodCallDuringObjectConstruction", "OverriddenMethodCallDuringObjectConstruction"})
     public QuadrupedTransformDefinition()
     {
         defineParts();

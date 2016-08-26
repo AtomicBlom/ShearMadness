@@ -31,7 +31,7 @@ public enum Logger
         INSTANCE.log(Level.WARN, format, args);
     }
 
-    public org.apache.logging.log4j.Logger getLogger()
+    private org.apache.logging.log4j.Logger getLogger()
     {
         if (logger == null)
         {

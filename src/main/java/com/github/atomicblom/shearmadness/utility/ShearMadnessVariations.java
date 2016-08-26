@@ -10,7 +10,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import team.chisel.api.carving.CarvingUtils;
 import java.util.function.Function;
@@ -23,7 +22,7 @@ public enum ShearMadnessVariations
     private static final IModelMaker DefaultChiselModelMaker = new DefaultChiselModelMaker();
 
     @SubscribeEvent
-    @Method(modid = "shearmadness")
+    @Optional.Method(modid = "shearmadness")
     public void onShearMadnessRegisterVariations(RegisterShearMadnessVariationEvent event) {
         final IVariationRegistry registry = event.getRegistry();
 

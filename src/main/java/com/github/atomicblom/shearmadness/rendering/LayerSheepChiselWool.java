@@ -1,9 +1,7 @@
 package com.github.atomicblom.shearmadness.rendering;
 
-import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.api.IModelMaker;
 import com.github.atomicblom.shearmadness.api.VariationRegistry;
-import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.Settings;
@@ -29,13 +27,6 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
 {
     private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/sheep/sheep_fur.png");
 
-    private static PartDefinition bodyPartDefinition;
-    private static PartDefinition headPartDefinition;
-    private static PartDefinition leg1PartDefinition;
-    private static PartDefinition leg2PartDefinition;
-    private static PartDefinition leg3PartDefinition;
-    private static PartDefinition leg4PartDefinition;
-
     private final RenderChiselSheep sheepRenderer;
     private final Map<Integer, ModelQuadruped> modelMap = new HashMap<>(16);
     private final ModelQuadruped defaultBody;
@@ -47,8 +38,8 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         sheepModel = defaultBody;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
-    @SuppressWarnings({"ConstantConditions", "OverlyLongMethod"})
     public void doRenderLayer(EntitySheep sheep, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
         if (!sheep.getSheared() && !sheep.isInvisible())
@@ -58,8 +49,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
             {
                 final ItemStack itemStack = capability.getChiselItemStack();
 
-                ModelQuadruped quadrupedModel;
-                quadrupedModel = modelMap.get(capability.getItemIdentifier());
+                ModelQuadruped quadrupedModel = modelMap.get(capability.getItemIdentifier());
                 if (quadrupedModel == null)
                 {
                     final IModelMaker variationModelMaker = VariationRegistry.INSTANCE.getVariationModelMaker(itemStack);

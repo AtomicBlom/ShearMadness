@@ -2,13 +2,7 @@ package com.github.atomicblom.shearmadness.capability;
 
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
 import com.google.common.base.Objects;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
-import java.util.Arrays;
 
 public class ChiseledSheepCapability implements IChiseledSheepCapability
 {
@@ -63,6 +57,7 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability
     public String toString()
     {
         return Objects.toStringHelper(this)
+                .add("itemIdentifier", itemIdentifier)
                 .add("itemStack", itemStack)
                 .add("isChiseled", isChiseled)
                 .toString();

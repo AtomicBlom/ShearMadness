@@ -34,7 +34,7 @@ public class EntityMesh extends ModelBox
 
     /**
      * Add a BakedQuad to the mesh. It will be processed in batch when the model is rendered for the first time.
-     * @param bakedQuads
+     * @param bakedQuads the list of quads to add to the model
      */
     public void addCustomQuads(List<BakedQuad> bakedQuads)
     {

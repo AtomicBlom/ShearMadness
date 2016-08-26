@@ -3,7 +3,7 @@ package com.github.atomicblom.shearmadness.utility;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
 
-public class Reference
+public final class Reference
 {
     public static final String MOD_ID = "shearmadness";
     public static final String MOD_NAME = "Shear Madness";
@@ -22,11 +22,15 @@ public class Reference
     public static final String ALLOW_FIRE_DAMAGE_COMMENT = "Chiseled Magma sheep will deal fire damage when touched.";
     public static final String DEBUG_MODELS = "Models will be regenerated every frame drawn.";
 
+    private Reference() {}
+
     public static final class Blocks {
         public static final String NORMAL_VARIANT = "normal";
 
         public static final ResourceLocation InvisibleRedstone = new ResourceLocation(MOD_ID, "invisibleRedstone");
         public static final ResourceLocation InvisibleGlowstone = new ResourceLocation(MOD_ID, "invisibleGlowstone");
+
+        private Blocks() {}
     }
 
 }

@@ -1,7 +1,6 @@
 package com.github.atomicblom.shearmadness.utility;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.PooledByteBufAllocator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -27,9 +26,8 @@ public final class ItemStackUtils
     public static int getHash(ItemStack itemStack)
     {
         final ByteBuf buffer = new PooledByteBufAllocator(false).heapBuffer();
-        PacketBuffer packetBuffer = new PacketBuffer(buffer);
+        final PacketBuffer packetBuffer = new PacketBuffer(buffer);
         packetBuffer.writeItemStackToBuffer(itemStack);
-        final int hashCode = Arrays.hashCode(packetBuffer.array());
-        return hashCode;
+        return Arrays.hashCode(packetBuffer.array());
     }
 }

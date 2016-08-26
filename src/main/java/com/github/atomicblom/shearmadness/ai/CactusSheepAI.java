@@ -3,7 +3,6 @@ package com.github.atomicblom.shearmadness.ai;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.Settings;
-import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -14,17 +13,14 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
-/**
- * Created by codew on 23/08/2016.
- */
 public class CactusSheepAI extends EntityAIBase
 {
     private final EntityLiving entity;
     private IChiseledSheepCapability capability = null;
     private int lastCheckedId = 0;
     private boolean cachedIdIsCactus = false;
-    private final BlockPos previousPos = null;
-    private AxisAlignedBB searchBox;
+    private BlockPos previousPos = null;
+    private AxisAlignedBB searchBox = null;
 
     public CactusSheepAI(EntityLiving entity)
     {
@@ -34,7 +30,7 @@ public class CactusSheepAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (!Behaviours.allowCactus()) {
+        if (!Settings.Behaviours.allowCactus()) {
             return false;
         }
 
@@ -64,6 +60,7 @@ public class CactusSheepAI extends EntityAIBase
         final BlockPos currentPos = entity.getPosition();
         if (searchBox == null || !currentPos.equals(previousPos))
         {
+            previousPos = currentPos;
             searchBox = new AxisAlignedBB(entity.getPosition().add(-2, -2, -2), entity.getPosition().add(2, 2, 2));
         }
 

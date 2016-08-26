@@ -1,14 +1,11 @@
 package com.github.atomicblom.shearmadness.networking;
 
-import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
-import com.github.atomicblom.shearmadness.proxy.Proxies;
-import com.github.atomicblom.shearmadness.utility.Logger;
+import com.github.atomicblom.shearmadness.utility.SoundLibrary;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -33,8 +30,7 @@ public class SheepChiseledMessageHandler implements IMessageHandler<SheepChisele
         }
         capability.setChiseled(message.isChiseled());
         capability.setChiselItemStack(message.getChiselItemStack());
-        final SoundEvent sheepChiseledSound = Proxies.audioProxy.getSheepChiseledSound();
-        entity.worldObj.playSound(entity.posX, entity.posY, entity.posZ, sheepChiseledSound, SoundCategory.NEUTRAL, 0.5F, 1.0f, true);
+        entity.worldObj.playSound(entity.posX, entity.posY, entity.posZ, SoundLibrary.sheepChiseled, SoundCategory.NEUTRAL, 0.5F, 1.0f, true);
 
         return null;
     }

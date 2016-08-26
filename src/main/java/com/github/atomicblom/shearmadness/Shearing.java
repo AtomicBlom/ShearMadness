@@ -11,12 +11,11 @@ import net.minecraft.item.ItemStack;
 
 import static com.github.atomicblom.shearmadness.ShearMadnessMod.CHANNEL;
 
-/**
- * Created by codew on 21/08/2016.
- */
-public class Shearing
+public final class Shearing
 {
-    public static void ShearSheep(ItemStack itemStack, EntitySheep sheep, IChiseledSheepCapability capability)
+    private Shearing() {}
+
+    public static void shearSheep(ItemStack itemStack, EntitySheep sheep, IChiseledSheepCapability capability)
     {
         if (Settings.Shearing.getBehaviour() == ShearBehaviour.CannotShear) {
             //TODO: Play shear cancelled Sound.

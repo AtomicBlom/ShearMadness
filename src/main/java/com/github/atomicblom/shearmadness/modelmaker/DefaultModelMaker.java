@@ -1,9 +1,8 @@
 package com.github.atomicblom.shearmadness.modelmaker;
 
-import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.api.IModelMaker;
-import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
+import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
 import com.github.atomicblom.shearmadness.configuration.Settings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelQuadruped;

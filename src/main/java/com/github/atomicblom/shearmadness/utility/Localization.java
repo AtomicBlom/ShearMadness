@@ -3,7 +3,9 @@ package com.github.atomicblom.shearmadness.utility;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 
-public class Localization {
+public final class Localization {
+    private Localization() {}
+
     /**
      * creates an unlocalized name for a block.
      *
@@ -12,7 +14,7 @@ public class Localization {
      * or even use the name of your block class.
      *
      * In practice, is should be in this format though:
-     * tile.{ModID}:{uniquelocalizationid}
+     * tile.{ModID}:{uniqueLocalizationId}
      *
      * Minecraft will automatically append .name to it.
      *
@@ -20,7 +22,7 @@ public class Localization {
      * @return the localization key.
      */
     public static String getUnlocalizedNameFor(Block block) {
-        ResourceLocation registryName = block.getRegistryName();
+        final ResourceLocation registryName = block.getRegistryName();
         if (registryName == null) {
             throw new RuntimeException("Attempt to get the registry name of a block that doesn't have one yet.");
         }

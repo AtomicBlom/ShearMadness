@@ -14,7 +14,7 @@ import java.util.List;
 
 public abstract class InvisibleBlock extends Block
 {
-    public InvisibleBlock()
+    InvisibleBlock()
     {
         super(Material.AIR);
     }

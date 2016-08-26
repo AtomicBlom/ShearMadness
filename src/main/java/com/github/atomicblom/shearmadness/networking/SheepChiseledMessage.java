@@ -13,7 +13,7 @@ public class SheepChiseledMessage implements IMessage
 {
     private int sheepId;
     private boolean isChiseled;
-    private ItemStack itemStack;
+    private ItemStack itemStack = null;
 
     @SuppressWarnings("unused")
     public SheepChiseledMessage() {}
