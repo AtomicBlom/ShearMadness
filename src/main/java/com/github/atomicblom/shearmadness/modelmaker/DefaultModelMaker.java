@@ -4,6 +4,7 @@ import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.api.IModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
+import com.github.atomicblom.shearmadness.configuration.Settings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelRenderer;
@@ -27,7 +28,7 @@ public class DefaultModelMaker extends IModelMaker
     @Override
     public ModelQuadruped createModel(ItemStack itemStack, EntityLivingBase entity)
     {
-        if (ShearMadnessMod.DEBUG) {
+        if (Settings.debugModels()) {
             transforms.defineParts();
         }
 

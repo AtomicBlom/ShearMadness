@@ -11,9 +11,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-/**
- * Created by codew on 23/08/2016.
- */
+@SuppressWarnings({"MethodMayBeStatic", "unused"})
 public class CommonBlockProxy
 {
     public void registerBlocks() {

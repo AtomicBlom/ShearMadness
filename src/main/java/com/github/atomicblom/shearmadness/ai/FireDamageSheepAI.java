@@ -33,7 +33,7 @@ public class FireDamageSheepAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (!Settings.Chiseling.allowFireDamage()) {
+        if (!Settings.Behaviours.allowFireDamage()) {
             return false;
         }
 

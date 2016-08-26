@@ -32,7 +32,7 @@ public class GlowstoneSheepAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (!Settings.Chiseling.allowGlowstone()) {
+        if (!Settings.Behaviours.allowGlowstone()) {
             if (cachedIdIsGlowstone) {
                 resetPreviousBlock();
             }

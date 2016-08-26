@@ -8,16 +8,13 @@ import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMe
 import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMessageHandler;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessageHandler;
-import com.github.atomicblom.shearmadness.proxy.CommonBlockProxy;
-import com.github.atomicblom.shearmadness.proxy.IRenderProxy;
-import com.github.atomicblom.shearmadness.utility.Logger;
+import com.github.atomicblom.shearmadness.proxy.Proxies;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.utility.ShearMadnessVariations;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -30,39 +27,24 @@ public class ShearMadnessMod
 {
     public static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
 
-    @SidedProxy(
-            modId = Reference.MOD_ID,
-            clientSide = "com.github.atomicblom.shearmadness.proxy.ClientRenderProxy",
-            serverSide = "com.github.atomicblom.shearmadness.proxy.CommonRenderProxy")
-    public static IRenderProxy proxy = null;
-
-    @SidedProxy(
-            modId = Reference.MOD_ID,
-            clientSide = "com.github.atomicblom.shearmadness.proxy.ClientBlockProxy",
-            serverSide = "com.github.atomicblom.shearmadness.proxy.CommonBlockProxy")
-    public static CommonBlockProxy BLOCK_PROXY;
-    public static boolean DEBUG = false;
-
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        DEBUG = !System.getProperty("ShearMadnessDebug").isEmpty();
-        if (DEBUG) {
-            Logger.info("Shear Madness models will be recalculated each frame.");
-        }
-
         ConfigurationHandler.init(event.getSuggestedConfigurationFile());
 
-        MinecraftForge.EVENT_BUS.register(proxy);
+        //Networking
         CHANNEL.registerMessage(CheckSheepChiseledRequestMessageHandler.class, CheckSheepChiseledRequestMessage.class, 0, Side.SERVER);
         CHANNEL.registerMessage(SheepChiseledMessageHandler.class, SheepChiseledMessage.class, 1, Side.CLIENT);
+
+        //Capabilities
         CapabilityManager.INSTANCE.register(IChiseledSheepCapability.class, ChiseledSheepCapabilityStorage.instance, ChiseledSheepCapability::new);
 
-        BLOCK_PROXY.registerBlocks();
-        if (event.getSide() == Side.CLIENT) {
-            MinecraftForge.EVENT_BUS.register(ShearMadnessVariations.INSTANCE);
-        }
-        proxy.registerSounds();
+        //Eventing
+        MinecraftForge.EVENT_BUS.register(Proxies.forgeEventProxy);
+
+        Proxies.blockProxy.registerBlocks();
+        Proxies.renderProxy.registerVariants();
+        Proxies.audioProxy.registerSounds();
 
     }
 
@@ -70,8 +52,7 @@ public class ShearMadnessMod
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-        proxy.registerRenderers();
-        proxy.fireRegistryEvent();
-
+        Proxies.renderProxy.registerRenderers();
+        Proxies.forgeEventProxy.fireRegistryEvent();
     }
 }

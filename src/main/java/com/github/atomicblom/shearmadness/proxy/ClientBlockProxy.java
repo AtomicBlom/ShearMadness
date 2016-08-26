@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
 
+@SuppressWarnings({"MethodMayBeStatic", "unused"})
 public class ClientBlockProxy extends CommonBlockProxy
 {
     @Override

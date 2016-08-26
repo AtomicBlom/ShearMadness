@@ -3,17 +3,12 @@ package com.github.atomicblom.shearmadness.ai;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.Settings;
-import com.github.atomicblom.shearmadness.utility.BlockLibrary;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 /**
  * Created by codew on 23/08/2016.
@@ -36,7 +31,7 @@ public class TNTSheepAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (!Settings.Chiseling.allowTNT()) {
+        if (!Settings.Behaviours.allowTNT()) {
             return false;
         }
 

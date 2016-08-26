@@ -8,9 +8,21 @@ public enum Settings
 {
     INSTANCE;
 
+    public static final String CATEGORY = Configuration.CATEGORY_GENERAL;
+
+    private static boolean debugModels = false;
+
+    public static boolean debugModels()
+    {
+        return debugModels;
+    }
+
     public static void syncConfig(Configuration config)
     {
+        debugModels = config.getBoolean("debugModels", CATEGORY, false, Reference.DEBUG_MODELS);
+
         Shearing.syncConfig(config);
+        Behaviours.syncConfig(config);
     }
 
     public enum Shearing
@@ -20,9 +32,9 @@ public enum Settings
         public static final String CATEGORY = Configuration.CATEGORY_GENERAL + ".shearing";
 
         @SuppressWarnings("StaticNonFinalField")
-        private static ShearBehaviour behaviour = ShearBehaviour.RevertSheep;
+        private static ShearBehaviour shearBehaviour = ShearBehaviour.RevertSheep;
 
-        public static ShearBehaviour getBehaviour() { return behaviour; }
+        public static ShearBehaviour getBehaviour() { return shearBehaviour; }
 
         private static void syncConfig(Configuration config) {
 
@@ -33,15 +45,15 @@ public enum Settings
             }
 
             final String behaviour = config.getString("behaviour", CATEGORY, "RevertSheep", Reference.BEHAVIOUR_COMMENT, validNames);
-            Shearing.behaviour = ShearBehaviour.valueOf(behaviour);
+            shearBehaviour = ShearBehaviour.valueOf(behaviour);
         }
     }
 
-    public enum Chiseling
+    public enum Behaviours
     {
         INSTANCE;
 
-        public static final String CATEGORY = Configuration.CATEGORY_GENERAL + ".chiseling";
+        public static final String CATEGORY = Configuration.CATEGORY_GENERAL + ".behaviours";
 
         private static boolean allowGlowstone = false;
         private static boolean allowRedstone = true;
@@ -68,11 +80,11 @@ public enum Settings
 
 
         private static void syncConfig(Configuration config) {
-            Chiseling.allowRedstone = config.getBoolean("allowRedstone", CATEGORY, true, Reference.ALLOW_REDSTONE_COMMENT);
-            Chiseling.allowGlowstone = config.getBoolean("allowGlowstone", CATEGORY, false, Reference.ALLOW_GLOWSTONE_COMMENT);
-            Chiseling.allowCactus = config.getBoolean("allowCactus", CATEGORY, true, Reference.ALLOW_CACTUS_COMMENT);
-            Chiseling.allowTNT = config.getBoolean("allowTNT", CATEGORY, true, Reference.ALLOW_TNT_COMMENT);
-            Chiseling.allowFireDamage = config.getBoolean("allowFireDamage", CATEGORY, true, Reference.ALLOW_FIRE_DAMAGE_COMMENT);
+            allowRedstone = config.getBoolean("allowRedstone", CATEGORY, true, Reference.ALLOW_REDSTONE_COMMENT);
+            allowGlowstone = config.getBoolean("allowGlowstone", CATEGORY, false, Reference.ALLOW_GLOWSTONE_COMMENT);
+            allowCactus = config.getBoolean("allowCactus", CATEGORY, true, Reference.ALLOW_CACTUS_COMMENT);
+            allowTNT = config.getBoolean("allowTNT", CATEGORY, true, Reference.ALLOW_TNT_COMMENT);
+            allowFireDamage = config.getBoolean("allowFireDamage", CATEGORY, true, Reference.ALLOW_FIRE_DAMAGE_COMMENT);
         }
     }
 

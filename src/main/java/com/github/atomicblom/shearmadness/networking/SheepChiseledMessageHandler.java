@@ -3,6 +3,7 @@ package com.github.atomicblom.shearmadness.networking;
 import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.proxy.Proxies;
 import com.github.atomicblom.shearmadness.utility.Logger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -32,7 +33,7 @@ public class SheepChiseledMessageHandler implements IMessageHandler<SheepChisele
         }
         capability.setChiseled(message.isChiseled());
         capability.setChiselItemStack(message.getChiselItemStack());
-        final SoundEvent sheepChiseledSound = ShearMadnessMod.proxy.getSheepChiseledSound();
+        final SoundEvent sheepChiseledSound = Proxies.audioProxy.getSheepChiseledSound();
         entity.worldObj.playSound(entity.posX, entity.posY, entity.posZ, sheepChiseledSound, SoundCategory.NEUTRAL, 0.5F, 1.0f, true);
 
         return null;

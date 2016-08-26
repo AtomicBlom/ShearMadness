@@ -5,7 +5,6 @@ import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.Settings;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.init.Blocks;
@@ -33,7 +32,7 @@ public class RedstoneSheepAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (!Settings.Chiseling.allowRedstone()) {
+        if (!Settings.Behaviours.allowRedstone()) {
             if (cachedIdIsRedstone) {
                 resetPreviousBlock();
             }

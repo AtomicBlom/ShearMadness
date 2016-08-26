@@ -33,7 +33,7 @@ public class CactusSheepAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (!Settings.Chiseling.allowCactus()) {
+        if (!Settings.Behaviours.allowCactus()) {
             return false;
         }
 

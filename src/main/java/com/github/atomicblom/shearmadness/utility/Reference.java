@@ -20,6 +20,7 @@ public class Reference
     public static final String ALLOW_CACTUS_COMMENT = "Chiseled Cactus sheep will deal damage players and destroy items.";
     public static final String ALLOW_TNT_COMMENT = "Chiseled TNT Sheep will be explode if exposed to active redstone.";
     public static final String ALLOW_FIRE_DAMAGE_COMMENT = "Chiseled Magma sheep will deal fire damage when touched.";
+    public static final String DEBUG_MODELS = "Models will be regenerated every frame drawn.";
 
     public static final class Blocks {
         public static final String NORMAL_VARIANT = "normal";

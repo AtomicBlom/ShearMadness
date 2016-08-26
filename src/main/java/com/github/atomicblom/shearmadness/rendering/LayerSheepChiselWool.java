@@ -6,6 +6,7 @@ import com.github.atomicblom.shearmadness.api.VariationRegistry;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.configuration.Settings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelSheep1;
@@ -63,7 +64,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                 {
                     final IModelMaker variationModelMaker = VariationRegistry.INSTANCE.getVariationModelMaker(itemStack);
                     quadrupedModel = variationModelMaker.createModel(itemStack, sheep);
-                    if (!ShearMadnessMod.DEBUG)
+                    if (!Settings.debugModels())
                     {
                         modelMap.put(capability.getItemIdentifier(), quadrupedModel);
                     }

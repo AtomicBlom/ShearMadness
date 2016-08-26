@@ -4,6 +4,7 @@ import com.github.atomicblom.shearmadness.api.RegisterShearMadnessVariationEvent
 import com.github.atomicblom.shearmadness.api.VariationRegistry;
 import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMessage;
 import com.github.atomicblom.shearmadness.rendering.RenderChiselSheep;
+import com.github.atomicblom.shearmadness.utility.ShearMadnessVariations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelSheep2;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -15,7 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import static com.github.atomicblom.shearmadness.ShearMadnessMod.CHANNEL;
 
-@SuppressWarnings("MethodMayBeStatic")
+@SuppressWarnings({"MethodMayBeStatic", "unused"})
 public class ClientRenderProxy extends CommonRenderProxy
 {
     @Override
@@ -27,17 +28,8 @@ public class ClientRenderProxy extends CommonRenderProxy
     }
 
     @Override
-    public void fireRegistryEvent() {
-        MinecraftForge.EVENT_BUS.post(new RegisterShearMadnessVariationEvent(VariationRegistry.INSTANCE));
-    }
-
-    @SubscribeEvent
-    public void onEntityJoinWorldEvent(EntityJoinWorldEvent event)
+    public void registerVariants()
     {
-        final Entity entity = event.getEntity();
-        if (entity instanceof EntitySheep)
-        {
-            CHANNEL.sendToServer(new CheckSheepChiseledRequestMessage(entity));
-        }
+        MinecraftForge.EVENT_BUS.register(ShearMadnessVariations.INSTANCE);
     }
 }
