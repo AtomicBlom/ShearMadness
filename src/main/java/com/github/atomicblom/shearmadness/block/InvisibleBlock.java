@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.block;
 
+import com.github.atomicblom.shearmadness.configuration.Settings;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -55,7 +56,9 @@ public abstract class InvisibleBlock extends Block
     @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
-        return EnumBlockRenderType.INVISIBLE;
+        return Settings.debugInvisibleBlocks() ?
+                EnumBlockRenderType.MODEL :
+                EnumBlockRenderType.INVISIBLE;
     }
 
     @Override
@@ -71,10 +74,4 @@ public abstract class InvisibleBlock extends Block
     {
         return false;
     }
-
-    /*@Override
-    public boolean isVisuallyOpaque()
-    {
-        return false;
-    }*/
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "shearmadness:block/invisibleBlock",
+  "textures": {
+    "all": "blocks/glowstone"
+  }
+}

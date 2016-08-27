@@ -11,15 +11,21 @@ public enum Settings
     public static final String CATEGORY = Configuration.CATEGORY_GENERAL;
 
     private static boolean debugModels = false;
+    private static boolean debugInvisibleBlocks = false;
 
     public static boolean debugModels()
     {
         return debugModels;
     }
+    public static boolean debugInvisibleBlocks()
+    {
+        return debugInvisibleBlocks;
+    }
 
     public static void syncConfig(Configuration config)
     {
         debugModels = config.getBoolean("debugModels", CATEGORY, false, Reference.DEBUG_MODELS);
+        debugInvisibleBlocks = config.getBoolean("debugInvisibleBlocks", CATEGORY, false, Reference.DEBUG_INVISIBLE_BLOCKS);
 
         Shearing.syncConfig(config);
         Behaviours.syncConfig(config);

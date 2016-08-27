@@ -23,6 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -122,12 +123,24 @@ public class CommonForgeEventProxy
 
     @SubscribeEvent
     public void onLivingDrop(LivingDropsEvent event) {
+
         final Entity entity = event.getEntity();
         if (entity.hasCapability(CapabilityProvider.CHISELED_SHEEP, null)) {
             final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
             if (capability.isChiseled())
             {
                 final List<EntityItem> drops = event.getDrops();
+                final Item chiselItem = capability.getChiselItemStack().getItem();
+                if (chiselItem instanceof ItemBlock)
+                {
+                    if (((ItemBlock) chiselItem).block == Blocks.TNT && event.getSource().isExplosion())
+                    {
+                        drops.clear();
+                        return;
+                    }
+                }
+
+
                 drops.removeIf(entityItem ->
                 {
                     final Item item = entityItem.getEntityItem().getItem();

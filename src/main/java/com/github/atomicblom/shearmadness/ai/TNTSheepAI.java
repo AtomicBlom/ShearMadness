@@ -6,6 +6,7 @@ import com.github.atomicblom.shearmadness.configuration.Settings;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.math.BlockPos;
@@ -66,12 +67,13 @@ public class TNTSheepAI extends EntityAIBase
         if (!entity.isChild()) {
             blockPowered |= entity.worldObj.isBlockPowered(aboveCurrentPosition);
         }
-        if (blockPowered) {
-            primedTime = entity.worldObj.getTotalWorldTime();
-
+        final long totalWorldTime = entity.worldObj.getTotalWorldTime();
+        if (blockPowered && primedTime == null) {
+            primedTime = totalWorldTime;
+            entity.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0f, 1.0f);
         }
 
-        if (primedTime != null && entity.worldObj.getTotalWorldTime() > primedTime + 80) {
+        if (primedTime != null && totalWorldTime > primedTime + 80) {
             entity.worldObj.createExplosion(null, entity.posX, entity.posY + entity.height / 16.0F, entity.posZ, 4.0F, true);
         }
     }

@@ -21,6 +21,7 @@ public final class Reference
     public static final String ALLOW_TNT_COMMENT = "Chiseled TNT Sheep will be explode if exposed to active redstone.";
     public static final String ALLOW_FIRE_DAMAGE_COMMENT = "Chiseled Magma sheep will deal fire damage when touched.";
     public static final String DEBUG_MODELS = "Models will be regenerated every frame drawn.";
+    public static final java.lang.String DEBUG_INVISIBLE_BLOCKS = "Invisible Blocks will be shown in-game";
 
     private Reference() {}
 
