@@ -91,3 +91,17 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+sourceSets {
+    api {
+        java {
+            srcDirs = [ 'src/api/java' ]
+        }
+    }
+}
+
+task apiJar(type: Jar) {
+    from sourceSets.api.output
+    classifier = 'api'
+}
+tasks.build.dependsOn apiJar
