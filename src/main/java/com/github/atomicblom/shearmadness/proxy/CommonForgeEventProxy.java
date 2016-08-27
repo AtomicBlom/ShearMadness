@@ -5,6 +5,8 @@ import com.github.atomicblom.shearmadness.Shearing;
 import com.github.atomicblom.shearmadness.ai.*;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.interactions.AnvilInteraction;
+import com.github.atomicblom.shearmadness.interactions.WorkbenchInteraction;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
 import com.github.atomicblom.shearmadness.utility.Reference;
@@ -46,7 +48,11 @@ public class CommonForgeEventProxy
         if (event.getWorld().isRemote) return;
         if (!(event.getTarget() instanceof EntitySheep)) return;
         final ItemStack itemStack = event.getItemStack();
-        if (itemStack == null || !(itemStack.getItem() instanceof ItemShears)) return;
+        if (itemStack == null) {
+            checkSpecialSheepInteraction(event);
+            return;
+        }
+        if (!(itemStack.getItem() instanceof ItemShears)) return;
 
         final EntitySheep sheep = (EntitySheep) event.getTarget();
         if (!sheep.isShearable(itemStack, event.getWorld(), event.getPos())) return;
@@ -59,6 +65,23 @@ public class CommonForgeEventProxy
         event.setCanceled(true);
 
         Shearing.shearSheep(itemStack, sheep, capability);
+    }
+
+    private void checkSpecialSheepInteraction(PlayerInteractEvent.EntityInteract event)
+    {
+        final EntitySheep sheep = (EntitySheep) event.getTarget();
+
+        final IChiseledSheepCapability capability = sheep.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        if (capability == null) return;
+        if (!capability.isChiseled()) return;
+
+        final Item item = capability.getChiselItemStack().getItem();
+        if (item instanceof ItemBlock && ((ItemBlock) item).block == Blocks.ANVIL) {
+            event.getEntityPlayer().displayGui(new AnvilInteraction(event.getWorld(), sheep));
+        }
+        if (item instanceof ItemBlock && ((ItemBlock) item).block == Blocks.CRAFTING_TABLE) {
+            event.getEntityPlayer().displayGui(new WorkbenchInteraction(event.getWorld(), sheep));
+        }
     }
 
     @SuppressWarnings("BooleanVariableAlwaysNegated")
