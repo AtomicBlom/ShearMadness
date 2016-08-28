@@ -93,6 +93,11 @@ processResources
 }
 
 sourceSets {
+    main {
+        java {
+            srcDirs = [ 'src/main/java', 'src/api/java' ]
+        }
+    }
     api {
         java {
             srcDirs = [ 'src/api/java' ]
