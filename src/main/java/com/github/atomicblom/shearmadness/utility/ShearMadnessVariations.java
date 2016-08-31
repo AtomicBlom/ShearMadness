@@ -2,6 +2,7 @@ package com.github.atomicblom.shearmadness.utility;
 
 import com.github.atomicblom.shearmadness.api.IModelMaker;
 import com.github.atomicblom.shearmadness.api.IVariationRegistry;
+import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.RegisterShearMadnessVariationEvent;
 import com.github.atomicblom.shearmadness.modelmaker.DefaultChiselModelMaker;
 import com.github.atomicblom.shearmadness.transformation.RailQuadrupedTransformations;
@@ -10,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import team.chisel.api.carving.CarvingUtils;
 import java.util.function.Function;
@@ -21,7 +23,7 @@ public enum ShearMadnessVariations
 
     private static final IModelMaker DefaultChiselModelMaker = new DefaultChiselModelMaker();
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     @Optional.Method(modid = "shearmadness")
     public void onShearMadnessRegisterVariations(RegisterShearMadnessVariationEvent event) {
         final IVariationRegistry registry = event.getRegistry();
@@ -39,13 +41,7 @@ public enum ShearMadnessVariations
                     @Override
                     public Boolean apply(ItemStack itemStack)
                     {
-                        final Item item = itemStack.getItem();
-                        if (item instanceof ItemBlock) {
-                            if (((ItemBlock) item).block == Blocks.RAIL) {
-                                return true;
-                            }
-                        }
-                        return false;
+                        return ItemStackHelper.isStackForBlock(itemStack, Blocks.RAIL);
                     }
                 },
                 new RailQuadrupedTransformations()

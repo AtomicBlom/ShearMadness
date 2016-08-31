@@ -59,9 +59,9 @@ public abstract class IModelMaker
         ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID);
         for (final EnumFacing value : EnumFacing.VALUES)
         {
-            box.addCustomQuads(model.getQuads(blockState, value, 0));
+            box.addBakedQuads(model.getQuads(blockState, value, 0));
         }
-        box.addCustomQuads(model.getQuads(blockState, null, 0));
+        box.addBakedQuads(model.getQuads(blockState, null, 0));
         ForgeHooksClient.setRenderLayer(null);
 
         return renderer;

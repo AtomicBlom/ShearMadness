@@ -40,6 +40,7 @@ public class ShearMadnessMod
 
         //Eventing
         MinecraftForge.EVENT_BUS.register(Proxies.forgeEventProxy);
+        MinecraftForge.EVENT_BUS.register(Proxies.renderProxy);
 
         Proxies.blockProxy.registerBlocks();
         Proxies.renderProxy.registerVariants();

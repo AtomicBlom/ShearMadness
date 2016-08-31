@@ -15,6 +15,8 @@ public class ChiselLibrary
     public static final Block technical = null;
     public static final Block technical1 = null;
 
+    public static final Block marbleextra = null;
+
     public static boolean isChisel(Item item)
     {
         return item == chisel_iron || item == chisel_diamond || item == chisel_hitech;
