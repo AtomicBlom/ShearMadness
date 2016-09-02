@@ -171,7 +171,7 @@ public class CommonForgeEventProxy
     public void onCommonEntityJoinWorldEvent(EntityJoinWorldEvent event)
     {
         final Entity entity = event.getEntity();
-        if (entity instanceof EntitySheep)
+        if (entity.hasCapability(CapabilityProvider.CHISELED_SHEEP, null))
         {
             final EntityLiving livingEntity = (EntityLiving) event.getEntity();
             final EntityAITasks tasks = livingEntity.tasks;
