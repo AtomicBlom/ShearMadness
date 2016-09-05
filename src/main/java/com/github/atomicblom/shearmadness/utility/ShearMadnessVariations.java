@@ -45,13 +45,13 @@ public enum ShearMadnessVariations
                     @Override
                     public Boolean apply(ItemStack itemStack)
                     {
-                        final Item item = itemStack.getItem();
-                        if (item instanceof ItemBlock) {
-                            if (((ItemBlock) item).block == Blocks.RAIL) {
-                                return true;
-                            }
-                        }
-                        return false;
+                        return ItemStackHelper.isStackForBlock(
+                                itemStack,
+                                Blocks.RAIL,
+                                Blocks.ACTIVATOR_RAIL,
+                                Blocks.DETECTOR_RAIL,
+                                Blocks.GOLDEN_RAIL
+                        );
                     }
                 },
                 new RailQuadrupedTransformations()
