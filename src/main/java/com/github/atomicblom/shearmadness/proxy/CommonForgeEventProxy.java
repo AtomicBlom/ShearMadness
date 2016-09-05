@@ -175,12 +175,7 @@ public class CommonForgeEventProxy
         {
             final EntityLiving livingEntity = (EntityLiving) event.getEntity();
             final EntityAITasks tasks = livingEntity.tasks;
-            tasks.addTask(0, new RedstoneSheepAI(livingEntity));
-            tasks.addTask(0, new GlowstoneSheepAI(livingEntity));
-            tasks.addTask(1, new FlyingSheepAI(livingEntity));
-            tasks.addTask(1, new CactusSheepAI(livingEntity));
-            tasks.addTask(1, new FireDamageSheepAI(livingEntity));
-            tasks.addTask(1, new TNTSheepAI(livingEntity));
+            tasks.addTask(0, new SheepBehaviourAI(livingEntity));
         }
     }
 
@@ -188,7 +183,13 @@ public class CommonForgeEventProxy
     public void onEntityLivingDeathEvent(LivingDeathEvent event) {
         final Entity entity = event.getEntity();
         if (entity.hasCapability(CapabilityProvider.CHISELED_SHEEP, null)) {
-            final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+            final EntityLiving livingEntity = (EntityLiving) entity;
+            livingEntity.tasks.taskEntries
+                    .stream()
+                    .filter(taskEntry -> taskEntry.action instanceof SheepBehaviourAI)
+                    .forEach(taskEntry -> ((SheepBehaviourAI) taskEntry.action).onDeath());
+
+            /*final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
             if (capability.isChiseled()) {
                 final EntityLiving living = (EntityLiving) entity;
 
@@ -203,7 +204,7 @@ public class CommonForgeEventProxy
                 if (block == BlockLibrary.invisibleRedstone || block == BlockLibrary.invisibleGlowstone) {
                     world.setBlockToAir(invisibleBlock);
                 }
-            }
+            }*/
         }
     }
 }

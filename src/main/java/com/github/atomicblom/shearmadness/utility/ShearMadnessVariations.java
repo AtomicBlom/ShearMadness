@@ -2,13 +2,19 @@ package com.github.atomicblom.shearmadness.utility;
 
 import com.github.atomicblom.shearmadness.api.IModelMaker;
 import com.github.atomicblom.shearmadness.api.IVariationRegistry;
+import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.RegisterShearMadnessVariationEvent;
+import com.github.atomicblom.shearmadness.api.behaviour.DamageBehaviour;
+import com.github.atomicblom.shearmadness.api.behaviour.ExplosiveBehaviour;
+import com.github.atomicblom.shearmadness.api.behaviour.FlightBehaviour;
+import com.github.atomicblom.shearmadness.api.behaviour.PlaceInvisibleBlockBehaviour;
 import com.github.atomicblom.shearmadness.modelmaker.DefaultChiselModelMaker;
 import com.github.atomicblom.shearmadness.transformation.RailQuadrupedTransformations;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import team.chisel.api.carving.CarvingUtils;
@@ -49,6 +55,37 @@ public enum ShearMadnessVariations
                     }
                 },
                 new RailQuadrupedTransformations()
+        );
+
+        registry.registerBehaviour(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.CACTUS),
+                entity -> new DamageBehaviour(entity, DamageSource.cactus)
+        );
+
+        registry.registerBehaviour(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.MAGMA),
+                entity -> new DamageBehaviour(entity, DamageSource.hotFloor)
+        );
+
+        registry.registerBehaviour(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.REDSTONE_BLOCK),
+                entity -> new PlaceInvisibleBlockBehaviour(entity, BlockLibrary.invisibleRedstone.getDefaultState())
+        );
+
+        registry.registerBehaviour(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.GLOWSTONE),
+                entity -> new PlaceInvisibleBlockBehaviour(entity, BlockLibrary.invisibleGlowstone.getDefaultState())
+        );
+
+        registry.registerBehaviour(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.TNT),
+                ExplosiveBehaviour::new
+        );
+
+        registry.registerBehaviour(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, ChiselLibrary.technical, 4) ||
+                        ItemStackHelper.isStackForBlock(itemStack, ChiselLibrary.technical1, 1),
+                FlightBehaviour::new
         );
     }
 }
