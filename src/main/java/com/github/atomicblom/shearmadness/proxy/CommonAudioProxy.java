@@ -12,7 +12,7 @@ public class CommonAudioProxy
     public void registerSounds()
     {
         //FIXME: Remove this once SoundEvent is added to ObjectHolderRef
-        SoundLibrary.sheepChiseled = registerSound("sheepChiseled");
+        SoundLibrary.sheepchiseled = registerSound("sheepchiseled");
     }
 
     private static SoundEvent registerSound(String soundName) {

@@ -30,7 +30,7 @@ public class SheepChiseledMessageHandler implements IMessageHandler<SheepChisele
         }
         capability.setChiseled(message.isChiseled());
         capability.setChiselItemStack(message.getChiselItemStack());
-        entity.worldObj.playSound(entity.posX, entity.posY, entity.posZ, SoundLibrary.sheepChiseled, SoundCategory.NEUTRAL, 0.5F, 1.0f, true);
+        entity.worldObj.playSound(entity.posX, entity.posY, entity.posZ, SoundLibrary.sheepchiseled, SoundCategory.NEUTRAL, 0.5F, 1.0f, true);
 
         return null;
     }

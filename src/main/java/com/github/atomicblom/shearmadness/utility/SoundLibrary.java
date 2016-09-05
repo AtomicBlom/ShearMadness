@@ -7,5 +7,5 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder(Reference.MOD_ID)
 public class SoundLibrary
 {
-    public static SoundEvent sheepChiseled = null;
+    public static SoundEvent sheepchiseled = null;
 }
