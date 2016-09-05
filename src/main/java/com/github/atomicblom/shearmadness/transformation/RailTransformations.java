@@ -6,7 +6,7 @@ import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
-public class RailQuadrupedTransformations extends QuadrupedTransformDefinition
+public class RailTransformations extends QuadrupedTransformDefinition
 {
     @Override
     public void defineParts()

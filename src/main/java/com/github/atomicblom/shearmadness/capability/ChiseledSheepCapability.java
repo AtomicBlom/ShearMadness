@@ -22,6 +22,7 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability
         if (itemStack == null)
         {
             setChiseled(false);
+            itemIdentifier = 0;
         } else
         {
             setChiseled(true);
@@ -43,6 +44,7 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability
         if (!chiseled)
         {
             itemStack = null;
+            itemIdentifier = 0;
         }
         isChiseled = chiseled;
     }
