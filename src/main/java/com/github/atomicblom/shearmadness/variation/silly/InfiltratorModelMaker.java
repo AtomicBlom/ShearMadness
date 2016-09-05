@@ -1,9 +1,9 @@
-package com.github.atomicblom.shearmadness.modelmaker;
+package com.github.atomicblom.shearmadness.variation.silly;
 
+import com.github.atomicblom.shearmadness.api.modelmaker.DefaultModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.EntityMesh;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
@@ -227,18 +227,5 @@ public class InfiltratorModelMaker extends DefaultModelMaker
         model.leg2.cubeList.add(leftRearLeg);
 
         return model;
-    }
-
-    public float getInterpolatedU(TextureAtlasSprite sprite, double u)
-    {
-
-        float f = sprite.getMaxU() - sprite.getMinU();
-        return sprite.getMinU() + f * (float)u / 64.0f;
-    }
-
-    public float getInterpolatedV(TextureAtlasSprite sprite, double v)
-    {
-        float f = sprite.getMaxV() - sprite.getMinV();
-        return sprite.getMinV() + f * (float)v / 32.0f;
     }
 }

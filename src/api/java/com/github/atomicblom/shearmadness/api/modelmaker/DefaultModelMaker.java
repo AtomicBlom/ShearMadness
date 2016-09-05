@@ -1,4 +1,4 @@
-package com.github.atomicblom.shearmadness.modelmaker;
+package com.github.atomicblom.shearmadness.api.modelmaker;
 
 import com.github.atomicblom.shearmadness.api.IModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
@@ -41,7 +41,7 @@ public class DefaultModelMaker extends IModelMaker
         return quadrupedModel;
     }
 
-    private ModelRenderer getChiselBodyModelRenderer(ItemStack item, EntityLivingBase entity, PartDefinition partDefinition)
+    protected ModelRenderer getChiselBodyModelRenderer(ItemStack item, EntityLivingBase entity, PartDefinition partDefinition)
     {
         final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         IBakedModel itemModel = renderItem.getItemModelMesher().getItemModel(item);

@@ -1,4 +1,4 @@
-package com.github.atomicblom.shearmadness.transformation;
+package com.github.atomicblom.shearmadness.api.transformation;
 
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;

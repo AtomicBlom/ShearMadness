@@ -2,8 +2,9 @@ package com.github.atomicblom.shearmadness.proxy;
 
 import com.github.atomicblom.shearmadness.rendering.RenderChiselSheep;
 import com.github.atomicblom.shearmadness.utility.Reference;
-import com.github.atomicblom.shearmadness.utility.ShearMadnessVariations;
-import com.github.atomicblom.shearmadness.utility.SillyVarations;
+import com.github.atomicblom.shearmadness.variation.ShearMadnessVariations;
+import com.github.atomicblom.shearmadness.variation.SillyVarations;
+import com.github.atomicblom.shearmadness.variation.ImmersiveEngineeringVariations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelSheep2;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -30,6 +31,7 @@ public class ClientRenderProxy extends CommonRenderProxy
 
         MinecraftForge.EVENT_BUS.register(ShearMadnessVariations.INSTANCE);
         MinecraftForge.EVENT_BUS.register(SillyVarations.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(ImmersiveEngineeringVariations.INSTANCE);
     }
 
     @SubscribeEvent

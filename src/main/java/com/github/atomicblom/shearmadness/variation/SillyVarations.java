@@ -1,11 +1,10 @@
-package com.github.atomicblom.shearmadness.utility;
+package com.github.atomicblom.shearmadness.variation;
 
-import com.github.atomicblom.shearmadness.api.IModelMaker;
 import com.github.atomicblom.shearmadness.api.IVariationRegistry;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.RegisterShearMadnessVariationEvent;
-import com.github.atomicblom.shearmadness.modelmaker.DefaultChiselModelMaker;
-import com.github.atomicblom.shearmadness.modelmaker.InfiltratorModelMaker;
+import com.github.atomicblom.shearmadness.variation.silly.InfiltratorModelMaker;
+import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

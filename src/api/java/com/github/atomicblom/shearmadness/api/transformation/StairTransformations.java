@@ -1,7 +1,6 @@
-package com.github.atomicblom.shearmadness.transformation;
+package com.github.atomicblom.shearmadness.api.transformation;
 
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
-import org.lwjgl.util.vector.Matrix;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 

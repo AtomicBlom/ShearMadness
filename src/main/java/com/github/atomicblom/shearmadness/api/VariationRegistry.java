@@ -2,8 +2,7 @@ package com.github.atomicblom.shearmadness.api;
 
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
-import com.github.atomicblom.shearmadness.modelmaker.DefaultModelMaker;
-import net.minecraft.entity.EntityLiving;
+import com.github.atomicblom.shearmadness.api.modelmaker.DefaultModelMaker;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.item.ItemStack;
 

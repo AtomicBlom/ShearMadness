@@ -20,7 +20,7 @@ public class RegisterShearMadnessVariationEvent extends Event
     }
 
     /**
-     * @return A registry to declare variations against.
+     * @return A registry to declare variation against.
      */
     public IVariationRegistry getRegistry()
     {

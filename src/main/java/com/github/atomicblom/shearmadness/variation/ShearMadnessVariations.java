@@ -1,4 +1,4 @@
-package com.github.atomicblom.shearmadness.utility;
+package com.github.atomicblom.shearmadness.variation;
 
 import com.github.atomicblom.shearmadness.api.IModelMaker;
 import com.github.atomicblom.shearmadness.api.IVariationRegistry;
@@ -8,11 +8,13 @@ import com.github.atomicblom.shearmadness.api.behaviour.DamageBehaviour;
 import com.github.atomicblom.shearmadness.api.behaviour.ExplosiveBehaviour;
 import com.github.atomicblom.shearmadness.api.behaviour.FlightBehaviour;
 import com.github.atomicblom.shearmadness.api.behaviour.PlaceInvisibleBlockBehaviour;
-import com.github.atomicblom.shearmadness.configuration.Settings;
 import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import com.github.atomicblom.shearmadness.modelmaker.DefaultChiselModelMaker;
-import com.github.atomicblom.shearmadness.transformation.RailTransformations;
-import com.github.atomicblom.shearmadness.transformation.StairTransformations;
+import com.github.atomicblom.shearmadness.api.transformation.RailTransformations;
+import com.github.atomicblom.shearmadness.api.transformation.StairTransformations;
+import com.github.atomicblom.shearmadness.utility.BlockLibrary;
+import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
+import net.minecraft.block.BlockStairs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -60,22 +62,9 @@ public enum ShearMadnessVariations
         );
 
         registry.registerVariation(
-                itemStack -> ItemStackHelper.isStackForBlock(
+                itemStack -> ItemStackHelper.isStackForBlockSubclassOf(
                         itemStack,
-                        Blocks.ACACIA_STAIRS,
-                        Blocks.BIRCH_STAIRS,
-                        Blocks.BRICK_STAIRS,
-                        Blocks.DARK_OAK_STAIRS,
-                        Blocks.JUNGLE_STAIRS,
-                        Blocks.NETHER_BRICK_STAIRS,
-                        Blocks.OAK_STAIRS,
-                        Blocks.PURPUR_STAIRS,
-                        Blocks.QUARTZ_STAIRS,
-                        Blocks.RED_SANDSTONE_STAIRS,
-                        Blocks.SANDSTONE_STAIRS,
-                        Blocks.SPRUCE_STAIRS,
-                        Blocks.STONE_BRICK_STAIRS,
-                        Blocks.STONE_STAIRS
+                        BlockStairs.class
                         ),
                 new StairTransformations()
         );

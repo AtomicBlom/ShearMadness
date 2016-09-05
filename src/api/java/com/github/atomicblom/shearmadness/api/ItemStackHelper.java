@@ -21,6 +21,17 @@ public class ItemStackHelper
         return false;
     }
 
+    public static boolean isStackForBlockSubclassOf(ItemStack itemStack, Class<? extends Block> blockClass)
+    {
+        final Item item = itemStack.getItem();
+        if (item instanceof ItemBlock) {
+            if (blockClass.isAssignableFrom(((ItemBlock) item).block.getClass())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static Boolean isStackForBlock(ItemStack itemStack, Block block, int meta) {
         return isStackForBlock(itemStack, block) && itemStack.getItemDamage() == meta;
     }
