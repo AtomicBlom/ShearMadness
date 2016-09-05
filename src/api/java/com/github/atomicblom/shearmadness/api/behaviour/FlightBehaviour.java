@@ -31,11 +31,6 @@ public class FlightBehaviour extends BehaviourBase {
     }
 
     @Override
-    public boolean isBehaviourEnabled() {
-        return true;
-    }
-
-    @Override
     public void updateTask() {
         final BlockPos height = entity.worldObj.getHeight(entity.getPosition());
         final double actualHeight = entity.posY - height.getY();

@@ -4,14 +4,16 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBlockBehaviour> {
 
     private final World world;
     private final IBlockState blockState;
 
-    public PlaceInvisibleBlockBehaviour(EntitySheep sheep, IBlockState blockState) {
-        super(sheep);
+    public PlaceInvisibleBlockBehaviour(EntitySheep sheep, Supplier<Boolean> configuration, IBlockState blockState) {
+        super(sheep, configuration);
         world = sheep.worldObj;
         this.blockState = blockState;
     }
@@ -56,11 +58,6 @@ public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBl
         {
             world.setBlockToAir(pos);
         }
-    }
-
-    @Override
-    public boolean isBehaviourEnabled() {
-        return true;
     }
 
     @Override

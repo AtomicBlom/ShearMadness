@@ -3,31 +3,31 @@ package com.github.atomicblom.shearmadness.api.behaviour;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import java.util.function.Supplier;
 
 public class ExplosiveBehaviour extends BehaviourBase {
 
     private Long primedTime;
     private BlockPos aboveCurrentPosition;
-    private BlockPos currentPos;
 
-    public ExplosiveBehaviour(EntitySheep sheep) {
-        super(sheep);
+    public ExplosiveBehaviour(EntitySheep sheep, Supplier<Boolean> configuration) {
+        super(sheep, configuration);
     }
 
     @Override
-    public boolean isBehaviourEnabled() {
-        return true;
+    public void onBehaviourStarted(BlockPos currentPos)
+    {
+        onSheepMovedBlock(null, currentPos);
     }
 
     @Override
     public void onSheepMovedBlock(BlockPos previousLocation, BlockPos newLocation) {
         aboveCurrentPosition = newLocation.up();
-        currentPos = newLocation;
     }
 
     @Override
     public void updateTask() {
-        boolean blockPowered = entity.worldObj.isBlockPowered(currentPos);
+        boolean blockPowered = entity.worldObj.isBlockPowered(entity.getPosition());
         if (!entity.isChild()) {
             blockPowered |= entity.worldObj.isBlockPowered(aboveCurrentPosition);
         }

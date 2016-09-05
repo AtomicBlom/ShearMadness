@@ -4,17 +4,29 @@ import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.math.BlockPos;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public abstract class BehaviourBase<T extends BehaviourBase> {
     protected final EntitySheep entity;
+    private final Supplier<Boolean> configuration;
     protected final IChiseledSheepCapability capability;
 
-    public BehaviourBase(EntitySheep sheep) {
-        this.capability = sheep.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
-        this.entity = sheep;
+    protected BehaviourBase(EntitySheep sheep) {
+        this(sheep, () -> true);
     }
 
-    public abstract boolean isBehaviourEnabled();
+    protected BehaviourBase(EntitySheep sheep, Supplier<Boolean> configuration)
+    {
+
+        this.capability = sheep.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        this.entity = sheep;
+        this.configuration = configuration;
+    }
+
+    public boolean isBehaviourEnabled() {
+        return configuration.get();
+    }
 
     public void onSheepMovedBlock(BlockPos previousLocation, BlockPos newLocation) {}
 
