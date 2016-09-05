@@ -9,10 +9,8 @@ import com.github.atomicblom.shearmadness.api.behaviour.ExplosiveBehaviour;
 import com.github.atomicblom.shearmadness.api.behaviour.FlightBehaviour;
 import com.github.atomicblom.shearmadness.api.behaviour.PlaceInvisibleBlockBehaviour;
 import com.github.atomicblom.shearmadness.modelmaker.DefaultChiselModelMaker;
-import com.github.atomicblom.shearmadness.transformation.RailQuadrupedTransformations;
+import com.github.atomicblom.shearmadness.transformation.RailTransformations;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.Optional;
@@ -54,7 +52,7 @@ public enum ShearMadnessVariations
                         );
                     }
                 },
-                new RailQuadrupedTransformations()
+                new RailTransformations()
         );
 
         registry.registerBehaviour(
