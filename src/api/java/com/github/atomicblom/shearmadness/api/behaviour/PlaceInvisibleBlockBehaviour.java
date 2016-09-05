@@ -17,9 +17,23 @@ public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBl
     }
 
     @Override
-    public void onSheepMovedBlock(BlockPos previousLocation, BlockPos newLocation) {
-        resetPreviousBlock(previousLocation);
+    public void onBehaviourStopped(BlockPos previousPos) {
+        resetBlock(previousPos);
+    }
 
+    @Override
+    public void onBehaviourStarted(BlockPos currentPos) {
+        setBlock(currentPos);
+    }
+
+    @Override
+    public void onSheepMovedBlock(BlockPos previousLocation, BlockPos newLocation) {
+        resetBlock(previousLocation);
+
+        setBlock(newLocation);
+    }
+
+    private void setBlock(BlockPos newLocation) {
         BlockPos pos = newLocation;
 
         if (!entity.isChild()) {
@@ -31,7 +45,7 @@ public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBl
         }
     }
 
-    private void resetPreviousBlock(BlockPos previousLocation) {
+    private void resetBlock(BlockPos previousLocation) {
         BlockPos pos = previousLocation;
         if (!entity.isChild())
         {
