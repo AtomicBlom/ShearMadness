@@ -13,9 +13,9 @@ import org.lwjgl.util.vector.Vector3f;
 @SideOnly(Side.CLIENT)
 public class PartDefinition
 {
-    private final Vector3f rotationPoint;
-    private final Matrix4f positionTransform;
-    private final Matrix3f textureTransform;
+    private Vector3f rotationPoint;
+    private Matrix4f positionTransform;
+    private Matrix3f textureTransform;
 
     public PartDefinition(Vector3f rotationPoint, Matrix4f positionTransform, Matrix3f textureTransform)
     {
@@ -38,5 +38,20 @@ public class PartDefinition
     public Matrix3f getTextureTransform()
     {
         return textureTransform;
+    }
+
+    public void setRotationPoint(Vector3f rotationPoint)
+    {
+        this.rotationPoint = rotationPoint;
+    }
+
+    public void setPositionTransform(Matrix4f positionTransform)
+    {
+        this.positionTransform = positionTransform;
+    }
+
+    public void setTextureTransform(Matrix3f textureTransform)
+    {
+        this.textureTransform = textureTransform;
     }
 }

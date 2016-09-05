@@ -12,6 +12,7 @@ import com.github.atomicblom.shearmadness.configuration.Settings;
 import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import com.github.atomicblom.shearmadness.modelmaker.DefaultChiselModelMaker;
 import com.github.atomicblom.shearmadness.transformation.RailTransformations;
+import com.github.atomicblom.shearmadness.transformation.StairTransformations;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -56,6 +57,27 @@ public enum ShearMadnessVariations
                     }
                 },
                 new RailTransformations()
+        );
+
+        registry.registerVariation(
+                itemStack -> ItemStackHelper.isStackForBlock(
+                        itemStack,
+                        Blocks.ACACIA_STAIRS,
+                        Blocks.BIRCH_STAIRS,
+                        Blocks.BRICK_STAIRS,
+                        Blocks.DARK_OAK_STAIRS,
+                        Blocks.JUNGLE_STAIRS,
+                        Blocks.NETHER_BRICK_STAIRS,
+                        Blocks.OAK_STAIRS,
+                        Blocks.PURPUR_STAIRS,
+                        Blocks.QUARTZ_STAIRS,
+                        Blocks.RED_SANDSTONE_STAIRS,
+                        Blocks.SANDSTONE_STAIRS,
+                        Blocks.SPRUCE_STAIRS,
+                        Blocks.STONE_BRICK_STAIRS,
+                        Blocks.STONE_STAIRS
+                        ),
+                new StairTransformations()
         );
 
         registry.registerBehaviour(
