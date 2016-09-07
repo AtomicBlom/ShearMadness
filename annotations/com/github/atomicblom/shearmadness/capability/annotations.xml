@@ -1,0 +1,5 @@
+<root>
+    <item name='com.github.atomicblom.shearmadness.capability.CapabilityProvider CHISELED_SHEEP'>
+        <annotation name='org.jetbrains.annotations.NotNull'/>
+    </item>
+</root>
