@@ -25,15 +25,6 @@ public class ClientRenderProxy extends CommonRenderProxy
         renderManager.entityRenderMap.put(EntitySheep.class, new RenderChiselSheep(renderManager, new ModelSheep2(), 0.7f));
     }
 
-    @Override
-    public void registerVariants()
-    {
-
-        MinecraftForge.EVENT_BUS.register(ShearMadnessVariations.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(SillyVarations.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(ImmersiveEngineeringVariations.INSTANCE);
-    }
-
     @SubscribeEvent
     public void onTextureStitchEvent(TextureStitchEvent.Pre event) {
         event.getMap().registerSprite(new ResourceLocation(Reference.MOD_ID, "chicken-nuggets"));

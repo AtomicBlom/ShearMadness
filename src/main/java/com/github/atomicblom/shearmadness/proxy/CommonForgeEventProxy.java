@@ -3,6 +3,8 @@ package com.github.atomicblom.shearmadness.proxy;
 import com.github.atomicblom.shearmadness.Chiseling;
 import com.github.atomicblom.shearmadness.Shearing;
 import com.github.atomicblom.shearmadness.ai.*;
+import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
+import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.interactions.AnvilInteraction;
@@ -21,6 +23,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -33,7 +36,9 @@ import java.util.List;
 @SuppressWarnings({"MethodMayBeStatic", "unused"})
 public class CommonForgeEventProxy
 {
-    public void fireRegistryEvent() {}
+    public void fireRegistryEvent() {
+        MinecraftForge.EVENT_BUS.post(new RegisterShearMadnessBehaviourEvent(BehaviourRegistry.INSTANCE));
+    }
 
     @SuppressWarnings({"ConstantConditions", "MethodWithMoreThanThreeNegations"})
     @SubscribeEvent

@@ -1,9 +1,11 @@
 package com.github.atomicblom.shearmadness.variation;
 
+import com.github.atomicblom.shearmadness.api.IBehaviourRegistry;
+import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
 import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
 import com.github.atomicblom.shearmadness.api.IVariationRegistry;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
-import com.github.atomicblom.shearmadness.api.RegisterShearMadnessVariationEvent;
+import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessVariationEvent;
 import com.github.atomicblom.shearmadness.api.behaviour.DamageBehaviour;
 import com.github.atomicblom.shearmadness.api.behaviour.ExplosiveBehaviour;
 import com.github.atomicblom.shearmadness.api.behaviour.FlightBehaviour;
@@ -21,25 +23,26 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import team.chisel.api.carving.CarvingUtils;
 import java.util.function.Function;
 
-@SuppressWarnings({"MethodMayBeStatic", "AnonymousInnerClass"})
+//@SuppressWarnings({"MethodMayBeStatic", "AnonymousInnerClass"})
 public enum ShearMadnessVariations
 {
     INSTANCE;
 
-    private static final IModelMaker DefaultChiselModelMaker = new DefaultChiselModelMaker();
-
     @SubscribeEvent(priority = EventPriority.LOWEST)
     @Optional.Method(modid = "shearmadness")
+    @SideOnly(Side.CLIENT)
     public void onShearMadnessRegisterVariations(RegisterShearMadnessVariationEvent event) {
         final IVariationRegistry registry = event.getRegistry();
 
         //Java 8 Style Registration
         registry.registerVariation(
                 itemStack -> CarvingUtils.getChiselRegistry().getVariation(itemStack) != null,
-                DefaultChiselModelMaker
+                new DefaultChiselModelMaker()
         );
 
         //Java 7 Style Registration
@@ -65,9 +68,15 @@ public enum ShearMadnessVariations
                 itemStack -> ItemStackHelper.isStackForBlockSubclassOf(
                         itemStack,
                         BlockStairs.class
-                        ),
+                ),
                 new StairTransformations()
         );
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @Optional.Method(modid = "shearmadness")
+    public void onShearMadnessRegisterBehaviours(RegisterShearMadnessBehaviourEvent event) {
+        final IBehaviourRegistry registry = event.getRegistry();
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.CACTUS),

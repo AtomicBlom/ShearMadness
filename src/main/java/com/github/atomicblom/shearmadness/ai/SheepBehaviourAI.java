@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.ai;
 
+import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
 import com.github.atomicblom.shearmadness.api.VariationRegistry;
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
@@ -52,7 +53,7 @@ public class SheepBehaviourAI extends EntityAIBase
             }
 
             if (itemStack != null) {
-                for (BehaviourBase newBehaviour : VariationRegistry.INSTANCE.getApplicableBehaviours(itemStack, entity)) {
+                for (BehaviourBase newBehaviour : BehaviourRegistry.INSTANCE.getApplicableBehaviours(itemStack, entity)) {
                     boolean matched = false;
                     for (ActiveBehaviour previousActiveBehaviour : previousActiveBehaviours) {
                         if (previousActiveBehaviour.behaviour.getClass() == newBehaviour.getClass() &&

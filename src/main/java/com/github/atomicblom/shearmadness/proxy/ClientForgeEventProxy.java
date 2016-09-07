@@ -1,6 +1,6 @@
 package com.github.atomicblom.shearmadness.proxy;
 
-import com.github.atomicblom.shearmadness.api.RegisterShearMadnessVariationEvent;
+import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessVariationEvent;
 import com.github.atomicblom.shearmadness.api.VariationRegistry;
 import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMessage;
 import net.minecraft.entity.Entity;
@@ -17,6 +17,7 @@ public class ClientForgeEventProxy extends CommonForgeEventProxy
     @Override
     public void fireRegistryEvent() {
         MinecraftForge.EVENT_BUS.post(new RegisterShearMadnessVariationEvent(VariationRegistry.INSTANCE));
+        super.fireRegistryEvent();
     }
 
     @SubscribeEvent

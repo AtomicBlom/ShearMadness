@@ -1,5 +1,7 @@
 package com.github.atomicblom.shearmadness;
 
+import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
+import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
 import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapabilityStorage;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
@@ -45,7 +47,6 @@ public class ShearMadnessMod
         Proxies.blockProxy.registerBlocks();
         Proxies.renderProxy.registerVariants();
         Proxies.audioProxy.registerSounds();
-
     }
 
     @EventHandler
