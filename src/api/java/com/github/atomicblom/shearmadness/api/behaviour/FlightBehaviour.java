@@ -1,13 +1,11 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
-import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
-import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapability;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-
 import java.util.Random;
 
+@SuppressWarnings("ClassHasNoToStringMethod")
 public class FlightBehaviour extends BehaviourBase {
 
     private final Random random;
@@ -23,8 +21,7 @@ public class FlightBehaviour extends BehaviourBase {
 
     @Override
     public void onBehaviourStarted(BlockPos currentPos) {
-        //initialize directions
-        destinationYaw = entity.rotationYaw;
+        destinationYaw = getEntity().rotationYaw;
         framesTillNextTurn = 500;
         destinationMotionY = 0.1;
         currentMotionY = 0.01;
@@ -32,6 +29,7 @@ public class FlightBehaviour extends BehaviourBase {
 
     @Override
     public void updateTask() {
+        final EntitySheep entity = getEntity();
         final BlockPos height = entity.worldObj.getHeight(entity.getPosition());
         final double actualHeight = entity.posY - height.getY();
         entity.moveEntityWithHeading(0, 0.6f);
@@ -56,7 +54,7 @@ public class FlightBehaviour extends BehaviourBase {
         if (MathHelper.wrapDegrees(entity.rotationYaw - destinationYaw) < 2) {
             if (framesTillNextTurn <= 0)
             {
-                destinationYaw = random.nextFloat() * 360;//2 * Math.PI;
+                destinationYaw = random.nextFloat() * 360;
                 //Logger.info("New Turn Destination is %f", destinationYaw);
                 framesTillNextTurn = 200;
             } else {

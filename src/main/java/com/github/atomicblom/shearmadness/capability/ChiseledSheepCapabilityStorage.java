@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.capability;
 
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,11 +31,11 @@ public class ChiseledSheepCapabilityStorage implements IStorage<IChiseledSheepCa
     {
         final NBTTagCompound compound = (NBTTagCompound) nbt;
 
-        instance.setChiseled(compound.getBoolean("isChiseled"));
-        if (instance.isChiseled())
+        final boolean isChiseled = compound.getBoolean("isChiseled");
+        if (isChiseled)
         {
             final ItemStack stack = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("chiselDefinition"));
-            instance.setChiselItemStack(stack);
+            instance.chisel(stack);
         }
     }
 }

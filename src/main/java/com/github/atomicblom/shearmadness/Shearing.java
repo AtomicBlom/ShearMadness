@@ -1,6 +1,6 @@
 package com.github.atomicblom.shearmadness;
 
-import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.Settings;
 import com.github.atomicblom.shearmadness.configuration.ShearBehaviour;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
@@ -35,7 +35,7 @@ public final class Shearing
         itemStack.damageItem(1, sheep);
 
         if (Settings.Shearing.getBehaviour() == ShearBehaviour.RevertSheep) {
-            capability.setChiseled(false);
+            capability.unChisel();
             CHANNEL.sendToAll(new SheepChiseledMessage(sheep));
         }
     }

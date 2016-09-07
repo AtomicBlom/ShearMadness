@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.capability;
 
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;

@@ -2,7 +2,7 @@ package com.github.atomicblom.shearmadness;
 
 import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapabilityStorage;
-import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.ConfigurationHandler;
 import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMessage;
 import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMessageHandler;

@@ -1,14 +1,14 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
-import com.github.atomicblom.shearmadness.configuration.Settings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import java.util.function.Predicate;
+import java.util.Objects;
 import java.util.function.Supplier;
 
+@SuppressWarnings("ClassHasNoToStringMethod")
 public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
     private final DamageSource damageSource;
     private AxisAlignedBB searchBox = null;
@@ -31,6 +31,7 @@ public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
 
     @Override
     public void updateTask() {
+        final EntitySheep entity = getEntity();
         for (final Entity nearbyEntity : entity.worldObj.getEntitiesWithinAABBExcludingEntity(entity, searchBox))
         {
             final double distance = entity.getDistanceSqToEntity(nearbyEntity);
@@ -42,7 +43,7 @@ public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
     }
 
     @Override
-    public boolean equals(DamageBehaviour other) {
-        return super.equals(other) && this.damageSource == other.damageSource;
+    public boolean isEquivalentTo(DamageBehaviour other) {
+        return super.isEquivalentTo(other) && Objects.equals(damageSource, other.damageSource);
     }
 }

@@ -1,7 +1,7 @@
 package com.github.atomicblom.shearmadness;
 
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
-import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
 import net.minecraft.entity.Entity;
@@ -48,7 +48,7 @@ public final class Chiseling
             changed = changeChiselBlock(heldChisel, capability, isCreative);
         } else if (capability.isChiseled())
         {
-            capability.setChiseled(false);
+            capability.unChisel();
             changed = true;
         }
 
@@ -67,7 +67,7 @@ public final class Chiseling
         {
             final ItemStack copy = chiselItemStack.copy();
             copy.stackSize = 1;
-            capability.setChiselItemStack(copy);
+            capability.chisel(copy);
 
             if (!isCreative)
             {

@@ -5,10 +5,11 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import java.util.function.Supplier;
 
+@SuppressWarnings("ClassHasNoToStringMethod")
 public class ExplosiveBehaviour extends BehaviourBase {
 
-    private Long primedTime;
-    private BlockPos aboveCurrentPosition;
+    private Long primedTime = null;
+    private BlockPos aboveCurrentPosition = null;
 
     public ExplosiveBehaviour(EntitySheep sheep, Supplier<Boolean> configuration) {
         super(sheep, configuration);
@@ -27,19 +28,19 @@ public class ExplosiveBehaviour extends BehaviourBase {
 
     @Override
     public void updateTask() {
-        boolean blockPowered = entity.worldObj.isBlockPowered(entity.getPosition());
-        if (!entity.isChild()) {
-            blockPowered |= entity.worldObj.isBlockPowered(aboveCurrentPosition);
+        boolean blockPowered = getEntity().worldObj.isBlockPowered(getEntity().getPosition());
+        if (!getEntity().isChild()) {
+            blockPowered |= getEntity().worldObj.isBlockPowered(aboveCurrentPosition);
         }
 
-        final long totalWorldTime = entity.worldObj.getTotalWorldTime();
+        final long totalWorldTime = getEntity().worldObj.getTotalWorldTime();
         if (blockPowered && primedTime == null) {
             primedTime = totalWorldTime;
-            entity.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0f, 1.0f);
+            getEntity().playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0f, 1.0f);
         }
 
         if (primedTime != null && totalWorldTime > primedTime + 80) {
-            entity.worldObj.createExplosion(null, entity.posX, entity.posY + entity.height / 16.0F, entity.posZ, 4.0F, true);
+            getEntity().worldObj.createExplosion(null, getEntity().posX, getEntity().posY + getEntity().height / 16.0F, getEntity().posZ, 4.0F, true);
         }
     }
 }

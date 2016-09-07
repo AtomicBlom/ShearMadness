@@ -1,26 +1,21 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
-import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
-import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.math.BlockPos;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+@SuppressWarnings({"NoopMethodInAbstractClass", "ClassHasNoToStringMethod", "WeakerAccess"})
 public abstract class BehaviourBase<T extends BehaviourBase> {
-    protected final EntitySheep entity;
+    private final EntitySheep entity;
     private final Supplier<Boolean> configuration;
-    protected final IChiseledSheepCapability capability;
 
     protected BehaviourBase(EntitySheep sheep) {
         this(sheep, () -> true);
     }
 
-    protected BehaviourBase(EntitySheep sheep, Supplier<Boolean> configuration)
+    protected BehaviourBase(EntitySheep entity, Supplier<Boolean> configuration)
     {
-
-        this.capability = sheep.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
-        this.entity = sheep;
+        this.entity = entity;
         this.configuration = configuration;
     }
 
@@ -36,7 +31,12 @@ public abstract class BehaviourBase<T extends BehaviourBase> {
 
     public void updateTask() {}
 
-    public boolean equals(T other) {
-        return this.entity.getUniqueID().equals(other.entity.getUniqueID());
+    public boolean isEquivalentTo(T other) {
+        return entity.getUniqueID().equals(other.getEntity().getUniqueID());
+    }
+
+    public EntitySheep getEntity()
+    {
+        return entity;
     }
 }

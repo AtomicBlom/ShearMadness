@@ -1,9 +1,8 @@
 package com.github.atomicblom.shearmadness.api;
 
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
+import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
-import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapability;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;

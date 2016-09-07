@@ -7,14 +7,18 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 import java.util.Iterator;
+import java.util.Objects;
 
-public class ItemStackHelper
+@SuppressWarnings("UtilityClass")
+public final class ItemStackHelper
 {
+    private ItemStackHelper() {}
+
     public static boolean isStackForBlock(ItemStack itemStack, Block block)
     {
         final Item item = itemStack.getItem();
         if (item instanceof ItemBlock) {
-            if (((ItemBlock) item).block == block) {
+            if (Objects.equals(((ItemBlock) item).block, block)) {
                 return true;
             }
         }
@@ -32,7 +36,7 @@ public class ItemStackHelper
         return false;
     }
 
-    public static Boolean isStackForBlock(ItemStack itemStack, Block block, int meta) {
+    public static boolean isStackForBlock(ItemStack itemStack, Block block, int meta) {
         return isStackForBlock(itemStack, block) && itemStack.getItemDamage() == meta;
     }
 
@@ -43,9 +47,9 @@ public class ItemStackHelper
     private static boolean isStackForBlock(ItemStack itemStack, Iterator<Block> blocks) {
         final Item item = itemStack.getItem();
         if (item instanceof ItemBlock) {
-            Block block = ((ItemBlock) item).block;
+            final Block block = ((ItemBlock) item).block;
             while (blocks.hasNext()) {
-                if (blocks.next() == block) {
+                if (Objects.equals(blocks.next(), block)) {
                     return true;
                 }
             }

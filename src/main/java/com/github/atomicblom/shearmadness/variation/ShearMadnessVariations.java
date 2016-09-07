@@ -1,6 +1,6 @@
 package com.github.atomicblom.shearmadness.variation;
 
-import com.github.atomicblom.shearmadness.api.IModelMaker;
+import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
 import com.github.atomicblom.shearmadness.api.IVariationRegistry;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.RegisterShearMadnessVariationEvent;

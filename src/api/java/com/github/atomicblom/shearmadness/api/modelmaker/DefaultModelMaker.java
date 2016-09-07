@@ -1,9 +1,7 @@
 package com.github.atomicblom.shearmadness.api.modelmaker;
 
-import com.github.atomicblom.shearmadness.api.IModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
-import com.github.atomicblom.shearmadness.configuration.Settings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelRenderer;
@@ -13,7 +11,8 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-public class DefaultModelMaker extends IModelMaker
+@SuppressWarnings("ClassHasNoToStringMethod")
+public class DefaultModelMaker implements IModelMaker
 {
     private final QuadrupedTransformDefinition transforms;
 
@@ -27,17 +26,14 @@ public class DefaultModelMaker extends IModelMaker
     @Override
     public ModelQuadruped createModel(ItemStack itemStack, EntityLivingBase entity)
     {
-        if (Settings.debugModels()) {
-            transforms.defineParts();
-        }
-
+        transforms.defineParts();
         final ModelQuadruped quadrupedModel = new ModelSheep1();
-        quadrupedModel.body = getChiselBodyModelRenderer(itemStack, entity, transforms.getBodyPartDefinition());
-        quadrupedModel.head = getChiselBodyModelRenderer(itemStack, entity, transforms.getHeadPartDefinition());
-        quadrupedModel.leg1 = getChiselBodyModelRenderer(itemStack, entity, transforms.getLeg1PartDefinition());
-        quadrupedModel.leg2 = getChiselBodyModelRenderer(itemStack, entity, transforms.getLeg2PartDefinition());
-        quadrupedModel.leg3 = getChiselBodyModelRenderer(itemStack, entity, transforms.getLeg3PartDefinition());
-        quadrupedModel.leg4 = getChiselBodyModelRenderer(itemStack, entity, transforms.getLeg4PartDefinition());
+        transforms.getBodyPartDefinition().ifPresent(definition -> quadrupedModel.body = getChiselBodyModelRenderer(itemStack, entity, definition));
+        transforms.getHeadPartDefinition().ifPresent(definition -> quadrupedModel.head = getChiselBodyModelRenderer(itemStack, entity, definition));
+        transforms.getLeg1PartDefinition().ifPresent(definition -> quadrupedModel.leg1 = getChiselBodyModelRenderer(itemStack, entity, definition));
+        transforms.getLeg2PartDefinition().ifPresent(definition -> quadrupedModel.leg2 = getChiselBodyModelRenderer(itemStack, entity, definition));
+        transforms.getLeg3PartDefinition().ifPresent(definition -> quadrupedModel.leg3 = getChiselBodyModelRenderer(itemStack, entity, definition));
+        transforms.getLeg4PartDefinition().ifPresent(definition -> quadrupedModel.leg4 = getChiselBodyModelRenderer(itemStack, entity, definition));
         return quadrupedModel;
     }
 
@@ -47,6 +43,6 @@ public class DefaultModelMaker extends IModelMaker
         IBakedModel itemModel = renderItem.getItemModelMesher().getItemModel(item);
         itemModel = itemModel.getOverrides().handleItemState(itemModel, item, Minecraft.getMinecraft().theWorld, entity);
 
-        return getModelRenderer(partDefinition, null, itemModel);
+        return getModelRendererForBlockState(partDefinition, null, itemModel);
     }
 }

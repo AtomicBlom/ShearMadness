@@ -1,44 +1,37 @@
 package com.github.atomicblom.shearmadness.capability;
 
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
 import com.google.common.base.Objects;
 import net.minecraft.item.ItemStack;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ChiseledSheepCapability implements IChiseledSheepCapability
 {
+    @Nullable
     private ItemStack itemStack = null;
-    private boolean isChiseled = false;
     private int itemIdentifier;
 
     @Override
     public boolean isChiseled()
     {
-        return isChiseled;
+        return itemStack != null;
     }
 
     @Override
-    public void setChiselItemStack(ItemStack itemStack)
+    public void chisel(@Nonnull ItemStack itemStack)
     {
-        if (itemStack == null)
-        {
-            setChiseled(false);
-            itemIdentifier = 0;
-        } else
-        {
-            setChiseled(true);
-            this.itemStack = itemStack;
-            if (itemStack != null)
-            {
-                itemIdentifier = ItemStackUtils.getHash(itemStack);
-            } else {
-                itemIdentifier = 0;
-            }
-
-
-        }
+        this.itemStack = itemStack;
+        itemIdentifier = ItemStackUtils.getHash(itemStack);
     }
 
-    @Override
+    public void unChisel() {
+        itemStack = null;
+        itemIdentifier = 0;
+    }
+
+    /*@Override
     public void setChiseled(boolean chiseled)
     {
         if (!chiseled)
@@ -47,7 +40,7 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability
             itemIdentifier = 0;
         }
         isChiseled = chiseled;
-    }
+    }*/
 
     @Override
     public ItemStack getChiselItemStack()
@@ -61,7 +54,7 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability
         return Objects.toStringHelper(this)
                 .add("itemIdentifier", itemIdentifier)
                 .add("itemStack", itemStack)
-                .add("isChiseled", isChiseled)
+                .add("isChiseled", isChiseled())
                 .toString();
     }
 

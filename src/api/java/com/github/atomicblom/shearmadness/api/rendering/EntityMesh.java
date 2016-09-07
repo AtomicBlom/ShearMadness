@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.api.rendering;
 
+import com.google.common.collect.Lists;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.PositionTextureVertex;
@@ -14,6 +15,7 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,10 +52,7 @@ public class EntityMesh extends ModelBox
         allTexturedQuads.addAll(texturedQuads);
     }
     public void addTexturedQuads(TexturedQuad... texturedQuads) {
-        for (final TexturedQuad texturedQuad : texturedQuads)
-        {
-            allTexturedQuads.add(texturedQuad);
-        }
+        Collections.addAll(allTexturedQuads, texturedQuads);
     }
 
     public void addTexturedQuad(TexturedQuad texturedQuad) {
@@ -67,14 +66,14 @@ public class EntityMesh extends ModelBox
     {
         if (quadList == null)
         {
-
-            final List<TexturedQuad> outputQuads = new ArrayList<>();
+            final List<TexturedQuad> outputQuads = Lists.newArrayList();
 
             for (final TexturedQuad texturedQuad : allTexturedQuads) {
-                PositionTextureVertex[] newPositions = new PositionTextureVertex[4];
+                final PositionTextureVertex[] newPositions = new PositionTextureVertex[4];
                 for (int i = 0; i < texturedQuad.vertexPositions.length; i++)
                 {
                     final PositionTextureVertex vertexPosition = texturedQuad.vertexPositions[i];
+                    @SuppressWarnings("NumericCastThatLosesPrecision")
                     final Vector4f position = new Vector4f((float) vertexPosition.vector3D.xCoord,
                             (float) vertexPosition.vector3D.yCoord,
                             (float) vertexPosition.vector3D.zCoord, 1);

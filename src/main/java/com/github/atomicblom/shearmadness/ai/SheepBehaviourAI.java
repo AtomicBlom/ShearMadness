@@ -3,7 +3,7 @@ package com.github.atomicblom.shearmadness.ai;
 import com.github.atomicblom.shearmadness.api.VariationRegistry;
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
-import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -56,7 +56,7 @@ public class SheepBehaviourAI extends EntityAIBase
                     boolean matched = false;
                     for (ActiveBehaviour previousActiveBehaviour : previousActiveBehaviours) {
                         if (previousActiveBehaviour.behaviour.getClass() == newBehaviour.getClass() &&
-                                previousActiveBehaviour.behaviour.equals(newBehaviour)) {
+                                previousActiveBehaviour.behaviour.isEquivalentTo(newBehaviour)) {
                             newActiveBehaviours.add(previousActiveBehaviour);
                             previousActiveBehaviour.matched = true;
                             matched = true;

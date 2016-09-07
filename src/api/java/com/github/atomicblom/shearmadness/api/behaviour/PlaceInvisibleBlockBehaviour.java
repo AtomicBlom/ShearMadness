@@ -4,9 +4,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import java.util.function.Consumer;
+import java.util.Objects;
 import java.util.function.Supplier;
 
+@SuppressWarnings("ClassHasNoToStringMethod")
 public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBlockBehaviour> {
 
     private final World world;
@@ -38,7 +39,7 @@ public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBl
     private void setBlock(BlockPos newLocation) {
         BlockPos pos = newLocation;
 
-        if (!entity.isChild()) {
+        if (!getEntity().isChild()) {
             pos = pos.up();
         }
 
@@ -49,19 +50,20 @@ public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBl
 
     private void resetBlock(BlockPos previousLocation) {
         BlockPos pos = previousLocation;
+        final EntitySheep entity = getEntity();
         if (!entity.isChild())
         {
             pos = pos.up();
         }
-        final IBlockState blockState = world.getBlockState(pos);
-        if (this.blockState.equals(blockState))
+        final IBlockState blockAtSheep = world.getBlockState(pos);
+        if (blockState.equals(blockAtSheep))
         {
             world.setBlockToAir(pos);
         }
     }
 
     @Override
-    public boolean equals(PlaceInvisibleBlockBehaviour other) {
-        return super.equals(other) && this.blockState == other.blockState;
+    public boolean isEquivalentTo(PlaceInvisibleBlockBehaviour other) {
+        return super.isEquivalentTo(other) && Objects.equals(blockState, other.blockState);
     }
 }

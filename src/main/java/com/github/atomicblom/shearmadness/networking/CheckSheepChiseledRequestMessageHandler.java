@@ -1,7 +1,7 @@
 package com.github.atomicblom.shearmadness.networking;
 
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
-import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.utility.Logger;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.WorldServer;

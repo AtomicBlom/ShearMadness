@@ -14,6 +14,7 @@ import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
+import javax.annotation.Nullable;
 
 /**
  * Pipes a BakedQuad into a TexturedQuad
@@ -28,7 +29,9 @@ class VertexConsumer implements IVertexConsumer
     private final PositionTextureVertex[] vertices = new PositionTextureVertex[4];
 
     private int currentVertexIndex = -1;
+    @Nullable
     private Vec3d currentPosition = null;
+    @Nullable
     private Vector3f currentTexture = null;
 
     VertexConsumer(VertexFormat vertexFormat, Matrix4f positionTransform, Matrix3f textureTransform)
@@ -112,6 +115,9 @@ class VertexConsumer implements IVertexConsumer
 
         if (element == vertexFormat.getElementCount() - 1)
         {
+            assert currentPosition != null;
+            assert currentTexture != null;
+
             vertices[currentVertexIndex] = new PositionTextureVertex(currentPosition, currentTexture.x, currentTexture.y);
             currentPosition = null;
             currentTexture = null;

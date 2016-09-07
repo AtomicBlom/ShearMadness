@@ -1,7 +1,7 @@
 package com.github.atomicblom.shearmadness.networking;
 
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
-import com.github.atomicblom.shearmadness.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.utility.SoundLibrary;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -28,9 +28,13 @@ public class SheepChiseledMessageHandler implements IMessageHandler<SheepChisele
         {
             return null;
         }
-        capability.setChiseled(message.isChiseled());
-        capability.setChiselItemStack(message.getChiselItemStack());
-        entity.worldObj.playSound(entity.posX, entity.posY, entity.posZ, SoundLibrary.sheepchiseled, SoundCategory.NEUTRAL, 0.5F, 1.0f, true);
+        final boolean chiseled = message.isChiseled();
+        if (chiseled) {
+            capability.chisel(message.getChiselItemStack());
+            entity.worldObj.playSound(entity.posX, entity.posY, entity.posZ, SoundLibrary.sheepchiseled, SoundCategory.NEUTRAL, 0.5F, 1.0f, true);
+        } else {
+            capability.unChisel();
+        }
 
         return null;
     }

@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.api;
 
+import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
 import net.minecraft.item.ItemStack;
 import java.util.function.Function;
 

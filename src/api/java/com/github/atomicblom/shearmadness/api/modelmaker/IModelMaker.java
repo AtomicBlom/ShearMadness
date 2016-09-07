@@ -1,4 +1,4 @@
-package com.github.atomicblom.shearmadness.api;
+package com.github.atomicblom.shearmadness.api.modelmaker;
 
 import com.github.atomicblom.shearmadness.api.rendering.EntityMesh;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
@@ -18,8 +18,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Creates a custom Quadruped model
  */
+@FunctionalInterface
 @SideOnly(Side.CLIENT)
-public abstract class IModelMaker
+public interface IModelMaker
 {
 
     /**
@@ -28,7 +29,7 @@ public abstract class IModelMaker
      * @param entity The entity to create a model for
      * @return a model for the given itemStack
      */
-    public abstract ModelQuadruped createModel(ItemStack itemStack, EntityLivingBase entity);
+    ModelQuadruped createModel(ItemStack itemStack, EntityLivingBase entity);
 
     /**
      * Utility method to convert an IBakedModel to a ModelRenderer for use on an entity body part.
@@ -37,9 +38,9 @@ public abstract class IModelMaker
      * @param model the IBakedModel to transform
      * @return a body part for the entity
      */
-    protected ModelRenderer getModelRenderer(PartDefinition partDefinition, IBlockState blockState, IBakedModel model)
+    default ModelRenderer getModelRendererForBlockState(PartDefinition partDefinition, IBlockState blockState, IBakedModel model)
     {
-        final ModelRenderer renderer = new ModelRenderer(new ModelSheep1(), 28, 8);
+        final ModelRenderer renderer = new ModelRenderer(new ModelSheep1(), 0, 0);
         if (partDefinition == null) {
             return renderer;
         }
