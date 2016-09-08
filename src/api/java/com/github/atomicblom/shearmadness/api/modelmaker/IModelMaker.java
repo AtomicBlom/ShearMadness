@@ -50,12 +50,31 @@ public interface IModelMaker
                 partDefinition.getRotationPoint().z
         );
 
+        final EntityMesh box = createMeshFromBlockModel(partDefinition, blockState, model, renderer);
+
+        renderer.cubeList.add(box);
+        return renderer;
+    }
+
+    default ModelRenderer createModelRenderer(PartDefinition partDefinition) {
+        final ModelRenderer renderer = new ModelRenderer(new ModelSheep1(), 0, 0);
+        if (partDefinition == null) {
+            return renderer;
+        }
+        renderer.setRotationPoint(
+                partDefinition.getRotationPoint().x,
+                partDefinition.getRotationPoint().y,
+                partDefinition.getRotationPoint().z
+        );
+
+        return renderer;
+    }
+
+    default EntityMesh addBlockModelToEntityMesh(EntityMesh box, PartDefinition partDefinition, IBlockState blockState, IBakedModel model) {
         final EntityMesh box = new EntityMesh(
                 renderer,
                 partDefinition.getPositionTransform(),
                 partDefinition.getTextureTransform());
-
-        renderer.cubeList.add(box);
 
         ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID);
         for (final EnumFacing value : EnumFacing.VALUES)
@@ -64,7 +83,6 @@ public interface IModelMaker
         }
         box.addBakedQuads(model.getQuads(blockState, null, 0));
         ForgeHooksClient.setRenderLayer(null);
-
-        return renderer;
+        return box;
     }
 }
