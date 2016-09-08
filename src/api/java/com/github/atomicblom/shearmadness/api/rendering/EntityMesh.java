@@ -7,6 +7,7 @@ import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.util.vector.Matrix3f;
@@ -26,37 +27,30 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class EntityMesh extends ModelBox
 {
-    private final Matrix4f positionTransform;
-    private final Matrix3f textureTransform;
-    private final List<BakedQuad> allBakedQuads = new ArrayList<>(6);
-    private final List<TexturedQuad> allTexturedQuads = new ArrayList<>(6);
+    private final List<FutureQuad<BakedQuad>> allBakedQuads = new ArrayList<>(6);
+    private final List<FutureQuad<TexturedQuad>> allTexturedQuads = new ArrayList<>(6);
     private TexturedQuad[] quadList = null;
 
-    public EntityMesh(ModelRenderer renderer, Matrix4f positionTransform, Matrix3f textureTransform)
+    public EntityMesh(ModelRenderer renderer)
     {
         super(renderer, 0, 0, 0, 0, 0, 0, 0, 0, 0, false);
-        this.positionTransform = positionTransform;
-        this.textureTransform = textureTransform;
     }
 
     /**
      * Add a BakedQuad to the mesh. It will be processed in batch when the model is rendered for the first time.
      * @param bakedQuads the list of quads to add to the model
      */
-    public void addBakedQuads(Collection<BakedQuad> bakedQuads)
+    public void addBakedQuads(Matrix4f positionTransform, Matrix3f textureTransform, Collection<BakedQuad> bakedQuads)
     {
-        allBakedQuads.addAll(bakedQuads);
+        allBakedQuads.add(new FutureQuad<>(bakedQuads, positionTransform, textureTransform));
     }
 
-    public void addTexturedQuads(Collection<TexturedQuad> texturedQuads) {
-        allTexturedQuads.addAll(texturedQuads);
-    }
-    public void addTexturedQuads(TexturedQuad... texturedQuads) {
-        Collections.addAll(allTexturedQuads, texturedQuads);
+    public void addTexturedQuads(Matrix4f positionTransform, Matrix3f textureTransform, Collection<TexturedQuad> texturedQuads) {
+        allTexturedQuads.add(new FutureQuad<>(texturedQuads, positionTransform, textureTransform));
     }
 
-    public void addTexturedQuad(TexturedQuad texturedQuad) {
-        allTexturedQuads.add(texturedQuad);
+    public void addTexturedQuads(Matrix4f positionTransform, Matrix3f textureTransform, TexturedQuad... texturedQuads) {
+        allTexturedQuads.add(new FutureQuad<>(Lists.newArrayList(texturedQuads), positionTransform, textureTransform));
     }
 
     @SuppressWarnings("ObjectAllocationInLoop")
@@ -68,41 +62,47 @@ public class EntityMesh extends ModelBox
         {
             final List<TexturedQuad> outputQuads = Lists.newArrayList();
 
-            for (final TexturedQuad texturedQuad : allTexturedQuads) {
-                final PositionTextureVertex[] newPositions = new PositionTextureVertex[4];
-                for (int i = 0; i < texturedQuad.vertexPositions.length; i++)
-                {
-                    final PositionTextureVertex vertexPosition = texturedQuad.vertexPositions[i];
-                    @SuppressWarnings("NumericCastThatLosesPrecision")
-                    final Vector4f position = new Vector4f((float) vertexPosition.vector3D.xCoord,
-                            (float) vertexPosition.vector3D.yCoord,
-                            (float) vertexPosition.vector3D.zCoord, 1);
+            for (final FutureQuad<TexturedQuad> texturedQuads : allTexturedQuads) {
+                for (final TexturedQuad texturedQuad : texturedQuads.quads) {
+                    final PositionTextureVertex[] newPositions = new PositionTextureVertex[4];
+                    for (int i = 0; i < texturedQuad.vertexPositions.length; i++)
+                    {
+                        final PositionTextureVertex vertexPosition = texturedQuad.vertexPositions[i];
+                        @SuppressWarnings("NumericCastThatLosesPrecision")
+                        final Vector4f position = new Vector4f((float) vertexPosition.vector3D.xCoord,
+                                (float) vertexPosition.vector3D.yCoord,
+                                (float) vertexPosition.vector3D.zCoord, 1);
 
-                    final Vector3f textureCoords = new Vector3f(
-                            vertexPosition.texturePositionX,
-                            vertexPosition.texturePositionY,
-                            1);
+                        final Vector3f textureCoords = new Vector3f(
+                                vertexPosition.texturePositionX,
+                                vertexPosition.texturePositionY,
+                                1);
 
-                    final Vector4f transformedPosition = Matrix4f.transform(positionTransform, position, null);
-                    final Vector3f transformedTexture = Matrix3f.transform(textureTransform, textureCoords, null);
+                        final Vector4f transformedPosition = Matrix4f.transform(texturedQuads.positionTransform, position, null);
+                        final Vector3f transformedTexture = Matrix3f.transform(texturedQuads.textureTransform, textureCoords, null);
 
-                    newPositions[i] = new PositionTextureVertex(
-                            transformedPosition.getX(),
-                            transformedPosition.getY(),
-                            transformedPosition.getZ(),
-                            transformedTexture.getX(),
-                            transformedTexture.getY()
-                    );
+                        newPositions[i] = new PositionTextureVertex(
+                                transformedPosition.getX(),
+                                transformedPosition.getY(),
+                                transformedPosition.getZ(),
+                                transformedTexture.getX(),
+                                transformedTexture.getY()
+                        );
+                    }
+
+                    outputQuads.add(new TexturedQuad(newPositions));
                 }
 
-                outputQuads.add(new TexturedQuad(newPositions));
             }
 
-            for (final BakedQuad bakedQuad : allBakedQuads)
+            for (final FutureQuad<BakedQuad> bakedQuads : allBakedQuads)
             {
-                final VertexConsumer consumer = new VertexConsumer(renderer.getVertexFormat(), positionTransform, textureTransform);
-                bakedQuad.pipe(consumer);
-                outputQuads.add(consumer.getOutputQuad());
+                for (final BakedQuad bakedQuad : bakedQuads.quads) {
+                    final VertexConsumer consumer = new VertexConsumer(renderer.getVertexFormat(), bakedQuads.positionTransform, bakedQuads.textureTransform);
+                    bakedQuad.pipe(consumer);
+                    outputQuads.add(consumer.getOutputQuad());
+                }
+
             }
 
             quadList = new TexturedQuad[outputQuads.size()];
@@ -112,6 +112,19 @@ public class EntityMesh extends ModelBox
         for (final TexturedQuad texturedquad : quadList)
         {
             texturedquad.draw(renderer, scale);
+        }
+    }
+
+    private static class FutureQuad<T> {
+        private final Collection<T> quads;
+        private final Matrix4f positionTransform;
+        private final Matrix3f textureTransform;
+
+        FutureQuad(Collection<T> quads, Matrix4f positionTransform, Matrix3f textureTransform) {
+
+            this.quads = quads;
+            this.positionTransform = positionTransform;
+            this.textureTransform = textureTransform;
         }
     }
 

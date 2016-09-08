@@ -23,12 +23,12 @@ public class InfiltratorModelMaker extends DefaultModelMaker
         final ModelQuadruped model = super.createModel(itemStack, entity);
 
         final Matrix4f partATransform = new Matrix4f().translate(new Vector3f(-2, -1, -8));
-        EntityMesh partA = new EntityMesh(model.head, partATransform, new Matrix3f());
+        EntityMesh partA = new EntityMesh(model.head);
 
         final TextureMap blockTextureMap = Minecraft.getMinecraft().getTextureMapBlocks();
         final TextureAtlasSprite chickenSprite = blockTextureMap.getAtlasSprite(Reference.MOD_ID + ":chicken-nuggets");
 
-        partA.addTexturedQuads(
+        partA.addTexturedQuads(partATransform, new Matrix3f(),
                 new TexturedQuad(
                         new PositionTextureVertex[]{
                                 new PositionTextureVertex(0, 0, 0, chickenSprite.getInterpolatedU(4), chickenSprite.getInterpolatedV(2)),
@@ -157,13 +157,13 @@ public class InfiltratorModelMaker extends DefaultModelMaker
                 )};
 
         final Matrix4f rightWingTransform = new Matrix4f().translate(new Vector3f(-7.6f, -8, -6));
-        EntityMesh rightWing = new EntityMesh(model.body, rightWingTransform, new Matrix3f());
-        rightWing.addTexturedQuads(texturedQuads);
+        EntityMesh rightWing = new EntityMesh(model.body);
+        rightWing.addTexturedQuads(rightWingTransform, new Matrix3f(), texturedQuads);
         model.body.cubeList.add(rightWing);
 
         final Matrix4f leftWingTransform = new Matrix4f().translate(new Vector3f(5.6f, -8, -6));
-        EntityMesh leftWing = new EntityMesh(model.body, leftWingTransform, new Matrix3f());
-        leftWing.addTexturedQuads(texturedQuads);
+        EntityMesh leftWing = new EntityMesh(model.body);
+        leftWing.addTexturedQuads(leftWingTransform, new Matrix3f(), texturedQuads);
         model.body.cubeList.add(leftWing);
 
         texturedQuads = new TexturedQuad[]{
@@ -210,20 +210,20 @@ public class InfiltratorModelMaker extends DefaultModelMaker
         };
 
         final Matrix4f legTransform = new Matrix4f().scale(new Vector3f(1.01f, 1.01f, 1.01f)).translate(new Vector3f(-2, 4, -2));
-        EntityMesh rightForeLeg = new EntityMesh(model.leg3, legTransform, new Matrix3f());
-        rightForeLeg.addTexturedQuads(texturedQuads);
+        EntityMesh rightForeLeg = new EntityMesh(model.leg3);
+        rightForeLeg.addTexturedQuads(legTransform, new Matrix3f(), texturedQuads);
         model.leg3.cubeList.add(rightForeLeg);
 
-        EntityMesh leftForeLeg = new EntityMesh(model.leg4, legTransform, new Matrix3f());
-        leftForeLeg.addTexturedQuads(texturedQuads);
+        EntityMesh leftForeLeg = new EntityMesh(model.leg4);
+        leftForeLeg.addTexturedQuads(legTransform, new Matrix3f(), texturedQuads);
         model.leg4.cubeList.add(leftForeLeg);
 
-        EntityMesh rightRearLeg = new EntityMesh(model.leg1, legTransform, new Matrix3f());
-        rightRearLeg.addTexturedQuads(texturedQuads);
+        EntityMesh rightRearLeg = new EntityMesh(model.leg1);
+        rightRearLeg.addTexturedQuads(legTransform, new Matrix3f(), texturedQuads);
         model.leg1.cubeList.add(rightRearLeg);
 
-        EntityMesh leftRearLeg = new EntityMesh(model.leg2, legTransform, new Matrix3f());
-        leftRearLeg.addTexturedQuads(texturedQuads);
+        EntityMesh leftRearLeg = new EntityMesh(model.leg2);
+        leftRearLeg.addTexturedQuads(legTransform, new Matrix3f(), texturedQuads);
         model.leg2.cubeList.add(leftRearLeg);
 
         return model;
