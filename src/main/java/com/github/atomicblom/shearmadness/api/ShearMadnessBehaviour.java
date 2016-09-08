@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.function.Function;
 
-public class ShearMadnessBehaviour {
+class ShearMadnessBehaviour {
     private final Function<ItemStack, Boolean> handlesVariant;
     private final Function<EntitySheep, BehaviourBase> behaviourFactory;
 
@@ -18,12 +18,12 @@ public class ShearMadnessBehaviour {
         this.behaviourFactory = behaviourFactory;
     }
 
-    public boolean canHandleItemStack(ItemStack itemStack)
+    boolean canHandleItemStack(ItemStack itemStack)
     {
         return handlesVariant.apply(itemStack);
     }
 
-    public BehaviourBase createBehaviourBase(EntitySheep entity)
+    BehaviourBase createBehaviourBase(EntitySheep entity)
     {
         return behaviourFactory.apply(entity);
     }

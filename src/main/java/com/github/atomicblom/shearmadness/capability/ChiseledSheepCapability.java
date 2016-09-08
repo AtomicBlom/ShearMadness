@@ -26,21 +26,11 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability
         itemIdentifier = ItemStackUtils.getHash(itemStack);
     }
 
+    @Override
     public void unChisel() {
         itemStack = null;
         itemIdentifier = 0;
     }
-
-    /*@Override
-    public void setChiseled(boolean chiseled)
-    {
-        if (!chiseled)
-        {
-            itemStack = null;
-            itemIdentifier = 0;
-        }
-        isChiseled = chiseled;
-    }*/
 
     @Override
     public ItemStack getChiselItemStack()

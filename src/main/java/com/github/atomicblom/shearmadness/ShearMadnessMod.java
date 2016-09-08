@@ -47,6 +47,7 @@ public class ShearMadnessMod
         Proxies.blockProxy.registerBlocks();
         Proxies.renderProxy.registerVariants();
         Proxies.audioProxy.registerSounds();
+        Proxies.forgeEventProxy.registerBehaviours();
     }
 
     @EventHandler

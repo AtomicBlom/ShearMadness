@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 public class BehaviourRegistry implements IBehaviourRegistry {
@@ -21,30 +22,43 @@ public class BehaviourRegistry implements IBehaviourRegistry {
     }
 
     public Iterable<BehaviourBase> getApplicableBehaviours(ItemStack itemStack, EntitySheep entity) {
-        Iterator<ShearMadnessBehaviour> baseIterator = behaviours.iterator();
+        final Iterator<ShearMadnessBehaviour> baseIterator = behaviours.iterator();
 
-        return () -> new Iterator<BehaviourBase>() {
-            ShearMadnessBehaviour nextBehaviour = null;
+        return () -> new BehaviourIterator(itemStack, baseIterator, entity);
+    }
 
-            ItemStack localItemStack = itemStack;
+    private static class BehaviourIterator implements Iterator<BehaviourBase> {
+        private final Iterator<ShearMadnessBehaviour> baseIterator;
+        private final EntitySheep entity;
+        private ShearMadnessBehaviour nextBehaviour = null;
 
-            @Override
-            public boolean hasNext() {
-                while (true) {
-                    if (!baseIterator.hasNext()) {
-                        return false;
-                    }
-                    nextBehaviour = baseIterator.next();
-                    if (nextBehaviour.canHandleItemStack(localItemStack)) {
-                        return true;
-                    }
+        private final ItemStack itemStack;
+
+        private BehaviourIterator(ItemStack itemStack, Iterator<ShearMadnessBehaviour> baseIterator, EntitySheep entity) {
+            this.baseIterator = baseIterator;
+            this.entity = entity;
+            this.itemStack = itemStack;
+        }
+
+        @Override
+        public boolean hasNext() {
+            while (true) {
+                if (!baseIterator.hasNext()) {
+                    return false;
+                }
+                nextBehaviour = baseIterator.next();
+                if (nextBehaviour.canHandleItemStack(itemStack)) {
+                    return true;
                 }
             }
+        }
 
-            @Override
-            public BehaviourBase next() {
-                return nextBehaviour.createBehaviourBase(entity);
+        @Override
+        public BehaviourBase next() {
+            if (nextBehaviour == null) {
+                throw new NoSuchElementException("Invalid iteration over behaviours");
             }
-        };
+            return nextBehaviour.createBehaviourBase(entity);
+        }
     }
 }

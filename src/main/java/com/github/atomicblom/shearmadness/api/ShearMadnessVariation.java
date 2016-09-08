@@ -20,12 +20,12 @@ class ShearMadnessVariation {
         this.variationModelMaker = variationModelMaker;
     }
 
-    public boolean canHandleItemStack(ItemStack itemStack)
+    boolean canHandleItemStack(ItemStack itemStack)
     {
         return handlesVariant.apply(itemStack);
     }
 
-    public IModelMaker getVariationModelMaker()
+    IModelMaker getVariationModelMaker()
     {
         return variationModelMaker;
     }

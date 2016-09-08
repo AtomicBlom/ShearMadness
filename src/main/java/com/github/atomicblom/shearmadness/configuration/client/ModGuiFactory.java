@@ -3,6 +3,8 @@ package com.github.atomicblom.shearmadness.configuration.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
+
+import javax.annotation.Nullable;
 import java.util.Set;
 
 @SuppressWarnings("unused")
@@ -19,16 +21,16 @@ public class ModGuiFactory implements IModGuiFactory
         return ConfigGUI.class;
     }
 
-    @SuppressWarnings("ReturnOfNull")
     @Override
+    @Nullable
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
     {
         return null;
     }
 
-    @SuppressWarnings("ReturnOfNull")
     @Override
     @Deprecated
+    @Nullable
     public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
     {
         return null;

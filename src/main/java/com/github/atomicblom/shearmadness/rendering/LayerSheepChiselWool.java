@@ -1,9 +1,9 @@
 package com.github.atomicblom.shearmadness.rendering;
 
-import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
 import com.github.atomicblom.shearmadness.api.VariationRegistry;
-import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
+import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.configuration.Settings;
 import com.github.atomicblom.shearmadness.utility.Logger;
 import com.google.common.cache.Cache;
@@ -21,8 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 

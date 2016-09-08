@@ -2,11 +2,12 @@ package com.github.atomicblom.shearmadness.proxy;
 
 import com.github.atomicblom.shearmadness.Chiseling;
 import com.github.atomicblom.shearmadness.Shearing;
-import com.github.atomicblom.shearmadness.ai.*;
+import com.github.atomicblom.shearmadness.ai.SheepBehaviourAI;
 import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
-import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
-import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
+import com.github.atomicblom.shearmadness.behaviour.ShearMadnessBehaviours;
+import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.interactions.AnvilInteraction;
 import com.github.atomicblom.shearmadness.interactions.WorkbenchInteraction;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
@@ -30,7 +31,9 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
 import java.util.List;
 
 @SuppressWarnings({"MethodMayBeStatic", "unused"})
@@ -42,7 +45,7 @@ public class CommonForgeEventProxy
 
     @SuppressWarnings({"ConstantConditions", "MethodWithMoreThanThreeNegations"})
     @SubscribeEvent
-    public void onPlayerInteractionWithEntity(PlayerInteractEvent.EntityInteract event)
+    public void onPlayerInteractionWithEntity(EntityInteract event)
     {
         //Process for shearing a sheep
         if (event.getWorld().isRemote) return;
@@ -67,7 +70,7 @@ public class CommonForgeEventProxy
         Shearing.shearSheep(itemStack, sheep, capability);
     }
 
-    private void checkSpecialSheepInteraction(PlayerInteractEvent.EntityInteract event)
+    private void checkSpecialSheepInteraction(EntityInteract event)
     {
         final EntitySheep sheep = (EntitySheep) event.getTarget();
 
@@ -187,23 +190,10 @@ public class CommonForgeEventProxy
                     .stream()
                     .filter(taskEntry -> taskEntry.action instanceof SheepBehaviourAI)
                     .forEach(taskEntry -> ((SheepBehaviourAI) taskEntry.action).onDeath());
-
-            /*final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
-            if (capability.isChiseled()) {
-                final EntityLiving living = (EntityLiving) entity;
-
-                final World world = entity.worldObj;
-                BlockPos invisibleBlock = entity.getPosition();
-                if (!living.isChild()) {
-                    invisibleBlock = invisibleBlock.up();
-                }
-                final IBlockState blockState = world.getBlockState(invisibleBlock);
-
-                final Block block = blockState.getBlock();
-                if (block == BlockLibrary.invisibleRedstone || block == BlockLibrary.invisibleGlowstone) {
-                    world.setBlockToAir(invisibleBlock);
-                }
-            }*/
         }
+    }
+
+    public void registerBehaviours() {
+        MinecraftForge.EVENT_BUS.register(ShearMadnessBehaviours.INSTANCE);
     }
 }
