@@ -10,8 +10,11 @@ import com.github.atomicblom.shearmadness.behaviour.ShearMadnessBehaviours;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.interactions.AnvilInteraction;
 import com.github.atomicblom.shearmadness.interactions.WorkbenchInteraction;
+import com.github.atomicblom.shearmadness.library.ComputerCraftLibrary;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
+import com.github.atomicblom.shearmadness.utility.Logger;
 import com.github.atomicblom.shearmadness.utility.Reference;
+import dan200.computercraft.shared.computer.items.ItemComputer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -23,7 +26,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -78,12 +83,24 @@ public class CommonForgeEventProxy
         if (capability == null) return;
         if (!capability.isChiseled()) return;
 
-        final Item item = capability.getChiselItemStack().getItem();
+        final ItemStack itemStack = capability.getChiselItemStack();
+        final Item item = itemStack.getItem();
+        final World world = event.getWorld();
+        final EntityPlayer player = event.getEntityPlayer();
+        final EnumHand hand = event.getHand();
+
+        if (item == null) { return; }
         if (item instanceof ItemBlock && ((ItemBlock) item).block == Blocks.ANVIL) {
-            event.getEntityPlayer().displayGui(new AnvilInteraction(event.getWorld(), sheep));
+            player.displayGui(new AnvilInteraction(world, sheep));
         }
         if (item instanceof ItemBlock && ((ItemBlock) item).block == Blocks.CRAFTING_TABLE) {
-            event.getEntityPlayer().displayGui(new WorkbenchInteraction(event.getWorld(), sheep));
+            player.displayGui(new WorkbenchInteraction(world, sheep));
+        }
+        if (item == ComputerCraftLibrary.computer) {
+            Logger.info("CC interaction");
+
+            ComputerCraftLibrary.portable_computer.onItemRightClick(itemStack, world, player, hand);
+            //item.onItemRightClick(capability.getChiselItemStack(), event.getWorld(), event.getEntityPlayer(), event.getHand());
         }
     }
 
