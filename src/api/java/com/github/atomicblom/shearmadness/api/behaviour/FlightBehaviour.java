@@ -49,6 +49,7 @@ public class FlightBehaviour extends BehaviourBase {
         }
 
         entity.setJumping(true);
+        entity.fallDistance = 0;
 
         entity.rotationYaw = updateRotation(entity.rotationYaw, destinationYaw, 2);
         if (MathHelper.wrapDegrees(entity.rotationYaw - destinationYaw) < 2) {
