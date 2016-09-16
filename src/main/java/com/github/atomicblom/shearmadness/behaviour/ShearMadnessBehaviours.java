@@ -47,6 +47,11 @@ public enum ShearMadnessBehaviours
         );
 
         registry.registerBehaviour(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.BOOKSHELF),
+                entity -> new PlaceInvisibleBlockBehaviour(entity, Behaviours::allowBookshelf, BlockLibrary.invisibleBookshelf.getDefaultState())
+        );
+
+        registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.TNT),
                 sheep -> new ExplosiveBehaviour(sheep, Behaviours::allowTNT)
         );

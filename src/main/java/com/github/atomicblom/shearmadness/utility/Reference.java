@@ -15,6 +15,7 @@ public final class Reference
             "* ChiselFarm  - will allow the sheep to produce chiseled blocks (warning, this currently allows duping ores).\n" +
             "* CannotShear - You cannot shear the sheep while chiseled.\n";
     public static final String ALLOW_REDSTONE_COMMENT = "Chiseled redstone sheep will trigger Redstone circuits.";
+    public static final String ALLOW_BOOKSHELF_COMMENT = "Chiseled bookshelf sheep will affect enchanting tables.";
     public static final String ALLOW_GLOWSTONE_COMMENT = "Chiseled glowstone sheep will light up the area around them.\n" +
             "WARNING: testing shows this creates a lot of chunk recalculation. I do not recommend this option.";
     public static final String ALLOW_CACTUS_COMMENT = "Chiseled Cactus sheep will deal damage players and destroy items.";
@@ -34,6 +35,7 @@ public final class Reference
 
         public static final ResourceLocation InvisibleRedstone = new ResourceLocation(MOD_ID, "invisibleRedstone");
         public static final ResourceLocation InvisibleGlowstone = new ResourceLocation(MOD_ID, "invisibleGlowstone");
+        public static final ResourceLocation InvisibleBookshelf = new ResourceLocation(MOD_ID, "invisibleBookshelf");
 
         private Blocks() {}
     }

@@ -62,6 +62,7 @@ public enum Settings
 
         private boolean allowGlowstone = false;
         private boolean allowRedstone = true;
+        private boolean allowBookshelf = true;
         private boolean allowCactus = true;
         private boolean allowTNT = true;
         private boolean allowFireDamage = true;
@@ -69,6 +70,9 @@ public enum Settings
 
         public static boolean allowRedstone() {
             return INSTANCE.allowRedstone;
+        }
+        public static boolean allowBookshelf() {
+            return INSTANCE.allowBookshelf;
         }
         public static boolean allowGlowstone() {
             return INSTANCE.allowGlowstone;
@@ -86,6 +90,7 @@ public enum Settings
 
         private static void syncConfig(Configuration config) {
             INSTANCE.allowRedstone = config.getBoolean("allowRedstone", CATEGORY, true, Reference.ALLOW_REDSTONE_COMMENT);
+            INSTANCE.allowBookshelf = config.getBoolean("allowBookshelf", CATEGORY, true, Reference.ALLOW_BOOKSHELF_COMMENT);
             INSTANCE.allowGlowstone = config.getBoolean("allowGlowstone", CATEGORY, false, Reference.ALLOW_GLOWSTONE_COMMENT);
             INSTANCE.allowCactus = config.getBoolean("allowCactus", CATEGORY, true, Reference.ALLOW_CACTUS_COMMENT);
             INSTANCE.allowTNT = config.getBoolean("allowTNT", CATEGORY, true, Reference.ALLOW_TNT_COMMENT);

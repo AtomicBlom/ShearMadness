@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.proxy;
 
+import com.github.atomicblom.shearmadness.block.InvisibleBookshelfBlock;
 import com.github.atomicblom.shearmadness.block.InvisibleGlowstoneBlock;
 import com.github.atomicblom.shearmadness.block.InvisibleRedstoneBlock;
 import com.github.atomicblom.shearmadness.utility.Localization;
@@ -16,6 +17,7 @@ public class CommonBlockProxy
     public void registerBlocks() {
         registerBlockAndItem(new InvisibleRedstoneBlock(), Reference.Blocks.InvisibleRedstone);
         registerBlockAndItem(new InvisibleGlowstoneBlock(), Reference.Blocks.InvisibleGlowstone);
+        registerBlockAndItem(new InvisibleBookshelfBlock(), Reference.Blocks.InvisibleBookshelf);
     }
 
     private void registerBlockAndItem(Block block, ResourceLocation name) {

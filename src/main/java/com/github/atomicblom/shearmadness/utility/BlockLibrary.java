@@ -8,6 +8,13 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder(Reference.MOD_ID)
 public final class BlockLibrary {
 
-    public static final InvisibleBlock invisibleRedstone = null;
-    public static final InvisibleBlock invisibleGlowstone = null;
+    public static final InvisibleBlock invisibleRedstone;
+    public static final InvisibleBlock invisibleGlowstone;
+    public static final InvisibleBlock invisibleBookshelf;
+
+    static {
+        invisibleRedstone = null;
+        invisibleGlowstone = null;
+        invisibleBookshelf = null;
+    }
 }

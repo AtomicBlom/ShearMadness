@@ -29,7 +29,7 @@ public enum ImmersiveEngineeringBehaviours
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, ImmersiveEngineeringLibrary.clothDevice),
-                (sheep) -> new FlightBehaviour(sheep, 1, false)
+                sheep -> new FlightBehaviour(sheep, 1, false)
         );
     }
 }

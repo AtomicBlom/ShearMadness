@@ -83,13 +83,6 @@ public class SheepBehaviourAI extends EntityAIBase
         }
 
         if (!capability.isChiseled()) {
-            /*if (hasActiveBehaviour) {
-                for (ActiveBehaviour previousActiveBehaviour : activeBehaviours) {
-                    previousActiveBehaviour.behaviour.onBehaviourStopped(previousPos);
-                }
-                activeBehaviours = new ActiveBehaviour[0];
-                hasActiveBehaviour = false;
-            }*/
             return false;
         }
 
