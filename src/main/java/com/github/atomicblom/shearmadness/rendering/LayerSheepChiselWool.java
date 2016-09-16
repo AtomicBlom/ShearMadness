@@ -11,6 +11,7 @@ import com.google.common.cache.CacheBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelSheep1;
+import net.minecraft.client.model.ModelSheep2;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -21,6 +22,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.Level;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -63,8 +66,13 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
 
                     sheepModel = modelCache.get(capability.getItemIdentifier(), () ->
                     {
-                        final IModelMaker variationModelMaker = VariationRegistry.INSTANCE.getVariationModelMaker(itemStack);
-                        return variationModelMaker.createModel(itemStack, sheep);
+                        try {
+                            final IModelMaker variationModelMaker = VariationRegistry.INSTANCE.getVariationModelMaker(itemStack);
+                            return variationModelMaker.createModel(itemStack, sheep);
+                        } catch (Exception e) {
+                            Logger.log(Level.INFO, e, "Error creating chiseled sheep model, item stack was %s", itemStack);
+                            return new ModelSheep1();
+                        }
                     });
                     sheepRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 

@@ -115,8 +115,14 @@ class VertexConsumer implements IVertexConsumer
 
         if (element == vertexFormat.getElementCount() - 1)
         {
-            assert currentPosition != null;
-            assert currentTexture != null;
+            if (currentPosition == null || currentTexture == null) {
+                String vertexInfo = "";
+                for (final VertexFormatElement vertexFormatElement : vertexFormat.getElements()) {
+                    vertexInfo += String.format("Element %d - %s\n", vertexFormatElement.getIndex(), vertexFormatElement.getUsage());
+                }
+
+                throw new RuntimeException("Unexpected Vertex Format:\n" + vertexInfo);
+            }
 
             vertices[currentVertexIndex] = new PositionTextureVertex(currentPosition, currentTexture.x, currentTexture.y);
             currentPosition = null;

@@ -8,6 +8,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 public class ImmersiveEngineeringLibrary
 {
     public static final Block metalDecoration2 = null;
+    public static final Block metalDevice1 = null;
     public static final Block woodenDevice1 = null;
+    public static final Block clothDevice = null;
     public static final Block conveyor = null;
+    public static final Block connector = null;
 }

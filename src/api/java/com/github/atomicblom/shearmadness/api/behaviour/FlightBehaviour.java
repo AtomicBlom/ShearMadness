@@ -9,13 +9,17 @@ import java.util.Random;
 public class FlightBehaviour extends BehaviourBase {
 
     private final Random random;
+    private final int floatHeight;
+    private final boolean moveForward;
     private float destinationYaw;
     private int framesTillNextTurn;
     private double destinationMotionY;
     private double currentMotionY;
 
-    public FlightBehaviour(EntitySheep sheep) {
+    public FlightBehaviour(EntitySheep sheep, int floatHeight, boolean moveForward) {
         super(sheep);
+        this.floatHeight = floatHeight;
+        this.moveForward = moveForward;
         random = new Random();
     }
 
@@ -28,17 +32,22 @@ public class FlightBehaviour extends BehaviourBase {
     }
 
     @Override
+    public void onBehaviourStopped(BlockPos previousPos) {
+        getEntity().fallDistance = 0;
+    }
+
+    @Override
     public void updateTask() {
         final EntitySheep entity = getEntity();
         final BlockPos height = entity.worldObj.getHeight(entity.getPosition());
         final double actualHeight = entity.posY - height.getY();
-        entity.moveEntityWithHeading(0, 0.6f);
+
 
         if (currentMotionY < destinationMotionY) {
             currentMotionY *= 1.05;
         }
 
-        if (actualHeight < 10) {
+        if (actualHeight < floatHeight) {
             entity.motionY = currentMotionY;
         }
         if (entity.motionY > 0.5) {
@@ -51,16 +60,18 @@ public class FlightBehaviour extends BehaviourBase {
         entity.setJumping(true);
         entity.fallDistance = 0;
 
-        entity.rotationYaw = updateRotation(entity.rotationYaw, destinationYaw, 2);
-        if (MathHelper.wrapDegrees(entity.rotationYaw - destinationYaw) < 2) {
-            if (framesTillNextTurn <= 0)
-            {
-                destinationYaw = random.nextFloat() * 360;
-                //Logger.info("New Turn Destination is %f", destinationYaw);
-                framesTillNextTurn = 200;
-            } else {
-                //Logger.info("Counting down");
-                framesTillNextTurn--;
+        if (moveForward) {
+            entity.moveEntityWithHeading(0, 0.6f);
+            entity.rotationYaw = updateRotation(entity.rotationYaw, destinationYaw, 2);
+            if (MathHelper.wrapDegrees(entity.rotationYaw - destinationYaw) < 2) {
+                if (framesTillNextTurn <= 0) {
+                    destinationYaw = random.nextFloat() * 360;
+                    //Logger.info("New Turn Destination is %f", destinationYaw);
+                    framesTillNextTurn = 200;
+                } else {
+                    //Logger.info("Counting down");
+                    framesTillNextTurn--;
+                }
             }
         }
     }

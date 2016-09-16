@@ -54,7 +54,7 @@ public enum ShearMadnessBehaviours
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, ChiselLibrary.technical, 4) ||
                         ItemStackHelper.isStackForBlock(itemStack, ChiselLibrary.technical1, 1),
-                FlightBehaviour::new
+                sheep -> new FlightBehaviour(sheep, 10, true)
         );
     }
 }

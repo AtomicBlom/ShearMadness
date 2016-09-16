@@ -7,16 +7,19 @@ import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,6 +33,7 @@ public class EntityMesh extends ModelBox
     private final List<FutureQuad<BakedQuad>> allBakedQuads = new ArrayList<>(6);
     private final List<FutureQuad<TexturedQuad>> allTexturedQuads = new ArrayList<>(6);
     private TexturedQuad[] quadList = null;
+    private boolean errored;
 
     public EntityMesh(ModelRenderer renderer)
     {
@@ -98,11 +102,17 @@ public class EntityMesh extends ModelBox
             for (final FutureQuad<BakedQuad> bakedQuads : allBakedQuads)
             {
                 for (final BakedQuad bakedQuad : bakedQuads.quads) {
-                    final VertexConsumer consumer = new VertexConsumer(renderer.getVertexFormat(), bakedQuads.positionTransform, bakedQuads.textureTransform);
-                    bakedQuad.pipe(consumer);
-                    outputQuads.add(consumer.getOutputQuad());
+                    try {
+                        final VertexConsumer consumer = new VertexConsumer(bakedQuad.getFormat(), bakedQuads.positionTransform, bakedQuads.textureTransform);
+                        bakedQuad.pipe(consumer);
+                        outputQuads.add(consumer.getOutputQuad());
+                    } catch (Exception e) {
+                        if (!errored) {
+                            LogManager.getLogger("ShearMadnessAPI").log(Level.ERROR, "Error creating chiseled model", e);
+                        }
+                        errored = true;
+                    }
                 }
-
             }
 
             quadList = new TexturedQuad[outputQuads.size()];

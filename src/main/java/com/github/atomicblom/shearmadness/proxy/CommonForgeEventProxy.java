@@ -4,11 +4,14 @@ import com.github.atomicblom.shearmadness.Chiseling;
 import com.github.atomicblom.shearmadness.Shearing;
 import com.github.atomicblom.shearmadness.ai.SheepBehaviourAI;
 import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
+import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
+import com.github.atomicblom.shearmadness.behaviour.ImmersiveEngineeringBehaviours;
 import com.github.atomicblom.shearmadness.behaviour.ShearMadnessBehaviours;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.interactions.AnvilInteraction;
+import com.github.atomicblom.shearmadness.interactions.EnchantmentInteraction;
 import com.github.atomicblom.shearmadness.interactions.WorkbenchInteraction;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
 import com.github.atomicblom.shearmadness.utility.Reference;
@@ -78,12 +81,15 @@ public class CommonForgeEventProxy
         if (capability == null) return;
         if (!capability.isChiseled()) return;
 
-        final Item item = capability.getChiselItemStack().getItem();
-        if (item instanceof ItemBlock && ((ItemBlock) item).block == Blocks.ANVIL) {
+        final ItemStack itemStack = capability.getChiselItemStack();
+        if (ItemStackHelper.isStackForBlock(itemStack, Blocks.ANVIL)) {
             event.getEntityPlayer().displayGui(new AnvilInteraction(event.getWorld(), sheep));
         }
-        if (item instanceof ItemBlock && ((ItemBlock) item).block == Blocks.CRAFTING_TABLE) {
+        if (ItemStackHelper.isStackForBlock(itemStack, Blocks.CRAFTING_TABLE)) {
             event.getEntityPlayer().displayGui(new WorkbenchInteraction(event.getWorld(), sheep));
+        }
+        if (ItemStackHelper.isStackForBlock(itemStack, Blocks.ENCHANTING_TABLE)) {
+            event.getEntityPlayer().displayGui(new EnchantmentInteraction(event.getWorld(), sheep));
         }
     }
 
@@ -132,30 +138,17 @@ public class CommonForgeEventProxy
             if (capability.isChiseled())
             {
                 final List<EntityItem> drops = event.getDrops();
-                final Item chiselItem = capability.getChiselItemStack().getItem();
-                if (chiselItem instanceof ItemBlock)
+                final ItemStack chiselItemStack = capability.getChiselItemStack();
+                final Item chiselItem = chiselItemStack.getItem();
+                if (ItemStackHelper.isStackForBlock(chiselItemStack, Blocks.TNT) && event.getSource().isExplosion())
                 {
-                    if (((ItemBlock) chiselItem).block == Blocks.TNT && event.getSource().isExplosion())
-                    {
-                        drops.clear();
-                        return;
-                    }
+                    drops.clear();
+                    return;
                 }
 
+                drops.removeIf(entityItem -> ItemStackHelper.isStackForBlock(entityItem.getEntityItem(), Blocks.WOOL));
 
-                drops.removeIf(entityItem ->
-                {
-                    final Item item = entityItem.getEntityItem().getItem();
-                    if (item instanceof ItemBlock)
-                    {
-                        if (((ItemBlock) item).block == Blocks.WOOL)
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-                drops.add(new EntityItem(entity.worldObj, entity.posX, entity.posY, entity.posZ, capability.getChiselItemStack().copy()));
+                drops.add(new EntityItem(entity.worldObj, entity.posX, entity.posY, entity.posZ, chiselItemStack.copy()));
             }
         }
     }
@@ -195,5 +188,6 @@ public class CommonForgeEventProxy
 
     public void registerBehaviours() {
         MinecraftForge.EVENT_BUS.register(ShearMadnessBehaviours.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(ImmersiveEngineeringBehaviours.INSTANCE);
     }
 }

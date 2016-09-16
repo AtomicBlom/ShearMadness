@@ -5,8 +5,11 @@ import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessVariationEvent;
 import com.github.atomicblom.shearmadness.library.ImmersiveEngineeringLibrary;
 import com.github.atomicblom.shearmadness.api.transformation.ConveyorTransformations;
+import com.github.atomicblom.shearmadness.variation.immersiveengineering.ClothDeviceTransformations;
+import com.github.atomicblom.shearmadness.variation.immersiveengineering.TeslaCoilTransformations;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.variation.immersiveengineering.ImmersiveEngineeringPostModelMaker;
+import com.github.atomicblom.shearmadness.variation.immersiveengineering.ImmersiveEngineeringWallMountModelMaker;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -29,8 +32,31 @@ public enum ImmersiveEngineeringVariations
         );
 
         registry.registerVariation(
+                itemStack ->
+                        ItemStackHelper.isStackForBlock(itemStack, ImmersiveEngineeringLibrary.metalDecoration2, 1) ||
+                        ItemStackHelper.isStackForBlock(itemStack, ImmersiveEngineeringLibrary.metalDecoration2, 3) ||
+                        ItemStackHelper.isStackForBlock(itemStack, ImmersiveEngineeringLibrary.woodenDevice1, 4),
+                new ImmersiveEngineeringWallMountModelMaker()
+        );
+
+        registry.registerVariation(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, ImmersiveEngineeringLibrary.conveyor),
                 new ConveyorTransformations()
+        );
+
+        registry.registerVariation(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, ImmersiveEngineeringLibrary.clothDevice),
+                new ClothDeviceTransformations()
+        );
+
+        registry.registerVariation(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, ImmersiveEngineeringLibrary.metalDevice1, 8),
+                new TeslaCoilTransformations(() -> -28)
+        );
+
+        registry.registerVariation(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, ImmersiveEngineeringLibrary.connector, 11),
+                new TeslaCoilTransformations(() -> -15)
         );
     }
 }

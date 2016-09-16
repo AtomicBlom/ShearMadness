@@ -16,6 +16,12 @@ public class QuadrupedTransformDefinition
 {
     public QuadrupedTransformDefinition()
     {
+        bodyPartDefinition = Optional.empty();
+        headPartDefinition = Optional.empty();
+        leg1PartDefinition = Optional.empty();
+        leg2PartDefinition = Optional.empty();
+        leg3PartDefinition = Optional.empty();
+        leg4PartDefinition = Optional.empty();
         defineParts();
     }
 
