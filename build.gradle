@@ -95,7 +95,7 @@ processResources
 sourceSets {
     main {
         java {
-            srcDirs = [ 'src/main/java', 'src/api/java' ]
+            srcDirs = [ 'src/main/java', 'src/api/java', 'src/integration/java' ]
         }
     }
     api {

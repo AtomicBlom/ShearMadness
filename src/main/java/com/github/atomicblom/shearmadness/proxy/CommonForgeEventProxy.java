@@ -9,9 +9,6 @@ import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapabilit
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSpecialInteractionEvent;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
-import com.github.atomicblom.shearmadness.variations.vanilla.interactions.AnvilInteraction;
-import com.github.atomicblom.shearmadness.variations.vanilla.interactions.EnchantmentInteraction;
-import com.github.atomicblom.shearmadness.variations.vanilla.interactions.WorkbenchInteraction;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import net.minecraft.entity.Entity;
