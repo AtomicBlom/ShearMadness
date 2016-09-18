@@ -1,7 +1,6 @@
-package com.github.atomicblom.shearmadness.interactions;
+package com.github.atomicblom.shearmadness.variations.vanilla.interactions;
 
-import com.github.atomicblom.shearmadness.container.ContainerEnchantmentSheep;
-import com.github.atomicblom.shearmadness.container.ContainerWorkbenchSheep;
+import com.github.atomicblom.shearmadness.variations.vanilla.container.ContainerWorkbenchSheep;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,12 +11,12 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 
-public class EnchantmentInteraction implements IInteractionObject
+public class WorkbenchInteraction implements IInteractionObject
 {
     private final World world;
     private final EntityLiving entity;
 
-    public EnchantmentInteraction(World world, EntityLiving entity)
+    public WorkbenchInteraction(World world, EntityLiving entity)
     {
         this.world = world;
         this.entity = entity;
@@ -53,12 +52,12 @@ public class EnchantmentInteraction implements IInteractionObject
     @Override
     public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
     {
-        return new ContainerEnchantmentSheep(playerInventory, world, entity);
+        return new ContainerWorkbenchSheep(playerInventory, world, entity);
     }
 
     @Override
     public String getGuiID()
     {
-        return "minecraft:enchanting_table";
+        return "minecraft:crafting_table";
     }
 }

@@ -7,12 +7,11 @@ import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
-import com.github.atomicblom.shearmadness.behaviour.ImmersiveEngineeringBehaviours;
-import com.github.atomicblom.shearmadness.behaviour.ShearMadnessBehaviours;
+import com.github.atomicblom.shearmadness.api.events.ShearMadnessSpecialInteractionEvent;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
-import com.github.atomicblom.shearmadness.interactions.AnvilInteraction;
-import com.github.atomicblom.shearmadness.interactions.EnchantmentInteraction;
-import com.github.atomicblom.shearmadness.interactions.WorkbenchInteraction;
+import com.github.atomicblom.shearmadness.variations.vanilla.interactions.AnvilInteraction;
+import com.github.atomicblom.shearmadness.variations.vanilla.interactions.EnchantmentInteraction;
+import com.github.atomicblom.shearmadness.variations.vanilla.interactions.WorkbenchInteraction;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import net.minecraft.entity.Entity;
@@ -23,7 +22,6 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -33,7 +31,6 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -81,16 +78,12 @@ public class CommonForgeEventProxy
         if (capability == null) return;
         if (!capability.isChiseled()) return;
 
-        final ItemStack itemStack = capability.getChiselItemStack();
-        if (ItemStackHelper.isStackForBlock(itemStack, Blocks.ANVIL)) {
-            event.getEntityPlayer().displayGui(new AnvilInteraction(event.getWorld(), sheep));
-        }
-        if (ItemStackHelper.isStackForBlock(itemStack, Blocks.CRAFTING_TABLE)) {
-            event.getEntityPlayer().displayGui(new WorkbenchInteraction(event.getWorld(), sheep));
-        }
-        if (ItemStackHelper.isStackForBlock(itemStack, Blocks.ENCHANTING_TABLE)) {
-            event.getEntityPlayer().displayGui(new EnchantmentInteraction(event.getWorld(), sheep));
-        }
+        final EntityPlayer entityPlayer = event.getEntityPlayer();
+
+        MinecraftForge.EVENT_BUS.post(new ShearMadnessSpecialInteractionEvent(event.getWorld(), entityPlayer, sheep, capability));
+
+
+
     }
 
     @SuppressWarnings("BooleanVariableAlwaysNegated")
@@ -184,10 +177,5 @@ public class CommonForgeEventProxy
                     .filter(taskEntry -> taskEntry.action instanceof SheepBehaviourAI)
                     .forEach(taskEntry -> ((SheepBehaviourAI) taskEntry.action).onDeath());
         }
-    }
-
-    public void registerBehaviours() {
-        MinecraftForge.EVENT_BUS.register(ShearMadnessBehaviours.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(ImmersiveEngineeringBehaviours.INSTANCE);
     }
 }

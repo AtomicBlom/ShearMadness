@@ -1,4 +1,4 @@
-package com.github.atomicblom.shearmadness.variation;
+package com.github.atomicblom.shearmadness.variations.vanilla;
 
 import com.github.atomicblom.shearmadness.api.IVariationRegistry;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
@@ -9,6 +9,7 @@ import com.github.atomicblom.shearmadness.modelmaker.DefaultChiselModelMaker;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -19,10 +20,9 @@ import team.chisel.api.carving.CarvingUtils;
 import java.util.function.Function;
 
 @SuppressWarnings({"MethodMayBeStatic", "AnonymousInnerClass"})
-public enum ShearMadnessVariations
+@Mod.EventBusSubscriber(Side.CLIENT)
+public class VanillaVariations
 {
-    INSTANCE;
-
     @SubscribeEvent(priority = EventPriority.LOWEST)
     @Optional.Method(modid = "shearmadness")
     @SideOnly(Side.CLIENT)

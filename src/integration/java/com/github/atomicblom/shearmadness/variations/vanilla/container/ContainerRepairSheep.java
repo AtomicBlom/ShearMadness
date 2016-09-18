@@ -1,24 +1,25 @@
-package com.github.atomicblom.shearmadness.container;
+package com.github.atomicblom.shearmadness.variations.vanilla.container;
 
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.ContainerEnchantment;
-import net.minecraft.inventory.ContainerWorkbench;
+import net.minecraft.inventory.ContainerRepair;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.world.World;
 
-public class ContainerEnchantmentSheep extends ContainerEnchantment
+import java.util.Objects;
+
+public class ContainerRepairSheep extends ContainerRepair
 {
     private final EntityLiving entity;
 
-    public ContainerEnchantmentSheep(InventoryPlayer playerInventory, World worldIn, EntityLiving entity)
+    public ContainerRepairSheep(InventoryPlayer playerInventory, World worldIn, EntityPlayer player, EntityLiving entity)
     {
-        super(playerInventory, worldIn, entity.getPosition());
+        super(playerInventory, worldIn, entity.getPosition(), player);
         this.entity = entity;
     }
 
@@ -29,7 +30,7 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
         }
         final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
         final Item item = capability.getChiselItemStack().getItem();
-        if (!(item instanceof ItemBlock) || ((ItemBlock) item).block != Blocks.ENCHANTING_TABLE) {
+        if (!(item instanceof ItemBlock) || !Objects.equals(((ItemBlock) item).block, Blocks.ANVIL)) {
             return false;
         }
 

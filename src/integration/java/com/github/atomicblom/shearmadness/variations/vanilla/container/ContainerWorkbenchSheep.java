@@ -1,4 +1,4 @@
-package com.github.atomicblom.shearmadness.container;
+package com.github.atomicblom.shearmadness.variations.vanilla.container;
 
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;

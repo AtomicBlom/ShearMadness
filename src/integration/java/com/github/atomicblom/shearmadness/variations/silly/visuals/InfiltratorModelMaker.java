@@ -1,4 +1,4 @@
-package com.github.atomicblom.shearmadness.variation.silly;
+package com.github.atomicblom.shearmadness.variations.silly.visuals;
 
 import com.github.atomicblom.shearmadness.api.modelmaker.DefaultModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.EntityMesh;

@@ -1,4 +1,4 @@
-package com.github.atomicblom.shearmadness.behaviour;
+package com.github.atomicblom.shearmadness.variations.vanilla;
 
 import com.github.atomicblom.shearmadness.api.IBehaviourRegistry;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
@@ -12,15 +12,15 @@ import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @SuppressWarnings({"MethodMayBeStatic", "UnnecessarilyQualifiedInnerClassAccess"})
-public enum ShearMadnessBehaviours
+@Mod.EventBusSubscriber
+public class VanillaBehaviours
 {
-    INSTANCE;
-
     @SubscribeEvent(priority = EventPriority.LOWEST)
     @Optional.Method(modid = "shearmadness")
     public void onShearMadnessRegisterBehaviours(RegisterShearMadnessBehaviourEvent event) {
@@ -54,12 +54,6 @@ public enum ShearMadnessBehaviours
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.TNT),
                 sheep -> new ExplosiveBehaviour(sheep, Behaviours::allowTNT)
-        );
-
-        registry.registerBehaviour(
-                itemStack -> ItemStackHelper.isStackForBlock(itemStack, ChiselLibrary.technical, 4) ||
-                        ItemStackHelper.isStackForBlock(itemStack, ChiselLibrary.technical1, 1),
-                sheep -> new FlightBehaviour(sheep, 10, true)
         );
     }
 }
