@@ -7,6 +7,8 @@ import net.minecraft.block.BlockNote;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
@@ -80,7 +82,8 @@ public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
 
     public static void triggerNoteBlock(World world, BlockPos currentLocation, IChiseledSheepCapability capability) {
         final IBlockState blockState = world.getBlockState(currentLocation);
-        Material material = world.getBlockState(currentLocation.down()).getMaterial();
+        final IBlockState blockStateBeneath = world.getBlockState(currentLocation.down());
+        Material material = blockStateBeneath.getMaterial();
         int id = 0;
 
         if (material == Material.ROCK) {
@@ -103,6 +106,9 @@ public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
         NoteBlockEvent.Play e = new NoteBlockEvent.Play(world, currentLocation, blockState, param, id);
         if (!MinecraftForge.EVENT_BUS.post(e)) {
             id = e.getInstrument().ordinal();
+            if (blockStateBeneath.getBlock() == Blocks.WOOL) {
+                id = -1;
+            }
             param = e.getVanillaNoteId();
             float f = (float) Math.pow(2.0D, (param - 12) / 12.0D);
             world.playSound(null, currentLocation, getInstrument(id), SoundCategory.RECORDS, 3.0F, f);
@@ -126,6 +132,9 @@ public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
     }
 
     private static SoundEvent getInstrument(int id) {
+        if (id == -1) {
+            return SoundEvents.ENTITY_SHEEP_AMBIENT;
+        }
         if (id < 0 || id >= BlockNote.INSTRUMENTS.size())
         {
             id = 0;
