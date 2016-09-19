@@ -4,14 +4,17 @@ import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapabilit
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
 import com.google.common.base.Objects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ChiseledSheepCapability implements IChiseledSheepCapability
+public class ChiseledSheepCapability implements IChiseledSheepCapability, IWriteExtraData
 {
     @Nullable
     private ItemStack itemStack = null;
     private int itemIdentifier;
+    private NBTTagCompound customData = null;
 
     @Override
     public boolean isChiseled()
@@ -39,6 +42,25 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability
     }
 
     @Override
+    public int getItemIdentifier()
+    {
+        return itemIdentifier;
+    }
+
+    @Override
+    public NBTTagCompound getExtraData() {
+        if (customData == null) {
+            customData = new NBTTagCompound();
+        }
+        return customData;
+    }
+
+    @Override
+    public void setExtraData(NBTTagCompound extraData) {
+        customData = extraData;
+    }
+
+    @Override
     public String toString()
     {
         return Objects.toStringHelper(this)
@@ -46,12 +68,6 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability
                 .add("itemStack", itemStack)
                 .add("isChiseled", isChiseled())
                 .toString();
-    }
-
-    @Override
-    public int getItemIdentifier()
-    {
-        return itemIdentifier;
     }
 }
 

@@ -92,6 +92,12 @@ processResources
     }
 }
 
+jar {
+    manifest {
+        attributes 'FMLAT': 'ShearMadness_at.cfg'
+    }
+}
+
 sourceSets {
     main {
         java {

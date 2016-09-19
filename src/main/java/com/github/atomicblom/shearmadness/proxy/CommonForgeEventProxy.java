@@ -21,6 +21,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -46,6 +47,7 @@ public class CommonForgeEventProxy
     {
         //Process for shearing a sheep
         if (event.getWorld().isRemote) return;
+        if (event.getHand() != EnumHand.MAIN_HAND) return;
         if (!(event.getTarget() instanceof EntitySheep)) return;
         final ItemStack itemStack = event.getItemStack();
         if (itemStack == null) {
@@ -78,9 +80,6 @@ public class CommonForgeEventProxy
         final EntityPlayer entityPlayer = event.getEntityPlayer();
 
         MinecraftForge.EVENT_BUS.post(new ShearMadnessSpecialInteractionEvent(event.getWorld(), entityPlayer, sheep, capability));
-
-
-
     }
 
     @SuppressWarnings("BooleanVariableAlwaysNegated")

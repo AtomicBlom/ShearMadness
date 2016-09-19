@@ -10,6 +10,7 @@ import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehavio
 import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
+import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.NoteBlockBehaviour;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.Mod;
@@ -54,6 +55,11 @@ public class VanillaBehaviours
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.TNT),
                 sheep -> new ExplosiveBehaviour(sheep, Behaviours::allowTNT)
+        );
+
+        registry.registerBehaviour(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.NOTEBLOCK),
+                sheep -> new NoteBlockBehaviour(sheep, () -> true)
         );
     }
 }

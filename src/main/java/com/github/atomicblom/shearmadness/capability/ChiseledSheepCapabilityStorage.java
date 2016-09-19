@@ -23,6 +23,9 @@ public class ChiseledSheepCapabilityStorage implements IStorage<IChiseledSheepCa
             instance.getChiselItemStack().writeToNBT(targetTag);
             compound.setTag("chiselDefinition", targetTag);
         }
+
+        final NBTTagCompound extraData = instance.getExtraData();
+        compound.setTag("extraData", extraData);
         return compound;
     }
 
@@ -36,6 +39,10 @@ public class ChiseledSheepCapabilityStorage implements IStorage<IChiseledSheepCa
         {
             final ItemStack stack = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("chiselDefinition"));
             instance.chisel(stack);
+        }
+
+        if (instance instanceof  IWriteExtraData) {
+            ((IWriteExtraData) instance).setExtraData(compound.getCompoundTag("extraData"));
         }
     }
 }

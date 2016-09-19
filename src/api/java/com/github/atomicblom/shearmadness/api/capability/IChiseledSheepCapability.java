@@ -1,6 +1,7 @@
 package com.github.atomicblom.shearmadness.api.capability;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 public interface IChiseledSheepCapability
 {
@@ -13,4 +14,6 @@ public interface IChiseledSheepCapability
     ItemStack getChiselItemStack();
 
     int getItemIdentifier();
+
+    NBTTagCompound getExtraData();
 }
