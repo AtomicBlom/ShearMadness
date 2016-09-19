@@ -22,7 +22,7 @@ public class SillyVarations
     @SubscribeEvent(priority = EventPriority.LOW)
     @Optional.Method(modid = "shearmadness")
     @SideOnly(Side.CLIENT)
-    public void onShearMadnessRegisterVariations(RegisterShearMadnessVariationEvent event)
+    public static void onShearMadnessRegisterVariations(RegisterShearMadnessVariationEvent event)
     {
 
         final IVariationRegistry registry = event.getRegistry();
@@ -34,7 +34,7 @@ public class SillyVarations
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    public void onTextureStitchEvent(TextureStitchEvent.Pre event) {
+    public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
         event.getMap().registerSprite(new ResourceLocation(Reference.MOD_ID, "chicken-nuggets"));
         event.getMap().registerSprite(new ResourceLocation(Reference.MOD_ID, "chicken-winglets"));
     }

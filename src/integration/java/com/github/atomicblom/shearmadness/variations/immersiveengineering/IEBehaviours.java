@@ -15,7 +15,7 @@ public class IEBehaviours
 {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     @Optional.Method(modid = "shearmadness")
-    public void onShearMadnessRegisterBehaviours(RegisterShearMadnessBehaviourEvent event) {
+    public static void onShearMadnessRegisterBehaviours(RegisterShearMadnessBehaviourEvent event) {
         final IBehaviourRegistry registry = event.getRegistry();
 
         registry.registerBehaviour(

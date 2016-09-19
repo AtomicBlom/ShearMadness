@@ -14,7 +14,7 @@ public class CapabilityProvider implements ICapabilityProvider, INBTSerializable
 {
 
     @CapabilityInject(IChiseledSheepCapability.class)
-    public static final Capability<IChiseledSheepCapability> CHISELED_SHEEP = null;
+    public static final Capability<IChiseledSheepCapability> CHISELED_SHEEP;
 
     private final IChiseledSheepCapability capability;
 
@@ -50,6 +50,10 @@ public class CapabilityProvider implements ICapabilityProvider, INBTSerializable
     public void deserializeNBT(NBTBase nbt)
     {
         ChiseledSheepCapabilityStorage.instance.readNBT(CHISELED_SHEEP, capability, null, nbt);
+    }
+
+    static {
+        CHISELED_SHEEP = null;
     }
 }
 

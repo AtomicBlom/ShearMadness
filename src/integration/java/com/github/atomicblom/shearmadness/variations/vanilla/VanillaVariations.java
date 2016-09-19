@@ -26,7 +26,7 @@ public class VanillaVariations
     @SubscribeEvent(priority = EventPriority.LOWEST)
     @Optional.Method(modid = "shearmadness")
     @SideOnly(Side.CLIENT)
-    public void onShearMadnessRegisterVariations(RegisterShearMadnessVariationEvent event) {
+    public static void onShearMadnessRegisterVariations(RegisterShearMadnessVariationEvent event) {
         final IVariationRegistry registry = event.getRegistry();
 
         //Java 8 Style Registration

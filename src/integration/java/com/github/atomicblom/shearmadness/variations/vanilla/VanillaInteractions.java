@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class VanillaInteractions {
 
     @SubscribeEvent
-    public void onInteraction(ShearMadnessSpecialInteractionEvent event) {
+    public static void onInteraction(ShearMadnessSpecialInteractionEvent event) {
         final ItemStack itemStack = event.getItemStack();
         final EntitySheep sheep = event.getSheep();
         final EntityPlayer player = event.getPlayer();

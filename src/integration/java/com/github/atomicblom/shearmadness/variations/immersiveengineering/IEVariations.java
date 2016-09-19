@@ -20,7 +20,7 @@ public class IEVariations
 {
     @SubscribeEvent(priority = EventPriority.HIGH)
     @Optional.Method(modid = Reference.ModID.IMMERSIVE_ENGINEERING)
-    public void onShearMadnessRegisterVariations(RegisterShearMadnessVariationEvent event) {
+    public static void onShearMadnessRegisterVariations(RegisterShearMadnessVariationEvent event) {
         final IVariationRegistry registry = event.getRegistry();
         registry.registerVariation(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, IELibrary.metalDecoration2, 0) ||
