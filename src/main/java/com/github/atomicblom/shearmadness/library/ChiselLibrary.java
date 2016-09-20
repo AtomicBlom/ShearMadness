@@ -1,4 +1,4 @@
-package com.github.atomicblom.shearmadness.utility;
+package com.github.atomicblom.shearmadness.library;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

@@ -2,7 +2,7 @@ package com.github.atomicblom.shearmadness.networking;
 
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
-import com.github.atomicblom.shearmadness.utility.SoundLibrary;
+import com.github.atomicblom.shearmadness.library.SoundLibrary;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;

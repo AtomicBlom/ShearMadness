@@ -4,7 +4,7 @@ import com.github.atomicblom.shearmadness.api.IBehaviourRegistry;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.behaviour.FlightBehaviour;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
-import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
+import com.github.atomicblom.shearmadness.library.ChiselLibrary;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;

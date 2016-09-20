@@ -1,6 +1,7 @@
 package com.github.atomicblom.shearmadness.proxy;
 
 import com.github.atomicblom.shearmadness.Chiseling;
+import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.Shearing;
 import com.github.atomicblom.shearmadness.ai.SheepBehaviourAI;
 import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
@@ -9,7 +10,8 @@ import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapabilit
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSpecialInteractionEvent;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
-import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
+import com.github.atomicblom.shearmadness.gui.GuiHandler;
+import com.github.atomicblom.shearmadness.library.ChiselLibrary;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -31,6 +33,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.util.List;
 
@@ -40,6 +43,10 @@ public class CommonForgeEventProxy
     public void fireRegistryEvent() {
         MinecraftForge.EVENT_BUS.post(new RegisterShearMadnessBehaviourEvent(BehaviourRegistry.INSTANCE));
     }
+
+    public void initializeKeyboard() {}
+
+
 
     @SuppressWarnings({"ConstantConditions", "MethodWithMoreThanThreeNegations"})
     @SubscribeEvent
@@ -173,5 +180,9 @@ public class CommonForgeEventProxy
                     .filter(taskEntry -> taskEntry.action instanceof SheepBehaviourAI)
                     .forEach(taskEntry -> ((SheepBehaviourAI) taskEntry.action).onDeath());
         }
+    }
+
+    public void initializeGUIs() {
+        NetworkRegistry.INSTANCE.registerGuiHandler(ShearMadnessMod.instance, GuiHandler.INSTANCE);
     }
 }

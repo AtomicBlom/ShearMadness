@@ -26,6 +26,9 @@ import net.minecraftforge.fml.relauncher.Side;
 @Mod(modid = Reference.MOD_ID, version = Reference.VERSION, guiFactory = Reference.MOD_GUI_FACTORY, dependencies = "required-after:chisel", acceptedMinecraftVersions = "[1.9.4, 1.11)")
 public class ShearMadnessMod
 {
+    @Mod.Instance
+    public static ShearMadnessMod instance = null;
+
     public static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
 
     @EventHandler
@@ -44,8 +47,11 @@ public class ShearMadnessMod
         MinecraftForge.EVENT_BUS.register(Proxies.forgeEventProxy);
         MinecraftForge.EVENT_BUS.register(Proxies.renderProxy);
 
+        Proxies.forgeEventProxy.initializeGUIs();
+        Proxies.forgeEventProxy.initializeKeyboard();
         Proxies.blockProxy.registerBlocks();
         Proxies.audioProxy.registerSounds();
+
     }
 
     @EventHandler

@@ -5,7 +5,7 @@ import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessVariationEvent;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.variations.silly.visuals.InfiltratorModelMaker;
-import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
+import com.github.atomicblom.shearmadness.library.ChiselLibrary;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fml.common.Mod;
