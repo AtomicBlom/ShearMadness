@@ -10,6 +10,7 @@ import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehavio
 import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
+import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.FollowAutoCraftItems;
 import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.NoteBlockBehaviour;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
@@ -60,6 +61,11 @@ public class VanillaBehaviours
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.NOTEBLOCK),
                 sheep -> new NoteBlockBehaviour(sheep, () -> true)
+        );
+
+        registry.registerBehaviour(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.CRAFTING_TABLE),
+                sheep -> new FollowAutoCraftItems(sheep)
         );
     }
 }
