@@ -66,6 +66,7 @@ public enum Settings
         private boolean allowCactus = true;
         private boolean allowTNT = true;
         private boolean allowFireDamage = true;
+        private boolean allowAutoCrafting = true;
 
 
         public static boolean allowRedstone() {
@@ -86,6 +87,7 @@ public enum Settings
         public static boolean allowFireDamage() {
             return INSTANCE.allowFireDamage;
         }
+        public static boolean allowAutoCrafting() { return INSTANCE.allowAutoCrafting; }
 
 
         private static void syncConfig(Configuration config) {
@@ -95,6 +97,7 @@ public enum Settings
             INSTANCE.allowCactus = config.getBoolean("allowCactus", CATEGORY, true, Reference.ALLOW_CACTUS_COMMENT);
             INSTANCE.allowTNT = config.getBoolean("allowTNT", CATEGORY, true, Reference.ALLOW_TNT_COMMENT);
             INSTANCE.allowFireDamage = config.getBoolean("allowFireDamage", CATEGORY, true, Reference.ALLOW_FIRE_DAMAGE_COMMENT);
+            INSTANCE.allowAutoCrafting = config.getBoolean("allowAutoCrafting", CATEGORY, true, Reference.ALLOW_AUTO_CRAFTING);
         }
     }
 
