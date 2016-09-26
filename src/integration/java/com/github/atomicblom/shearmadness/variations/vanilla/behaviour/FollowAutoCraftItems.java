@@ -222,6 +222,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
         itemsToCollect = new ItemStack[9];
         ItemStack[] updatedOriginalCraftingGrid = new ItemStack[9];
+        originalCraftingGrid = new ItemStack[9];
         int itemCount = 0;
         boolean craftedItemChanged = false;
         for (int i = 0; i < 9; ++i)
