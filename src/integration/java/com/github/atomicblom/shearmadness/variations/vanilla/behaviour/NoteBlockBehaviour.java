@@ -52,9 +52,6 @@ public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
 
     @Override
     public void updateTask() {
-        final EntitySheep entity = getEntity();
-        final IBlockState blockState = world.getBlockState(currentLocation);
-
         final boolean powered = world.isBlockPowered(currentLocation);
         if (powered && !isTriggered) {
             triggerNoteBlock(world, currentLocation, capability);
