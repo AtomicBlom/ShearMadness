@@ -1,7 +1,7 @@
 package com.github.atomicblom.shearmadness.variations.vanilla.container;
 
+import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
-import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -23,10 +23,10 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
-        if (!entity.hasCapability(CapabilityProvider.CHISELED_SHEEP, null)) {
+        if (!entity.hasCapability(Capability.CHISELED_SHEEP, null)) {
             return false;
         }
-        final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         final Item item = capability.getChiselItemStack().getItem();
         if (!(item instanceof ItemBlock) || ((ItemBlock) item).block != Blocks.ENCHANTING_TABLE) {
             return false;

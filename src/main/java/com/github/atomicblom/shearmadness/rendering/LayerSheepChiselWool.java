@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.rendering;
 
+import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.VariationRegistry;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
@@ -53,7 +54,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
     {
         if (!sheep.getSheared() && !sheep.isInvisible())
         {
-            final IChiseledSheepCapability capability = sheep.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+            final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
             if (capability.isChiseled())
             {
                 try

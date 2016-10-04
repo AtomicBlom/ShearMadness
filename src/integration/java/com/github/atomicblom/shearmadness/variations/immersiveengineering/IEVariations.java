@@ -8,7 +8,6 @@ import com.github.atomicblom.shearmadness.variations.immersiveengineering.visual
 import com.github.atomicblom.shearmadness.variations.immersiveengineering.visuals.ImmersiveEngineeringWallMountModelMaker;
 import com.github.atomicblom.shearmadness.variations.immersiveengineering.visuals.ClothDeviceTransformations;
 import com.github.atomicblom.shearmadness.variations.immersiveengineering.visuals.TeslaCoilTransformations;
-import com.github.atomicblom.shearmadness.utility.Reference;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -19,7 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class IEVariations
 {
     @SubscribeEvent(priority = EventPriority.HIGH)
-    @Optional.Method(modid = Reference.ModID.IMMERSIVE_ENGINEERING)
+    @Optional.Method(modid = IEReference.IMMERSIVE_ENGINEERING)
     public static void onShearMadnessRegisterVariations(RegisterShearMadnessVariationEvent event) {
         final IVariationRegistry registry = event.getRegistry();
         registry.registerVariation(

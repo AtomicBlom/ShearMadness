@@ -1,6 +1,6 @@
 package com.github.atomicblom.shearmadness.networking;
 
-import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
+import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.utility.SoundLibrary;
 import net.minecraft.client.Minecraft;
@@ -23,7 +23,7 @@ public class SheepChiseledMessageHandler implements IMessageHandler<SheepChisele
         {
             return null;
         }
-        final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         if (capability == null)
         {
             return null;

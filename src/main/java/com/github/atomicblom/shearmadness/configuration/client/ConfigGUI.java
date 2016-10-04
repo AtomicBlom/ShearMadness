@@ -2,6 +2,7 @@ package com.github.atomicblom.shearmadness.configuration.client;
 
 import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.configuration.ConfigurationHandler;
+import com.github.atomicblom.shearmadness.variations.CommonReference;
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
@@ -14,7 +15,7 @@ public class ConfigGUI extends GuiConfig
 {
     public ConfigGUI(GuiScreen parent)
     {
-        super(parent, getConfigElements(), Reference.MOD_ID, false, false,
+        super(parent, getConfigElements(), CommonReference.MOD_ID, false, false,
                 GuiConfig.getAbridgedConfigPath(ConfigurationHandler.INSTANCE.getConfig().toString()));
     }
 

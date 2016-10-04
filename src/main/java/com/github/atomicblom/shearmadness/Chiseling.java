@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness;
 
+import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
@@ -18,9 +19,9 @@ public final class Chiseling
 
     public static void chiselSheep(Entity sheep, EntityPlayer entityPlayer, ItemStack activeStack)
     {
-        if (sheep.hasCapability(CapabilityProvider.CHISELED_SHEEP, null))
+        if (sheep.hasCapability(Capability.CHISELED_SHEEP, null))
         {
-            final IChiseledSheepCapability capability = sheep.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+            final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
             final ItemStack chiselItemStack = capability.getChiselItemStack();
             if (updateCapability(activeStack, capability, entityPlayer.isCreative()))
             {

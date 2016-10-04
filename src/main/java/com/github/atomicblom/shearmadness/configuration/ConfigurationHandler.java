@@ -2,6 +2,7 @@ package com.github.atomicblom.shearmadness.configuration;
 
 import com.github.atomicblom.shearmadness.utility.Logger;
 import com.github.atomicblom.shearmadness.utility.Reference;
+import com.github.atomicblom.shearmadness.variations.CommonReference;
 import com.google.common.base.Objects;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -46,8 +47,8 @@ public enum ConfigurationHandler
         {
             final File fileBak = new File(fileRef.getAbsolutePath() + '_' + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".old");
             Logger.warning("Your %s config file is out of date and could cause issues. The existing file will be renamed to %s and a new one will be generated.",
-                    Reference.MOD_NAME, fileBak.getName());
-            Logger.warning("%s will attempt to copy your old settings, but custom mod/tree settings will have to be migrated manually.", Reference.MOD_NAME);
+                    CommonReference.MOD_NAME, fileBak.getName());
+            Logger.warning("%s will attempt to copy your old settings, but custom mod/tree settings will have to be migrated manually.", CommonReference.MOD_NAME);
 
             final boolean success = fileRef.renameTo(fileBak);
             Logger.warning("Rename %s successful.", success ? "was" : "was not");
@@ -112,7 +113,7 @@ public enum ConfigurationHandler
     @SubscribeEvent
     public void onConfigChanged(OnConfigChangedEvent event)
     {
-        if (event.getModID().equalsIgnoreCase(Reference.MOD_ID))
+        if (event.getModID().equalsIgnoreCase(CommonReference.MOD_ID))
         {
             saveConfig();
             syncConfig();
