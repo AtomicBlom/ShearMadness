@@ -1,12 +1,13 @@
 package com.github.atomicblom.shearmadness.networking;
 
-import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
+import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.utility.Logger;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
 import java.util.UUID;
 
 public class CheckSheepChiseledRequestMessageHandler implements IMessageHandler<CheckSheepChiseledRequestMessage, SheepChiseledMessage>
@@ -21,7 +22,7 @@ public class CheckSheepChiseledRequestMessageHandler implements IMessageHandler<
         {
             return null;
         }
-        final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         if (capability == null)
         {
             return null;

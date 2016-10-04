@@ -2,7 +2,7 @@ package com.github.atomicblom.shearmadness.variations.silly.visuals;
 
 import com.github.atomicblom.shearmadness.api.modelmaker.DefaultModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.EntityMesh;
-import com.github.atomicblom.shearmadness.utility.Reference;
+import com.github.atomicblom.shearmadness.variations.CommonReference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.PositionTextureVertex;
@@ -26,7 +26,7 @@ public class InfiltratorModelMaker extends DefaultModelMaker
         EntityMesh partA = new EntityMesh(model.head);
 
         final TextureMap blockTextureMap = Minecraft.getMinecraft().getTextureMapBlocks();
-        final TextureAtlasSprite chickenSprite = blockTextureMap.getAtlasSprite(Reference.MOD_ID + ":chicken-nuggets");
+        final TextureAtlasSprite chickenSprite = blockTextureMap.getAtlasSprite(CommonReference.MOD_ID + ":chicken-nuggets");
 
         partA.addTexturedQuads(partATransform, new Matrix3f(),
                 new TexturedQuad(
@@ -103,7 +103,7 @@ public class InfiltratorModelMaker extends DefaultModelMaker
                 );
         model.head.cubeList.add(partA);
 
-        final TextureAtlasSprite chickenWings = blockTextureMap.getAtlasSprite(Reference.MOD_ID + ":chicken-winglets");
+        final TextureAtlasSprite chickenWings = blockTextureMap.getAtlasSprite(CommonReference.MOD_ID + ":chicken-winglets");
 
         TexturedQuad[] texturedQuads = {new TexturedQuad(
                 new PositionTextureVertex[]{

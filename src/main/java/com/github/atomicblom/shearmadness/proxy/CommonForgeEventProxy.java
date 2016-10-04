@@ -4,13 +4,14 @@ import com.github.atomicblom.shearmadness.Chiseling;
 import com.github.atomicblom.shearmadness.Shearing;
 import com.github.atomicblom.shearmadness.ai.SheepBehaviourAI;
 import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
+import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSpecialInteractionEvent;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
-import com.github.atomicblom.shearmadness.utility.Reference;
+import com.github.atomicblom.shearmadness.variations.CommonReference;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -59,7 +60,7 @@ public class CommonForgeEventProxy
         final EntitySheep sheep = (EntitySheep) event.getTarget();
         if (!sheep.isShearable(itemStack, event.getWorld(), event.getPos())) return;
 
-        final IChiseledSheepCapability capability = sheep.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
         if (capability == null) return;
         if (!capability.isChiseled()) return;
 
@@ -73,7 +74,7 @@ public class CommonForgeEventProxy
     {
         final EntitySheep sheep = (EntitySheep) event.getTarget();
 
-        final IChiseledSheepCapability capability = sheep.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
         if (capability == null) return;
         if (!capability.isChiseled()) return;
 
@@ -109,7 +110,7 @@ public class CommonForgeEventProxy
             return;
         }
 
-        if (!sheep.hasCapability(CapabilityProvider.CHISELED_SHEEP, null)) {
+        if (!sheep.hasCapability(Capability.CHISELED_SHEEP, null)) {
             return;
         }
 
@@ -122,8 +123,8 @@ public class CommonForgeEventProxy
     public void onLivingDrop(LivingDropsEvent event) {
 
         final Entity entity = event.getEntity();
-        if (entity.hasCapability(CapabilityProvider.CHISELED_SHEEP, null)) {
-            final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        if (entity.hasCapability(Capability.CHISELED_SHEEP, null)) {
+            final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
             if (capability.isChiseled())
             {
                 final List<EntityItem> drops = event.getDrops();
@@ -143,11 +144,11 @@ public class CommonForgeEventProxy
     }
 
     @SubscribeEvent
-    public void onCapabilityAttaching(AttachCapabilitiesEvent.Entity event)
+    public void onCapabilityAttaching(AttachCapabilitiesEvent<Entity> event)
     {
-        if (event.getEntity().getClass().equals(EntitySheep.class))
+        if (event.getObject().getClass().equals(EntitySheep.class))
         {
-            event.addCapability(new ResourceLocation(Reference.MOD_ID, "chiseledSheep"), new CapabilityProvider());
+            event.addCapability(new ResourceLocation(CommonReference.MOD_ID, "chiseledSheep"), new CapabilityProvider());
         }
     }
 
@@ -155,7 +156,7 @@ public class CommonForgeEventProxy
     public void onCommonEntityJoinWorldEvent(EntityJoinWorldEvent event)
     {
         final Entity entity = event.getEntity();
-        if (entity.hasCapability(CapabilityProvider.CHISELED_SHEEP, null))
+        if (entity.hasCapability(Capability.CHISELED_SHEEP, null))
         {
             final EntityLiving livingEntity = (EntityLiving) event.getEntity();
             final EntityAITasks tasks = livingEntity.tasks;
@@ -166,7 +167,7 @@ public class CommonForgeEventProxy
     @SubscribeEvent
     public void onEntityLivingDeathEvent(LivingDeathEvent event) {
         final Entity entity = event.getEntity();
-        if (entity.hasCapability(CapabilityProvider.CHISELED_SHEEP, null)) {
+        if (entity.hasCapability(Capability.CHISELED_SHEEP, null)) {
             final EntityLiving livingEntity = (EntityLiving) entity;
             livingEntity.tasks.taskEntries
                     .stream()

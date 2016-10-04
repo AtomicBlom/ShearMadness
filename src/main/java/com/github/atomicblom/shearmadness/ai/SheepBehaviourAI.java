@@ -1,6 +1,7 @@
 package com.github.atomicblom.shearmadness.ai;
 
 import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
+import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.VariationRegistry;
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
@@ -26,7 +27,7 @@ public class SheepBehaviourAI extends EntityAIBase
 
     public SheepBehaviourAI(EntityLiving entity)
     {
-        capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         //FIXME: Hack to disable this AI if it's not a sheep.
 
         if (entity instanceof EntitySheep) {

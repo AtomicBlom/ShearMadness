@@ -1,10 +1,9 @@
 package com.github.atomicblom.shearmadness.variations.immersiveengineering;
 
-import com.github.atomicblom.shearmadness.utility.Reference;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
-@ObjectHolder(Reference.ModID.IMMERSIVE_ENGINEERING)
+@ObjectHolder(IEReference.IMMERSIVE_ENGINEERING)
 public class IELibrary
 {
     public static final Block metalDecoration2 = null;

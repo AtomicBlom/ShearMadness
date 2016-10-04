@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.utility;
 
+import com.github.atomicblom.shearmadness.variations.CommonReference;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 
@@ -45,7 +46,7 @@ public enum Logger
     {
         if (logger == null)
         {
-            logger = LogManager.getLogger(Reference.MOD_ID);
+            logger = LogManager.getLogger(CommonReference.MOD_ID);
         }
     }
 
