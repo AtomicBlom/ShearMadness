@@ -75,6 +75,9 @@ public interface IModelMaker
     }
 
     default EntityMesh addBlockModelToEntityMesh(EntityMesh box, PartDefinition partDefinition, IBlockState blockState, IBakedModel model) {
+        if (!blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.SOLID)) {
+            return box;
+        }
         ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID);
         for (final EnumFacing value : EnumFacing.VALUES)
         {
