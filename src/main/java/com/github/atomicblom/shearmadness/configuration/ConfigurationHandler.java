@@ -85,8 +85,6 @@ public enum ConfigurationHandler
             }
         }
 
-        Settings.syncConfig(config);
-
         convertOldConfig();
         saveConfig();
     }
@@ -105,7 +103,6 @@ public enum ConfigurationHandler
         {
             // Handle old config versions (none yet)
 
-            Settings.syncConfig(config);
             configOld = Optional.empty();
         }
     }

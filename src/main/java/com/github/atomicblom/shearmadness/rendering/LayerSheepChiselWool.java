@@ -65,7 +65,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                 final ItemStack itemStack = capability.getChiselItemStack();
                 try
                 {
-                    if (Settings.debugModels()) {
+                    if (Settings.debugModels) {
                         modelCache.invalidate(itemIdentifier);
                     }
 

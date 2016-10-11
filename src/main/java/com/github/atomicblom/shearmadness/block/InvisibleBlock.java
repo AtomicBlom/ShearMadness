@@ -56,7 +56,7 @@ public abstract class InvisibleBlock extends Block
     @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
-        return Settings.debugInvisibleBlocks() ?
+        return Settings.debugInvisibleBlocks ?
                 EnumBlockRenderType.MODEL :
                 EnumBlockRenderType.INVISIBLE;
     }

@@ -6,7 +6,7 @@ import com.github.atomicblom.shearmadness.api.behaviour.DamageBehaviour;
 import com.github.atomicblom.shearmadness.api.behaviour.ExplosiveBehaviour;
 import com.github.atomicblom.shearmadness.api.behaviour.PlaceInvisibleBlockBehaviour;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
-import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
+import com.github.atomicblom.shearmadness.configuration.Settings.BehaviourSettings;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.NoteBlockBehaviour;
 import net.minecraft.init.Blocks;
@@ -27,32 +27,32 @@ public class VanillaBehaviours
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.CACTUS),
-                entity -> new DamageBehaviour(entity, Behaviours::allowCactus, DamageSource.cactus)
+                entity -> new DamageBehaviour(entity, () -> BehaviourSettings.allowCactus, DamageSource.cactus)
         );
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.MAGMA),
-                entity -> new DamageBehaviour(entity, Behaviours::allowFireDamage, DamageSource.hotFloor)
+                entity -> new DamageBehaviour(entity, () -> BehaviourSettings.allowFireDamage, DamageSource.hotFloor)
         );
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.REDSTONE_BLOCK),
-                entity -> new PlaceInvisibleBlockBehaviour(entity, Behaviours::allowRedstone, BlockLibrary.invisibleRedstone.getDefaultState())
+                entity -> new PlaceInvisibleBlockBehaviour(entity, () -> BehaviourSettings.allowRedstone, BlockLibrary.invisibleRedstone.getDefaultState())
         );
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.GLOWSTONE),
-                entity -> new PlaceInvisibleBlockBehaviour(entity, Behaviours::allowGlowstone, BlockLibrary.invisibleGlowstone.getDefaultState())
+                entity -> new PlaceInvisibleBlockBehaviour(entity, () -> BehaviourSettings.allowGlowstone, BlockLibrary.invisibleGlowstone.getDefaultState())
         );
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.BOOKSHELF),
-                entity -> new PlaceInvisibleBlockBehaviour(entity, Behaviours::allowBookshelf, BlockLibrary.invisibleBookshelf.getDefaultState())
+                entity -> new PlaceInvisibleBlockBehaviour(entity, () -> BehaviourSettings.allowBookshelf, BlockLibrary.invisibleBookshelf.getDefaultState())
         );
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.TNT),
-                sheep -> new ExplosiveBehaviour(sheep, Behaviours::allowTNT)
+                sheep -> new ExplosiveBehaviour(sheep, () -> BehaviourSettings.allowTNT)
         );
 
         registry.registerBehaviour(

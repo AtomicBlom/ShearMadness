@@ -1,101 +1,52 @@
 package com.github.atomicblom.shearmadness.configuration;
 
 import com.github.atomicblom.shearmadness.utility.Reference;
-import net.minecraftforge.common.config.Configuration;
+import com.github.atomicblom.shearmadness.variations.CommonReference;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.Config.Comment;
+import net.minecraftforge.common.config.Config.Type;
 
-@SuppressWarnings({"InnerClassFieldHidesOuterClassField", "BooleanMethodNameMustStartWithQuestion"})
-public enum Settings
+@SuppressWarnings({"StaticNonFinalField", "PublicField", "InstantiationOfUtilityClass", "unused"})
+@Config(modid = CommonReference.MOD_ID, type = Type.INSTANCE, name = CommonReference.MOD_ID + "6")
+public final class Settings
 {
-    INSTANCE;
+    //Categories
+    public static final ShearingSettings Shearing = new ShearingSettings();
+    public static final BehaviourSettings Behaviours = new BehaviourSettings();
 
-    public static final String CATEGORY = Configuration.CATEGORY_GENERAL;
+    //Properties
+    @Comment(Reference.DEBUG_MODELS)
+    public static boolean debugModels = false;
+    @Comment(Reference.DEBUG_INVISIBLE_BLOCKS)
+    public static boolean debugInvisibleBlocks = false;
 
-    private boolean debugModels = false;
-    private boolean debugInvisibleBlocks = false;
-
-    public static boolean debugModels()
+    @SuppressWarnings({"WeakerAccess", "UtilityClass"})
+    public static final class ShearingSettings
     {
-        return INSTANCE.debugModels;
-    }
-    public static boolean debugInvisibleBlocks()
-    {
-        return INSTANCE.debugInvisibleBlocks;
-    }
+        @Comment(Reference.BEHAVIOUR_COMMENT)
+        public static ShearBehaviour shearBehaviour = ShearBehaviour.RevertSheep;
 
-    public static void syncConfig(Configuration config)
-    {
-        INSTANCE.debugModels = config.getBoolean("debugModels", CATEGORY, false, Reference.DEBUG_MODELS);
-        INSTANCE.debugInvisibleBlocks = config.getBoolean("debugInvisibleBlocks", CATEGORY, false, Reference.DEBUG_INVISIBLE_BLOCKS);
-
-        Shearing.syncConfig(config);
-        Behaviours.syncConfig(config);
+        private ShearingSettings() {}
     }
 
-    public enum Shearing
+    @SuppressWarnings({"WeakerAccess", "UtilityClass"})
+    public static final class BehaviourSettings
     {
-        INSTANCE;
+        @Comment(Reference.ALLOW_GLOWSTONE_COMMENT)
+        public static boolean allowGlowstone = false;
+        @Comment(Reference.ALLOW_REDSTONE_COMMENT)
+        public static boolean allowRedstone = true;
+        @Comment(Reference.ALLOW_BOOKSHELF_COMMENT)
+        public static boolean allowBookshelf = true;
+        @Comment(Reference.ALLOW_CACTUS_COMMENT)
+        public static boolean allowCactus = true;
+        @Comment(Reference.ALLOW_TNT_COMMENT)
+        public static boolean allowTNT = true;
+        @Comment(Reference.ALLOW_FIRE_DAMAGE_COMMENT)
+        public static boolean allowFireDamage = true;
 
-        public static final String CATEGORY = Configuration.CATEGORY_GENERAL + ".shearing";
-
-        private ShearBehaviour shearBehaviour = ShearBehaviour.RevertSheep;
-
-        public static ShearBehaviour getBehaviour() { return INSTANCE.shearBehaviour; }
-
-        private static void syncConfig(Configuration config) {
-
-            final String[] validNames = new String[ShearBehaviour.values().length];
-            for (int i = 0; i < ShearBehaviour.values().length; i++)
-            {
-                validNames[i] = ShearBehaviour.values()[i].name();
-            }
-
-            final String behaviour = config.getString("behaviour", CATEGORY, "RevertSheep", Reference.BEHAVIOUR_COMMENT, validNames);
-            INSTANCE.shearBehaviour = ShearBehaviour.valueOf(behaviour);
-        }
+        private BehaviourSettings() {}
     }
 
-    public enum Behaviours
-    {
-        INSTANCE;
-
-        public static final String CATEGORY = Configuration.CATEGORY_GENERAL + ".behaviours";
-
-        private boolean allowGlowstone = false;
-        private boolean allowRedstone = true;
-        private boolean allowBookshelf = true;
-        private boolean allowCactus = true;
-        private boolean allowTNT = true;
-        private boolean allowFireDamage = true;
-
-
-        public static boolean allowRedstone() {
-            return INSTANCE.allowRedstone;
-        }
-        public static boolean allowBookshelf() {
-            return INSTANCE.allowBookshelf;
-        }
-        public static boolean allowGlowstone() {
-            return INSTANCE.allowGlowstone;
-        }
-        public static boolean allowCactus() {
-            return INSTANCE.allowCactus;
-        }
-        public static boolean allowTNT() {
-            return INSTANCE.allowTNT;
-        }
-        public static boolean allowFireDamage() {
-            return INSTANCE.allowFireDamage;
-        }
-
-
-        private static void syncConfig(Configuration config) {
-            INSTANCE.allowRedstone = config.getBoolean("allowRedstone", CATEGORY, true, Reference.ALLOW_REDSTONE_COMMENT);
-            INSTANCE.allowBookshelf = config.getBoolean("allowBookshelf", CATEGORY, true, Reference.ALLOW_BOOKSHELF_COMMENT);
-            INSTANCE.allowGlowstone = config.getBoolean("allowGlowstone", CATEGORY, false, Reference.ALLOW_GLOWSTONE_COMMENT);
-            INSTANCE.allowCactus = config.getBoolean("allowCactus", CATEGORY, true, Reference.ALLOW_CACTUS_COMMENT);
-            INSTANCE.allowTNT = config.getBoolean("allowTNT", CATEGORY, true, Reference.ALLOW_TNT_COMMENT);
-            INSTANCE.allowFireDamage = config.getBoolean("allowFireDamage", CATEGORY, true, Reference.ALLOW_FIRE_DAMAGE_COMMENT);
-        }
-    }
-
+    private Settings() {}
 }

@@ -17,7 +17,7 @@ public final class Shearing
 
     public static void shearSheep(ItemStack itemStack, EntitySheep sheep, IChiseledSheepCapability capability)
     {
-        if (Settings.Shearing.getBehaviour() == ShearBehaviour.CannotShear) {
+        if (Settings.Shearing.shearBehaviour == ShearBehaviour.CannotShear) {
             //TODO: Play shear cancelled Sound.
             return;
         }
@@ -34,7 +34,7 @@ public final class Shearing
         sheep.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, 1.0F);
         itemStack.damageItem(1, sheep);
 
-        if (Settings.Shearing.getBehaviour() == ShearBehaviour.RevertSheep) {
+        if (Settings.Shearing.shearBehaviour == ShearBehaviour.RevertSheep) {
             capability.unChisel();
             CHANNEL.sendToAll(new SheepChiseledMessage(sheep));
         }
