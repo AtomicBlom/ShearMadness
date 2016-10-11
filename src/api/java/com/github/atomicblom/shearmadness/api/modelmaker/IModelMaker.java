@@ -16,6 +16,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.util.vector.Matrix3f;
+import org.lwjgl.util.vector.Matrix4f;
 
 /**
  * Creates a custom Quadruped model
@@ -75,15 +77,42 @@ public interface IModelMaker
     }
 
     default EntityMesh addBlockModelToEntityMesh(EntityMesh box, PartDefinition partDefinition, IBlockState blockState, IBakedModel model) {
-        if (!blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.SOLID)) {
-            return box;
-        }
-        ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID);
-        for (final EnumFacing value : EnumFacing.VALUES)
-        {
-            box.addBakedQuads(partDefinition.getPositionTransform(), partDefinition.getTextureTransform(), model.getQuads(blockState, value, 0));
-        }
-        box.addBakedQuads(partDefinition.getPositionTransform(), partDefinition.getTextureTransform(), model.getQuads(blockState, null, 0));
+        final Matrix4f positionTransform = partDefinition.getPositionTransform();
+        final Matrix3f textureTransform = partDefinition.getTextureTransform();
+        //FIXME: When chisel start reporting their render layers correctly, we can improve this logic.
+        //if (blockState == null || blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.SOLID)) {
+            ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID);
+            for (final EnumFacing value : EnumFacing.VALUES)
+            {
+                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, 0));
+            }
+            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, 0));
+        //}
+        //if (blockState != null && blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.CUTOUT)) {
+            ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT);
+            for (final EnumFacing value : EnumFacing.VALUES)
+            {
+                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, 0));
+            }
+            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, 0));
+        //}
+        //if (blockState != null && blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.CUTOUT_MIPPED)) {
+            ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+            for (final EnumFacing value : EnumFacing.VALUES)
+            {
+                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, 0));
+            }
+            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, 0));
+        //}
+        /*if (blockState != null && blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.TRANSLUCENT)) {
+            ForgeHooksClient.setRenderLayer(BlockRenderLayer.TRANSLUCENT);
+            for (final EnumFacing value : EnumFacing.VALUES)
+            {
+                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, 0));
+            }
+            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, 0));
+        //}*/
+
         ForgeHooksClient.setRenderLayer(null);
         return box;
     }
