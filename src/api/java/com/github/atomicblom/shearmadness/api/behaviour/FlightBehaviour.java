@@ -9,14 +9,14 @@ import java.util.Random;
 public class FlightBehaviour extends BehaviourBase {
 
     private final Random random;
-    private final int floatHeight;
+    private final float floatHeight;
     private final boolean moveForward;
     private float destinationYaw;
     private int framesTillNextTurn;
     private double destinationMotionY;
     private double currentMotionY;
 
-    public FlightBehaviour(EntitySheep sheep, int floatHeight, boolean moveForward) {
+    public FlightBehaviour(EntitySheep sheep, float floatHeight, boolean moveForward) {
         super(sheep);
         this.floatHeight = floatHeight;
         this.moveForward = moveForward;
@@ -50,8 +50,8 @@ public class FlightBehaviour extends BehaviourBase {
         if (actualHeight < floatHeight) {
             entity.motionY = currentMotionY;
         }
-        if (entity.motionY > 0.5) {
-            entity.motionY = 0.5;
+        if (entity.motionY > 0.3) {
+            entity.motionY = 0.3;
         }
         if (entity.motionY < 0) {
             entity.motionY = 0;

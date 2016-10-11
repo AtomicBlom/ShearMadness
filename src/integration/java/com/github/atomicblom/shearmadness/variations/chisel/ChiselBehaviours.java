@@ -20,7 +20,7 @@ public class ChiselBehaviours {
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, ChiselLibrary.technical, 4) ||
                         ItemStackHelper.isStackForBlock(itemStack, ChiselLibrary.technical1, 1),
-                sheep -> new FlightBehaviour(sheep, 10, true)
+                sheep -> new FlightBehaviour(sheep, 9f, true)
         );
     }
 }
