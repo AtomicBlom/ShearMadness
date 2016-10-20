@@ -1,8 +1,8 @@
 package com.github.atomicblom.shearmadness.variations.vanilla.behaviour;
 
+import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
-import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import net.minecraft.block.BlockNote;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -21,9 +21,6 @@ import net.minecraftforge.event.world.NoteBlockEvent;
 
 import java.util.function.Supplier;
 
-/**
- * Created by codew on 19/09/2016.
- */
 public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
 
     private final World world;
@@ -34,7 +31,7 @@ public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
     public NoteBlockBehaviour(EntitySheep entity, Supplier<Boolean> configuration) {
         super(entity, configuration);
         world = entity.getEntityWorld();
-        capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
     }
 
 
@@ -61,7 +58,7 @@ public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
     }
 
     public static void tuneNoteBlockSheep(EntitySheep sheep) {
-        final IChiseledSheepCapability capability = sheep.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
         final World world = sheep.getEntityWorld();
 
         final NBTTagCompound extraData = capability.getExtraData();

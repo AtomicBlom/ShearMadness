@@ -1,13 +1,11 @@
 package com.github.atomicblom.shearmadness.utility;
 
+import com.github.atomicblom.shearmadness.variations.CommonReference;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
 
 public final class Reference
 {
-    public static final String MOD_ID = "shearmadness";
-    public static final String MOD_NAME = "Shear Madness";
-    public static final String VERSION = "@MOD_VERSION@";
     public static final CreativeTabs CreativeTab = CreativeTabs.BUILDING_BLOCKS;
     public static final String MOD_GUI_FACTORY = "com.github.atomicblom.shearmadness.configuration.client.ModGuiFactory";
     public static final String BEHAVIOUR_COMMENT = "Sets the behaviour when a sheep is sheared\n" +
@@ -28,15 +26,15 @@ public final class Reference
     private Reference() {}
 
     public static final class ModID {
-        public static final String IMMERSIVE_ENGINEERING = "immersiveengineering";
+
     }
 
     public static final class Blocks {
         public static final String NORMAL_VARIANT = "normal";
 
-        public static final ResourceLocation InvisibleRedstone = new ResourceLocation(MOD_ID, "invisibleRedstone");
-        public static final ResourceLocation InvisibleGlowstone = new ResourceLocation(MOD_ID, "invisibleGlowstone");
-        public static final ResourceLocation InvisibleBookshelf = new ResourceLocation(MOD_ID, "invisibleBookshelf");
+        public static final ResourceLocation InvisibleRedstone = new ResourceLocation(CommonReference.MOD_ID, "invisibleRedstone");
+        public static final ResourceLocation InvisibleGlowstone = new ResourceLocation(CommonReference.MOD_ID, "invisibleGlowstone");
+        public static final ResourceLocation InvisibleBookshelf = new ResourceLocation(CommonReference.MOD_ID, "invisibleBookshelf");
 
         private Blocks() {}
     }

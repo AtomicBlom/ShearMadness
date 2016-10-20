@@ -5,7 +5,6 @@ import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessVariationEvent;
 import com.github.atomicblom.shearmadness.api.transformation.RailTransformations;
 import com.github.atomicblom.shearmadness.api.transformation.StairTransformations;
-import com.github.atomicblom.shearmadness.modelmaker.DefaultChiselModelMaker;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -15,7 +14,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import team.chisel.api.carving.CarvingUtils;
 
 import java.util.function.Function;
 
@@ -28,12 +26,6 @@ public class VanillaVariations
     @SideOnly(Side.CLIENT)
     public static void onShearMadnessRegisterVariations(RegisterShearMadnessVariationEvent event) {
         final IVariationRegistry registry = event.getRegistry();
-
-        //Java 8 Style Registration
-        registry.registerVariation(
-                itemStack -> CarvingUtils.getChiselRegistry().getVariation(itemStack) != null,
-                new DefaultChiselModelMaker()
-        );
 
         //Java 7 Style Registration
         //noinspection Convert2Lambda

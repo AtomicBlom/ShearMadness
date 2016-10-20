@@ -1,4 +1,4 @@
-package com.github.atomicblom.shearmadness.modelmaker;
+package com.github.atomicblom.shearmadness.variations.chisel.visuals;
 
 import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
@@ -12,8 +12,10 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import team.chisel.api.carving.CarvingUtils;
 import team.chisel.api.carving.ICarvingVariation;
+import team.chisel.client.ChiselExtendedState;
 
 public class DefaultChiselModelMaker implements IModelMaker
 {
@@ -43,8 +45,10 @@ public class DefaultChiselModelMaker implements IModelMaker
     {
         final IBlockState blockState = variation.getBlockState();
         final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+        ChiselExtendedState chiselState = new ChiselExtendedState(blockState, null, null);
         final IBakedModel model = blockRenderer.getModelForState(blockState);
 
-        return getModelRendererForBlockState(partDefinition, blockState, model);
+
+        return getModelRendererForBlockState(partDefinition, chiselState, model);
     }
 }

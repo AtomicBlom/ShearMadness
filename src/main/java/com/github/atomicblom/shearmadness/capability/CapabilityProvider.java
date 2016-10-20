@@ -4,18 +4,16 @@ import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapabilit
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
+
 import javax.annotation.Nullable;
+
+import static com.github.atomicblom.shearmadness.api.Capability.CHISELED_SHEEP;
 
 @SuppressWarnings({"ObjectEquality", "ConstantConditions", "ClassHasNoToStringMethod"})
 public class CapabilityProvider implements ICapabilityProvider, INBTSerializable<NBTBase>
 {
-
-    @CapabilityInject(IChiseledSheepCapability.class)
-    public static final Capability<IChiseledSheepCapability> CHISELED_SHEEP;
-
     private final IChiseledSheepCapability capability;
 
     public CapabilityProvider()
@@ -50,10 +48,6 @@ public class CapabilityProvider implements ICapabilityProvider, INBTSerializable
     public void deserializeNBT(NBTBase nbt)
     {
         ChiseledSheepCapabilityStorage.instance.readNBT(CHISELED_SHEEP, capability, null, nbt);
-    }
-
-    static {
-        CHISELED_SHEEP = null;
     }
 }
 

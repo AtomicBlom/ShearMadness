@@ -3,9 +3,8 @@ package com.github.atomicblom.shearmadness.variations.silly;
 import com.github.atomicblom.shearmadness.api.IVariationRegistry;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessVariationEvent;
-import com.github.atomicblom.shearmadness.utility.Reference;
+import com.github.atomicblom.shearmadness.variations.CommonReference;
 import com.github.atomicblom.shearmadness.variations.silly.visuals.InfiltratorModelMaker;
-import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -35,7 +34,7 @@ public class SillyVarations
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
-        event.getMap().registerSprite(new ResourceLocation(Reference.MOD_ID, "chicken-nuggets"));
-        event.getMap().registerSprite(new ResourceLocation(Reference.MOD_ID, "chicken-winglets"));
+        event.getMap().registerSprite(new ResourceLocation(CommonReference.MOD_ID, "chicken-nuggets"));
+        event.getMap().registerSprite(new ResourceLocation(CommonReference.MOD_ID, "chicken-winglets"));
     }
 }

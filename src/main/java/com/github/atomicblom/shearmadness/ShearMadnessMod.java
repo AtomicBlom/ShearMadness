@@ -12,6 +12,7 @@ import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessageHandler;
 import com.github.atomicblom.shearmadness.proxy.Proxies;
 import com.github.atomicblom.shearmadness.utility.Reference;
+import com.github.atomicblom.shearmadness.variations.CommonReference;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
@@ -23,10 +24,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 @SuppressWarnings("MethodMayBeStatic")
-@Mod(modid = Reference.MOD_ID, version = Reference.VERSION, guiFactory = Reference.MOD_GUI_FACTORY, dependencies = "required-after:chisel", acceptedMinecraftVersions = "[1.9.4, 1.11)")
+@Mod(modid = CommonReference.MOD_ID, version = CommonReference.VERSION, guiFactory = Reference.MOD_GUI_FACTORY, dependencies = "required-after:chisel", acceptedMinecraftVersions = "[1.9.4, 1.11)")
 public class ShearMadnessMod
 {
-    public static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
+    public static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(CommonReference.MOD_ID);
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)

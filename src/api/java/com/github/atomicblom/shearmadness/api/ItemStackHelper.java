@@ -16,6 +16,7 @@ public final class ItemStackHelper
 
     public static boolean isStackForBlock(ItemStack itemStack, Block block)
     {
+        if (itemStack == null) return false;
         final Item item = itemStack.getItem();
         if (item instanceof ItemBlock) {
             if (Objects.equals(((ItemBlock) item).block, block)) {
@@ -27,6 +28,7 @@ public final class ItemStackHelper
 
     public static boolean isStackForBlockSubclassOf(ItemStack itemStack, Class<? extends Block> blockClass)
     {
+        if (itemStack == null) return false;
         final Item item = itemStack.getItem();
         if (item instanceof ItemBlock) {
             if (blockClass.isAssignableFrom(((ItemBlock) item).block.getClass())) {
@@ -45,6 +47,7 @@ public final class ItemStackHelper
     }
 
     private static boolean isStackForBlock(ItemStack itemStack, Iterator<Block> blocks) {
+        if (itemStack == null) return false;
         final Item item = itemStack.getItem();
         if (item instanceof ItemBlock) {
             final Block block = ((ItemBlock) item).block;

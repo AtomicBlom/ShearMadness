@@ -44,15 +44,21 @@ public class EntityMesh extends ModelBox
      */
     public void addBakedQuads(Matrix4f positionTransform, Matrix3f textureTransform, Collection<BakedQuad> bakedQuads)
     {
-        allBakedQuads.add(new FutureQuad<>(bakedQuads, positionTransform, textureTransform));
+        if (bakedQuads != null && bakedQuads.size() > 0) {
+            allBakedQuads.add(new FutureQuad<>(bakedQuads, positionTransform, textureTransform));
+        }
     }
 
     public void addTexturedQuads(Matrix4f positionTransform, Matrix3f textureTransform, Collection<TexturedQuad> texturedQuads) {
-        allTexturedQuads.add(new FutureQuad<>(texturedQuads, positionTransform, textureTransform));
+        if (texturedQuads != null && texturedQuads.size() > 0) {
+            allTexturedQuads.add(new FutureQuad<>(texturedQuads, positionTransform, textureTransform));
+        }
     }
 
     public void addTexturedQuads(Matrix4f positionTransform, Matrix3f textureTransform, TexturedQuad... texturedQuads) {
-        allTexturedQuads.add(new FutureQuad<>(Lists.newArrayList(texturedQuads), positionTransform, textureTransform));
+        if (texturedQuads != null && texturedQuads.length > 0) {
+            allTexturedQuads.add(new FutureQuad<>(Lists.newArrayList(texturedQuads), positionTransform, textureTransform));
+        }
     }
 
     @SuppressWarnings("ObjectAllocationInLoop")
@@ -129,7 +135,6 @@ public class EntityMesh extends ModelBox
         private final Matrix3f textureTransform;
 
         FutureQuad(Collection<T> quads, Matrix4f positionTransform, Matrix3f textureTransform) {
-
             this.quads = quads;
             this.positionTransform = positionTransform;
             this.textureTransform = textureTransform;
