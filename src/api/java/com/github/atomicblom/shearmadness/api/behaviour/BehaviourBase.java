@@ -1,5 +1,8 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
+import com.github.atomicblom.shearmadness.ai.SheepBehaviourAI;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.math.BlockPos;
 import java.util.function.Supplier;
@@ -38,5 +41,15 @@ public abstract class BehaviourBase<T extends BehaviourBase> {
     public EntitySheep getEntity()
     {
         return entity;
+    }
+
+    public static <T extends BehaviourBase> T getBehaviourForEntity(EntityLiving entity, Class<T> behaviour) {
+        for (EntityAITasks.EntityAITaskEntry taskEntry : entity.tasks.taskEntries) {
+            if (taskEntry.action.getClass() == SheepBehaviourAI.class) {
+                final SheepBehaviourAI action = (SheepBehaviourAI) taskEntry.action;
+                return (T)action.getBehaviour(behaviour);
+            }
+        }
+        return null;
     }
 }

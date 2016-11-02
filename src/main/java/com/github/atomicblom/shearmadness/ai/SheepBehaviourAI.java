@@ -37,6 +37,15 @@ public class SheepBehaviourAI extends EntityAIBase
         }
     }
 
+    public BehaviourBase getBehaviour(Class<? extends BehaviourBase> behaviour) {
+        for (ActiveBehaviour activeBehaviour : activeBehaviours) {
+            if (activeBehaviour.behaviour.getClass() == behaviour) {
+                return activeBehaviour.behaviour;
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean shouldExecute()
     {

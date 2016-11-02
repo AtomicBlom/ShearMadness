@@ -8,6 +8,7 @@ import com.github.atomicblom.shearmadness.api.behaviour.PlaceInvisibleBlockBehav
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
 import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
+import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.FollowAutoCraftItems;
 import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.NoteBlockBehaviour;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;

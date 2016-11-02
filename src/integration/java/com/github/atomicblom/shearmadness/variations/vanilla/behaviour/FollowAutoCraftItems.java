@@ -1,8 +1,8 @@
 package com.github.atomicblom.shearmadness.variations.vanilla.behaviour;
 
+import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
-import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.utility.Logger;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -21,15 +21,15 @@ import java.util.List;
 
 public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
-    long lastExecutionTime;
+    private long lastExecutionTime;
     private int eatingItemTimer;
     private int poopingItemTimer;
 
-    private EntityItem itemBeingConsumed;
+    private EntityItem targetedItem;
     private long autocraftChangeTime;
-    private ItemStack[] itemsToCollect;
-    private ItemStack[] itemsConsumed;
-    private ItemStack[] originalCraftingGrid;
+    private ItemStack[] itemsToCollect = new ItemStack[9];
+    private ItemStack[] itemsConsumed = new ItemStack[9];
+    private ItemStack[] originalCraftingGrid = new ItemStack[9];
 
 
     public FollowAutoCraftItems(EntitySheep entity) {
@@ -75,16 +75,17 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         }
     }
 
-    public boolean findItemToConsume(EntitySheep entity, World worldObj, BlockPos position) {
-        final IChiseledSheepCapability capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+    private boolean findItemToConsume(EntitySheep entity, World worldObj, BlockPos position) {
+        final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         final NBTTagCompound extraData = capability.getExtraData();
         if (!extraData.hasKey("AUTO_CRAFT")) {
             return true;
         }
         final NBTTagCompound craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
         if (craftMatrixNBT.hasKey("lastChanged")) {
-            long lastChanged = craftMatrixNBT.getLong("lastChanged");
+            final long lastChanged = craftMatrixNBT.getLong("lastChanged");
             if (lastChanged != autocraftChangeTime) {
+                updateItemsConsumed();
                 reloadAutoCraftProperties(craftMatrixNBT);
             }
             autocraftChangeTime = lastChanged;
@@ -94,10 +95,14 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
         Logger.info("Checking surroundings for items");
 
-        final List<Entity> recipeItems = worldObj.getEntitiesInAABBexcluding(entity, new AxisAlignedBB(position).expand(16, 16, 16).offset(-8, -8, -8), (e) -> {
+        final AxisAlignedBB offset = new AxisAlignedBB(position).expand(16, 16, 16).offset(-8, -8, -8);
+        final List<Entity> recipeItems = worldObj.getEntitiesInAABBexcluding(entity, offset, (e) -> {
             if (e instanceof EntityItem) {
                 if (e.isAirBorne) return false;
-                if (((EntityItem) e).getAge() < 20 * 2) return false;
+                final int age = ((EntityItem) e).getAge();
+                //Immersive Engineering sets the age to -some silly number to work around something.
+                //So I'ma ignore - numbers to work around that something he's working around.
+                if (age > 0 && age < 20 * 2) return false;
 
                 final ItemStack stack = ((EntityItem) e).getEntityItem();
 
@@ -120,7 +125,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
                 eatingItemTimer = 40;
                 worldObj.setEntityState(entity, (byte)10);
-                itemBeingConsumed = (EntityItem)recipeItem;
+                targetedItem = (EntityItem)recipeItem;
                 entity.getNavigator().clearPathEntity();
                 entity.getLookHelper().setLookPositionWithEntity(recipeItem, entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
                 return true;
@@ -135,37 +140,68 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         return false;
     }
 
-    public void consumeItem(World worldObj) {
-        if (itemBeingConsumed != null && itemBeingConsumed.isEntityAlive()) {
-            final ItemStack entityItem = itemBeingConsumed.getEntityItem();
+
+    @Override
+    public void onBehaviourStopped(BlockPos previousPos) {
+        final EntitySheep entity = getEntity();
+        final World entityWorld = entity.getEntityWorld();
+
+        for (int i = 0; i < 9; ++i) {
+            if (itemsConsumed[i] != null) {
+                final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, itemsConsumed[i]);
+                entityItem.setDefaultPickupDelay();
+                entityWorld.spawnEntityInWorld(entityItem);
+            }
+            if (originalCraftingGrid[i] != null) {
+                final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, originalCraftingGrid[i]);
+                entityItem.setDefaultPickupDelay();
+                entityWorld.spawnEntityInWorld(entityItem);
+            }
+        }
+        final NBTTagCompound extraData = entity.getCapability(Capability.CHISELED_SHEEP, null).getExtraData();
+        extraData.removeTag("AUTO_CRAFT");
+    }
+
+    private void consumeItem(World worldObj) {
+        if (targetedItem != null && targetedItem.isEntityAlive()) {
+            final ItemStack entityItem = targetedItem.getEntityItem();
             while (entityItem.stackSize > 0 && consumeItem(entityItem)) {
                 entityItem.stackSize--;
             }
 
             if (entityItem.stackSize == 0) {
-                worldObj.removeEntity(itemBeingConsumed);
+                worldObj.removeEntity(targetedItem);
             }
 
             Logger.info("Add item to consumed");
             updateItemsConsumed();
 
-            int itemsLeft = 0;
-            for (int i = 0; i < 9; ++i) {
-                if (itemsToCollect[i] != null) {
-                    itemsLeft++;
-                }
-            }
-
-            if (itemsLeft == 0) {
-                poopingItemTimer = 44;
-                Logger.info("Digesting Item");
-            } else {
-                Logger.info("%d items left", itemsLeft);
-            }
+            checkDigested();
         }
     }
 
-    public void createItem(EntitySheep entity, World worldObj) {
+    private void checkDigested() {
+        int itemsLeft = checkItemsLeftToConsume();
+
+        if (itemsLeft == 0) {
+            poopingItemTimer = 44;
+            Logger.info("Digesting Item");
+        } else {
+            Logger.info("%d items left", itemsLeft);
+        }
+    }
+
+    private int checkItemsLeftToConsume() {
+        int itemsLeft = 0;
+        for (int i = 0; i < 9; ++i) {
+            if (itemsToCollect[i] != null) {
+                itemsLeft++;
+            }
+        }
+        return itemsLeft;
+    }
+
+    private void createItem(EntitySheep entity, World worldObj) {
         final ContainerWorkbench container = new ContainerWorkbench(new InventoryPlayer(null), worldObj, entity.getPosition());
         for (int i = 0; i < 9; ++i) {
             container.craftMatrix.setInventorySlotContents(i, itemsConsumed[i]);
@@ -180,7 +216,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             entityItem.moveRelative(0, 0.3f, 1);
 
             final ItemStack[] remainingItems = instance.getRemainingItems(container.craftMatrix, worldObj);
-            for (ItemStack remainingItem : remainingItems) {
+            for (final ItemStack remainingItem : remainingItems) {
                 if (remainingItem == null) continue;
                 entityItem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, remainingItem);
                 worldObj.spawnEntityInWorld(entityItem);
@@ -189,13 +225,13 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             }
         }
 
-        for (int i = 0; i < 9; ++i) {
-            itemsToCollect[i] = originalCraftingGrid[i];
-        }
+        System.arraycopy(originalCraftingGrid, 0, itemsToCollect, 0, 9);
+        itemsConsumed = new ItemStack[9];
+        updateItemsConsumed();
     }
 
     private void updateItemsConsumed() {
-        final IChiseledSheepCapability capability = getEntity().getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        final IChiseledSheepCapability capability = getEntity().getCapability(Capability.CHISELED_SHEEP, null);
         final NBTTagCompound extraData = capability.getExtraData();
         if (!extraData.hasKey("AUTO_CRAFT")) { return; }
         final NBTTagCompound craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
@@ -221,15 +257,15 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         final NBTTagCompound consumed = craftMatrixNBT.getCompoundTag("CONSUMED");
 
         itemsToCollect = new ItemStack[9];
-        ItemStack[] updatedOriginalCraftingGrid = new ItemStack[9];
         originalCraftingGrid = new ItemStack[9];
         int itemCount = 0;
-        boolean craftedItemChanged = false;
         for (int i = 0; i < 9; ++i)
         {
             final String key = ((Integer) i).toString();
 
-            if (craftMatrixNBT.hasKey(key)) {
+            final boolean nbtHasItemInIndex = craftMatrixNBT.hasKey(key);
+
+            if (nbtHasItemInIndex) {
                 final ItemStack itemstack = ItemStack.loadItemStackFromNBT(craftMatrixNBT.getCompoundTag(key));
                 itemsToCollect[i] = itemstack;
                 originalCraftingGrid[i] = itemstack;
@@ -239,16 +275,23 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
         Logger.info("Looking for %d items", itemCount);
 
-        final int itemConsumedCount = consumed.getInteger("itemsConsumed");
-        itemsConsumed = new ItemStack[9];
-        for (int i = 0; i < itemConsumedCount; ++i) {
-            final String key = ((Integer) i).toString();
+        final Entity entity = getEntity();
+        final World entityWorld = entity.getEntityWorld();
 
-            if (consumed.hasKey(key)) {
-                final ItemStack consumedItemStack = ItemStack.loadItemStackFromNBT(consumed.getCompoundTag(key));
-                consumeItem(consumedItemStack);
+        itemsConsumed = new ItemStack[9];
+        for (final String key : consumed.getKeySet()) {
+            final ItemStack consumedItemStack = ItemStack.loadItemStackFromNBT(consumed.getCompoundTag(key));
+            if (!consumeItem(consumedItemStack)) {
+                final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, consumedItemStack);
+                entityItem.setDefaultPickupDelay();
+                entityWorld.spawnEntityInWorld(entityItem);
+                Logger.info("Unable to consume %s", consumedItemStack);
+            } else {
+                Logger.info("Consumed %s", consumedItemStack);
             }
         }
+
+        checkDigested();
     }
 
     private boolean consumeItem(ItemStack consumedItemStack) {
@@ -277,5 +320,4 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         if (!ItemStack.areItemStackTagsEqual(thisa, other)) return false;
         return true;
     }
-
 }

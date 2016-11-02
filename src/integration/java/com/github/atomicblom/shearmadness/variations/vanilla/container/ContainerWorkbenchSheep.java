@@ -1,8 +1,11 @@
 package com.github.atomicblom.shearmadness.variations.vanilla.container;
 
+import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
+import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.FollowAutoCraftItems;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -25,7 +28,7 @@ public class ContainerWorkbenchSheep extends ContainerWorkbench
         super(playerInventory, worldIn, entity.getPosition());
         this.entity = entity;
         this.world = worldIn;
-        capability = entity.getCapability(CapabilityProvider.CHISELED_SHEEP, null);
+        capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         onContainerOpened();
     }
 
