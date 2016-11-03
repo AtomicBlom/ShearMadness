@@ -46,7 +46,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             eatingItemTimer = Math.max(0, eatingItemTimer - 1);
 
             if (eatingItemTimer == 4) {
-                Logger.info("Consuming Item");
+                Logger.trace("Consuming Item");
                 consumeItem(worldObj);
             }
 
@@ -60,7 +60,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
             if (poopingItemTimer == 1) {
                 //calculate recipe and fire item out bum.
-                Logger.info("Crafting Item");
+                Logger.trace("Crafting Item");
                 createItem(entity, worldObj);
                 lastExecutionTime = worldObj.getTotalWorldTime();
             }
@@ -71,7 +71,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         if (lastExecutionTime + 20 < worldObj.getTotalWorldTime()) {
             lastExecutionTime = worldObj.getTotalWorldTime();
             if (findItemToConsume(entity, worldObj, position)) return;
-            Logger.info("No items found");
+            Logger.trace("No items found");
         }
     }
 
@@ -93,13 +93,13 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             return true;
         }
 
-        Logger.info("Checking surroundings for items");
+        Logger.trace("Checking surroundings for items");
 
         final AxisAlignedBB offset = new AxisAlignedBB(position).expand(16, 16, 16).offset(-8, -8, -8);
         final List<Entity> recipeItems = worldObj.getEntitiesInAABBexcluding(entity, offset, (e) -> {
             if (e instanceof EntityItem) {
                 if (e.isAirBorne) return false;
-                final int age = ((EntityItem) e).getAge();
+                final int age = ((EntityItem) e).age;
                 //Immersive Engineering sets the age to -some silly number to work around something.
                 //So I'ma ignore - numbers to work around that something he's working around.
                 if (age > 0 && age < 20 * 2) return false;
@@ -121,7 +121,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             final double distanceSqToEntity = entity.getDistanceSqToEntity(recipeItem);
             if (distanceSqToEntity < 0.75) {
                 //Eat thing.
-                Logger.info("Eating %s", recipeItem);
+                Logger.trace("Eating %s", recipeItem);
 
                 eatingItemTimer = 40;
                 worldObj.setEntityState(entity, (byte)10);
@@ -133,7 +133,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
             if (entity.getNavigator().tryMoveToEntityLiving(recipeItem, 1)) {
 
-                Logger.info("Moving to %s", recipeItem);
+                Logger.trace("Moving to %s", recipeItem);
                 return true;
             }
         }
@@ -173,7 +173,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
                 worldObj.removeEntity(targetedItem);
             }
 
-            Logger.info("Add item to consumed");
+            Logger.trace("Add item to consumed");
             updateItemsConsumed();
 
             checkDigested();
@@ -185,9 +185,9 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
         if (itemsLeft == 0) {
             poopingItemTimer = 44;
-            Logger.info("Digesting Item");
+            Logger.trace("Digesting Item");
         } else {
-            Logger.info("%d items left", itemsLeft);
+            Logger.trace("%d items left", itemsLeft);
         }
     }
 
@@ -273,7 +273,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             }
         }
 
-        Logger.info("Looking for %d items", itemCount);
+        Logger.trace("Looking for %d items", itemCount);
 
         final Entity entity = getEntity();
         final World entityWorld = entity.getEntityWorld();
@@ -285,9 +285,9 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
                 final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, consumedItemStack);
                 entityItem.setDefaultPickupDelay();
                 entityWorld.spawnEntityInWorld(entityItem);
-                Logger.info("Unable to consume %s", consumedItemStack);
+                Logger.trace("Unable to consume %s", consumedItemStack);
             } else {
-                Logger.info("Consumed %s", consumedItemStack);
+                Logger.trace("Consumed %s", consumedItemStack);
             }
         }
 

@@ -32,6 +32,11 @@ public enum Logger
         INSTANCE.log(Level.WARN, format, args);
     }
 
+    public static void trace(final String format, final Object... args)
+    {
+        INSTANCE.log(Level.TRACE, format, args);
+    }
+
     private org.apache.logging.log4j.Logger getLogger()
     {
         if (logger == null)
