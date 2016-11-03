@@ -12,6 +12,8 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import team.chisel.api.carving.CarvingUtils;
 import team.chisel.api.carving.ICarvingVariation;
@@ -31,21 +33,24 @@ public class DefaultChiselModelMaker implements IModelMaker
         transforms.defineParts();
         final ICarvingVariation variation = CarvingUtils.getChiselRegistry().getVariation(itemStack);
 
+        final BlockPos position = entity.getPosition();
+        final World world = entity.getEntityWorld();
+
         final ModelQuadruped quadrupedModel = new ModelSheep1();
-        transforms.getBodyPartDefinition().ifPresent(definition -> quadrupedModel.body = getChiselBodyModelRenderer(variation, definition));
-        transforms.getHeadPartDefinition().ifPresent(definition -> quadrupedModel.head = getChiselBodyModelRenderer(variation, definition));
-        transforms.getLeg1PartDefinition().ifPresent(definition -> quadrupedModel.leg1 = getChiselBodyModelRenderer(variation, definition));
-        transforms.getLeg2PartDefinition().ifPresent(definition -> quadrupedModel.leg2 = getChiselBodyModelRenderer(variation, definition));
-        transforms.getLeg3PartDefinition().ifPresent(definition -> quadrupedModel.leg3 = getChiselBodyModelRenderer(variation, definition));
-        transforms.getLeg4PartDefinition().ifPresent(definition -> quadrupedModel.leg4 = getChiselBodyModelRenderer(variation, definition));
+        transforms.getBodyPartDefinition().ifPresent(definition -> quadrupedModel.body = getChiselBodyModelRenderer(variation, definition, world, position));
+        transforms.getHeadPartDefinition().ifPresent(definition -> quadrupedModel.head = getChiselBodyModelRenderer(variation, definition, world, position));
+        transforms.getLeg1PartDefinition().ifPresent(definition -> quadrupedModel.leg1 = getChiselBodyModelRenderer(variation, definition, world, position));
+        transforms.getLeg2PartDefinition().ifPresent(definition -> quadrupedModel.leg2 = getChiselBodyModelRenderer(variation, definition, world, position));
+        transforms.getLeg3PartDefinition().ifPresent(definition -> quadrupedModel.leg3 = getChiselBodyModelRenderer(variation, definition, world, position));
+        transforms.getLeg4PartDefinition().ifPresent(definition -> quadrupedModel.leg4 = getChiselBodyModelRenderer(variation, definition, world, position));
         return quadrupedModel;
     }
 
-    private ModelRenderer getChiselBodyModelRenderer(ICarvingVariation variation, PartDefinition partDefinition)
+    private ModelRenderer getChiselBodyModelRenderer(ICarvingVariation variation, PartDefinition partDefinition, World world, BlockPos position)
     {
         final IBlockState blockState = variation.getBlockState();
         final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        ChiselExtendedState chiselState = new ChiselExtendedState(blockState, null, null);
+        ChiselExtendedState chiselState = new ChiselExtendedState(blockState, world, position);
         final IBakedModel model = blockRenderer.getModelForState(blockState);
 
 

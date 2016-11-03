@@ -80,7 +80,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                             return variationModelMaker.createModel(itemStack, sheep);
                         } catch (Exception e) {
                             Logger.log(Level.INFO, e, "Error creating chiseled sheep model, item stack was %s", itemStack);
-                            return new ModelSheep1();
+                            return errorModelMaker.createModel(null, sheep);
                         }
                     });
                     sheepRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
