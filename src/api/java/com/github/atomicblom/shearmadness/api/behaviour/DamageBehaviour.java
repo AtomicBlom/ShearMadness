@@ -32,7 +32,7 @@ public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
     @Override
     public void updateTask() {
         final EntitySheep entity = getEntity();
-        for (final Entity nearbyEntity : entity.worldObj.getEntitiesWithinAABBExcludingEntity(entity, searchBox))
+        for (final Entity nearbyEntity : entity.getEntityWorld().getEntitiesWithinAABBExcludingEntity(entity, searchBox))
         {
             final double distance = entity.getDistanceSqToEntity(nearbyEntity);
 

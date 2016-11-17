@@ -139,7 +139,7 @@ public class CommonForgeEventProxy
 
                 drops.removeIf(entityItem -> ItemStackHelper.isStackForBlock(entityItem.getEntityItem(), Blocks.WOOL));
 
-                drops.add(new EntityItem(entity.worldObj, entity.posX, entity.posY, entity.posZ, chiselItemStack.copy()));
+                drops.add(new EntityItem(entity.getEntityWorld(), entity.posX, entity.posY, entity.posZ, chiselItemStack.copy()));
             }
         }
     }

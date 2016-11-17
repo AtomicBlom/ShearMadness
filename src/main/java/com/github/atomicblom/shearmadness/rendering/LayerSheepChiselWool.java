@@ -88,7 +88,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                     final Item item = itemStack.getItem();
                     if (item instanceof ItemBlock)
                     {
-                        final int colorMultiplier = Minecraft.getMinecraft().getBlockColors().colorMultiplier(((ItemBlock) item).block.getDefaultState(), sheep.worldObj, sheep.getPosition(), 0);
+                        final int colorMultiplier = Minecraft.getMinecraft().getBlockColors().colorMultiplier(((ItemBlock) item).block.getDefaultState(), sheep.getEntityWorld(), sheep.getPosition(), 0);
                         GlStateManager.color(
                                 (colorMultiplier >> 16 & 255) / 255.0F, //Red
                                 (colorMultiplier >> 8 & 255) / 255.0F, //Green

@@ -27,7 +27,7 @@ public final class Chiseling
             {
                 activeStack.damageItem(1, entityPlayer);
 
-                if (!sheep.worldObj.isRemote)
+                if (!sheep.getEntityWorld().isRemote)
                 {
                     CHANNEL.sendToAll(new SheepChiseledMessage(sheep));
 

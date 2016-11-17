@@ -28,19 +28,19 @@ public class ExplosiveBehaviour extends BehaviourBase {
 
     @Override
     public void updateTask() {
-        boolean blockPowered = getEntity().worldObj.isBlockPowered(getEntity().getPosition());
+        boolean blockPowered = getEntity().getEntityWorld().isBlockPowered(getEntity().getPosition());
         if (!getEntity().isChild()) {
-            blockPowered |= getEntity().worldObj.isBlockPowered(aboveCurrentPosition);
+            blockPowered |= getEntity().getEntityWorld().isBlockPowered(aboveCurrentPosition);
         }
 
-        final long totalWorldTime = getEntity().worldObj.getTotalWorldTime();
+        final long totalWorldTime = getEntity().getEntityWorld().getTotalWorldTime();
         if (blockPowered && primedTime == null) {
             primedTime = totalWorldTime;
             getEntity().playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0f, 1.0f);
         }
 
         if (primedTime != null && totalWorldTime > primedTime + 80) {
-            getEntity().worldObj.createExplosion(null, getEntity().posX, getEntity().posY + getEntity().height / 16.0F, getEntity().posZ, 4.0F, true);
+            getEntity().getEntityWorld().createExplosion(null, getEntity().posX, getEntity().posY + getEntity().height / 16.0F, getEntity().posZ, 4.0F, true);
         }
     }
 }

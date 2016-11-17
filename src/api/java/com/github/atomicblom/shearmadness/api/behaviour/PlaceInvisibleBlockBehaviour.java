@@ -15,7 +15,7 @@ public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBl
 
     public PlaceInvisibleBlockBehaviour(EntitySheep sheep, Supplier<Boolean> configuration, IBlockState blockState) {
         super(sheep, configuration);
-        world = sheep.worldObj;
+        world = sheep.getEntityWorld();
         this.blockState = blockState;
     }
 
