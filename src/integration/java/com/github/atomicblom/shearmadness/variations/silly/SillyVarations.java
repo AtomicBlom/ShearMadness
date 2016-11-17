@@ -34,7 +34,7 @@ public class SillyVarations
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
-        event.getMap().registerSprite(new ResourceLocation(CommonReference.MOD_ID, "chicken-nuggets"));
-        event.getMap().registerSprite(new ResourceLocation(CommonReference.MOD_ID, "chicken-winglets"));
+        event.getMap().registerSprite(new ResourceLocation(CommonReference.MOD_ID, "chicken_nuggets"));
+        event.getMap().registerSprite(new ResourceLocation(CommonReference.MOD_ID, "chicken_winglets"));
     }
 }

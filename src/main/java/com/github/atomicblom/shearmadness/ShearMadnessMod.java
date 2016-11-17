@@ -11,6 +11,7 @@ import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMe
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessageHandler;
 import com.github.atomicblom.shearmadness.proxy.Proxies;
+import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.variations.CommonReference;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,6 +19,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -54,5 +56,17 @@ public class ShearMadnessMod
     {
         Proxies.renderProxy.registerRenderers();
         Proxies.forgeEventProxy.fireRegistryEvent();
+    }
+
+    @EventHandler
+    public void onMissingMapping(FMLMissingMappingsEvent.MissingMapping event) {
+        if (!"shearmadness".equals(event.resourceLocation.getResourceDomain())) { return; }
+        if ("invisibleRedstone".equals(event.resourceLocation.getResourcePath())) {
+            event.remap(BlockLibrary.invisible_redstone);
+        } else if ("invisibleGlowstone".equals(event.resourceLocation.getResourcePath())) {
+            event.remap(BlockLibrary.invisible_glowstone);
+        } else if ("invisibleBookshelf".equals(event.resourceLocation.getResourcePath())) {
+            event.remap(BlockLibrary.invisible_bookshelf);
+        }
     }
 }

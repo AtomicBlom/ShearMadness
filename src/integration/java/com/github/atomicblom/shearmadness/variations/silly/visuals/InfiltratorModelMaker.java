@@ -26,7 +26,7 @@ public class InfiltratorModelMaker extends DefaultModelMaker
         EntityMesh partA = new EntityMesh(model.head);
 
         final TextureMap blockTextureMap = Minecraft.getMinecraft().getTextureMapBlocks();
-        final TextureAtlasSprite chickenSprite = blockTextureMap.getAtlasSprite(CommonReference.MOD_ID + ":chicken-nuggets");
+        final TextureAtlasSprite chickenSprite = blockTextureMap.getAtlasSprite(CommonReference.MOD_ID + ":chicken_nuggets");
 
         partA.addTexturedQuads(partATransform, new Matrix3f(),
                 new TexturedQuad(
@@ -103,7 +103,7 @@ public class InfiltratorModelMaker extends DefaultModelMaker
                 );
         model.head.cubeList.add(partA);
 
-        final TextureAtlasSprite chickenWings = blockTextureMap.getAtlasSprite(CommonReference.MOD_ID + ":chicken-winglets");
+        final TextureAtlasSprite chickenWings = blockTextureMap.getAtlasSprite(CommonReference.MOD_ID + ":chicken_winglets");
 
         TexturedQuad[] texturedQuads = {new TexturedQuad(
                 new PositionTextureVertex[]{

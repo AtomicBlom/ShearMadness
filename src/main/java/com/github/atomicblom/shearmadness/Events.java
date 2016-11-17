@@ -13,6 +13,6 @@ public class Events {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
-        event.getMap().registerSprite(new ResourceLocation(CommonReference.MOD_ID, "bad-render"));
+        event.getMap().registerSprite(new ResourceLocation(CommonReference.MOD_ID, "bad_render"));
     }
 }

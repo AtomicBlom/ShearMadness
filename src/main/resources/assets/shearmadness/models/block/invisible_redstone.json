@@ -1,5 +1,5 @@
 {
-  "parent": "shearmadness:block/invisibleBlock",
+  "parent": "shearmadness:block/invisible_block",
   "textures": {
     "all": "blocks/redstone_block"
   }

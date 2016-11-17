@@ -32,9 +32,9 @@ public final class Reference
     public static final class Blocks {
         public static final String NORMAL_VARIANT = "normal";
 
-        public static final ResourceLocation InvisibleRedstone = new ResourceLocation(CommonReference.MOD_ID, "invisibleRedstone");
-        public static final ResourceLocation InvisibleGlowstone = new ResourceLocation(CommonReference.MOD_ID, "invisibleGlowstone");
-        public static final ResourceLocation InvisibleBookshelf = new ResourceLocation(CommonReference.MOD_ID, "invisibleBookshelf");
+        public static final ResourceLocation InvisibleRedstone = new ResourceLocation(CommonReference.MOD_ID, "invisible_redstone");
+        public static final ResourceLocation InvisibleGlowstone = new ResourceLocation(CommonReference.MOD_ID, "invisible_glowstone");
+        public static final ResourceLocation InvisibleBookshelf = new ResourceLocation(CommonReference.MOD_ID, "invisible_bookshelf");
 
         private Blocks() {}
     }

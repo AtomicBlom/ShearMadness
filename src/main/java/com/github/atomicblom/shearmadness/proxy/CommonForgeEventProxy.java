@@ -10,6 +10,7 @@ import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapabilit
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSpecialInteractionEvent;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
+import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
 import com.github.atomicblom.shearmadness.variations.CommonReference;
 import net.minecraft.entity.Entity;
@@ -31,6 +32,8 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

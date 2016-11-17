@@ -40,7 +40,7 @@ class ErrorModelMaker implements IModelMaker {
         quadrupedModel.leg4 = defaultRenderer;
 
         final TextureMap blockTextureMap = Minecraft.getMinecraft().getTextureMapBlocks();
-        final TextureAtlasSprite chickenSprite = blockTextureMap.getAtlasSprite(CommonReference.MOD_ID + ":bad-render");
+        final TextureAtlasSprite chickenSprite = blockTextureMap.getAtlasSprite(CommonReference.MOD_ID + ":bad_render");
 
         final EntityMesh bodyMesh = new EntityMesh(quadrupedModel.body);
         final EntityMesh headMesh = new EntityMesh(quadrupedModel.head);

@@ -38,17 +38,17 @@ public class VanillaBehaviours
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.REDSTONE_BLOCK),
-                entity -> new PlaceInvisibleBlockBehaviour(entity, Behaviours::allowRedstone, BlockLibrary.invisibleRedstone.getDefaultState())
+                entity -> new PlaceInvisibleBlockBehaviour(entity, Behaviours::allowRedstone, BlockLibrary.invisible_redstone.getDefaultState())
         );
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.GLOWSTONE),
-                entity -> new PlaceInvisibleBlockBehaviour(entity, Behaviours::allowGlowstone, BlockLibrary.invisibleGlowstone.getDefaultState())
+                entity -> new PlaceInvisibleBlockBehaviour(entity, Behaviours::allowGlowstone, BlockLibrary.invisible_glowstone.getDefaultState())
         );
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.BOOKSHELF),
-                entity -> new PlaceInvisibleBlockBehaviour(entity, Behaviours::allowBookshelf, BlockLibrary.invisibleBookshelf.getDefaultState())
+                entity -> new PlaceInvisibleBlockBehaviour(entity, Behaviours::allowBookshelf, BlockLibrary.invisible_bookshelf.getDefaultState())
         );
 
         registry.registerBehaviour(
