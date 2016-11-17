@@ -12,8 +12,10 @@ import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessageHandler;
 import com.github.atomicblom.shearmadness.proxy.Proxies;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
+import com.github.atomicblom.shearmadness.utility.Logger;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.variations.CommonReference;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
@@ -23,6 +25,7 @@ import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 @SuppressWarnings("MethodMayBeStatic")
@@ -59,14 +62,31 @@ public class ShearMadnessMod
     }
 
     @EventHandler
-    public void onMissingMapping(FMLMissingMappingsEvent.MissingMapping event) {
-        if (!"shearmadness".equals(event.resourceLocation.getResourceDomain())) { return; }
-        if ("invisibleRedstone".equals(event.resourceLocation.getResourcePath())) {
-            event.remap(BlockLibrary.invisible_redstone);
-        } else if ("invisibleGlowstone".equals(event.resourceLocation.getResourcePath())) {
-            event.remap(BlockLibrary.invisible_glowstone);
-        } else if ("invisibleBookshelf".equals(event.resourceLocation.getResourcePath())) {
-            event.remap(BlockLibrary.invisible_bookshelf);
+    public void onMissingMapping(FMLMissingMappingsEvent event) {
+        Logger.info("Repairing missing mappings");
+        for (FMLMissingMappingsEvent.MissingMapping missingMapping : event.get()) {
+            String resourcePath = missingMapping.resourceLocation.getResourcePath().toLowerCase();
+
+            if (missingMapping.type == GameRegistry.Type.ITEM) {
+                if ("invisibleredstone".equals(resourcePath)) {
+                    missingMapping.remap(Item.getItemFromBlock(BlockLibrary.invisible_redstone));
+                } else if ("invisibleglowstone".equals(resourcePath)) {
+                    missingMapping.remap(Item.getItemFromBlock(BlockLibrary.invisible_glowstone));
+                } else if ("invisiblebookshelf".equals(resourcePath)) {
+                    missingMapping.remap(Item.getItemFromBlock(BlockLibrary.invisible_bookshelf));
+                }
+            } else if (missingMapping.type == GameRegistry.Type.BLOCK) {
+                if ("invisibleredstone".equals(resourcePath)) {
+                    missingMapping.remap(BlockLibrary.invisible_redstone);
+                } else if ("invisibleglowstone".equals(resourcePath)) {
+                    missingMapping.remap(BlockLibrary.invisible_glowstone);
+                } else if ("invisiblebookshelf".equals(resourcePath)) {
+                    missingMapping.remap(BlockLibrary.invisible_bookshelf);
+                }
+            }
+
+
         }
+
     }
 }
