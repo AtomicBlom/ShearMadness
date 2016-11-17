@@ -12,6 +12,7 @@ import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -39,7 +40,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
     @Override
     public void updateTask() {
         final EntitySheep entity = getEntity();
-        final World worldObj = entity.worldObj;
+        final World worldObj = entity.getEntityWorld();
 
         if (eatingItemTimer > 0) {
             entity.getNavigator().clearPathEntity();
@@ -165,11 +166,11 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
     private void consumeItem(World worldObj) {
         if (targetedItem != null && targetedItem.isEntityAlive()) {
             final ItemStack entityItem = targetedItem.getEntityItem();
-            while (entityItem.stackSize > 0 && consumeItem(entityItem)) {
-                entityItem.stackSize--;
+            while (entityItem.func_190916_E() > 0 && consumeItem(entityItem)) {
+                entityItem.func_190918_g(1);
             }
 
-            if (entityItem.stackSize == 0) {
+            if (entityItem.func_190916_E() == 0) {
                 worldObj.removeEntity(targetedItem);
             }
 
@@ -215,7 +216,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             entityItem.rotationYaw = entity.renderYawOffset + 180;
             entityItem.moveRelative(0, 0.3f, 1);
 
-            final ItemStack[] remainingItems = instance.getRemainingItems(container.craftMatrix, worldObj);
+            final NonNullList<ItemStack> remainingItems = instance.getRemainingItems(container.craftMatrix, worldObj);
             for (final ItemStack remainingItem : remainingItems) {
                 if (remainingItem == null) continue;
                 entityItem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, remainingItem);
@@ -266,7 +267,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             final boolean nbtHasItemInIndex = craftMatrixNBT.hasKey(key);
 
             if (nbtHasItemInIndex) {
-                final ItemStack itemstack = ItemStack.loadItemStackFromNBT(craftMatrixNBT.getCompoundTag(key));
+                final ItemStack itemstack = new ItemStack(craftMatrixNBT.getCompoundTag(key));
                 itemsToCollect[i] = itemstack;
                 originalCraftingGrid[i] = itemstack;
                 itemCount++;
@@ -280,7 +281,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
         itemsConsumed = new ItemStack[9];
         for (final String key : consumed.getKeySet()) {
-            final ItemStack consumedItemStack = ItemStack.loadItemStackFromNBT(consumed.getCompoundTag(key));
+            final ItemStack consumedItemStack = new ItemStack(consumed.getCompoundTag(key));
             if (!consumeItem(consumedItemStack)) {
                 final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, consumedItemStack);
                 entityItem.setDefaultPickupDelay();

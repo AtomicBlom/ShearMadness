@@ -37,7 +37,7 @@ public class ChiseledSheepCapabilityStorage implements IStorage<IChiseledSheepCa
         final boolean isChiseled = compound.getBoolean("isChiseled");
         if (isChiseled)
         {
-            final ItemStack stack = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("chiselDefinition"));
+            final ItemStack stack = new ItemStack(compound.getCompoundTag("chiselDefinition"));
             instance.chisel(stack);
         }
 

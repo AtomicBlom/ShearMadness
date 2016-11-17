@@ -62,18 +62,18 @@ public final class Chiseling
         assert tagCompound != null;
         final NBTTagCompound chiselTarget = tagCompound.getCompoundTag("chiselTarget");
         final ItemStack currentChisel = capability.getChiselItemStack();
-        final ItemStack chiselItemStack = ItemStack.loadItemStackFromNBT(chiselTarget);
+        final ItemStack chiselItemStack = new ItemStack(chiselTarget);
 
         if (!checkItemStacksEqual(currentChisel, chiselItemStack))
         {
             final ItemStack copy = chiselItemStack.copy();
-            copy.stackSize = 1;
+            copy.func_190920_e(1);
             capability.chisel(copy);
 
             if (!isCreative)
             {
-                chiselItemStack.stackSize--;
-                if (chiselItemStack.stackSize > 0)
+                chiselItemStack.func_190918_g(1);
+                if (!chiselItemStack.func_190926_b())
                 {
                     chiselItemStack.writeToNBT(chiselTarget);
                     tagCompound.setTag("chiselTarget", chiselTarget);

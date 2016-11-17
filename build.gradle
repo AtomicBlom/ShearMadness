@@ -62,7 +62,7 @@ repositories {
 }
 
 dependencies {
-    compile 'team.chisel:Chisel:MC1.9.4-' + config.chisel_version
+    compile 'team.chisel:Chisel:MC' + config.minecraft_version + '-' + config.chisel_version
 }
 
 processResources

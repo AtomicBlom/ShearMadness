@@ -27,7 +27,7 @@ public final class Shearing
         //TODO: Add support for facade drop.
         //Select the item to drop.
         final ItemStack itemToDrop = capability.getChiselItemStack().copy();
-        itemToDrop.stackSize = 1;
+        itemToDrop.func_190920_e(1);
 
         ItemStackUtils.dropItem(sheep, itemToDrop);
 

@@ -17,7 +17,7 @@ public class SheepChiseledMessageHandler implements IMessageHandler<SheepChisele
     public IMessage onMessage(SheepChiseledMessage message, MessageContext ctx)
     {
         final int sheepId = message.getSheepId();
-        final Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(sheepId);
+        final Entity entity = Minecraft.getMinecraft().world.getEntityByID(sheepId);
 
         if (entity == null)
         {
@@ -31,7 +31,7 @@ public class SheepChiseledMessageHandler implements IMessageHandler<SheepChisele
         final boolean chiseled = message.isChiseled();
         if (chiseled) {
             capability.chisel(message.getChiselItemStack());
-            entity.worldObj.playSound(entity.posX, entity.posY, entity.posZ, SoundLibrary.sheepchiseled, SoundCategory.NEUTRAL, 0.5F, 1.0f, true);
+            entity.world.playSound(entity.posX, entity.posY, entity.posZ, SoundLibrary.sheepchiseled, SoundCategory.NEUTRAL, 0.5F, 1.0f, true);
         } else {
             capability.unChisel();
         }

@@ -120,7 +120,7 @@ public interface IModelMaker
     default IBakedModel getBakedModelForItem(ItemStack item, EntityLivingBase entity) {
         final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         IBakedModel itemModel = renderItem.getItemModelMesher().getItemModel(item);
-        itemModel = itemModel.getOverrides().handleItemState(itemModel, item, Minecraft.getMinecraft().theWorld, entity);
+        itemModel = itemModel.getOverrides().handleItemState(itemModel, item, Minecraft.getMinecraft().world, entity);
         return itemModel;
     }
 }

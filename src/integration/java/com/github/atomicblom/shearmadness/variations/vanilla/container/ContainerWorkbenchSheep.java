@@ -55,7 +55,7 @@ public class ContainerWorkbenchSheep extends ContainerWorkbench
                 final String key = ((Integer) i).toString();
 
                 if (craftMatrixNBT.hasKey(key)) {
-                    final ItemStack itemstack = ItemStack.loadItemStackFromNBT(craftMatrixNBT.getCompoundTag(key));
+                    final ItemStack itemstack = new ItemStack(craftMatrixNBT.getCompoundTag(key));
                     craftMatrix.setInventorySlotContents(i, itemstack);
                 }
             }

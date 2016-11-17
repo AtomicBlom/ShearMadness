@@ -100,7 +100,7 @@ public class CommonForgeEventProxy
             attackedWithChisel = true;
         } else
         {
-            activeStack = entityPlayer.inventory.offHandInventory[0];
+            activeStack = entityPlayer.inventory.offHandInventory.get(0);
             if (activeStack != null && ChiselLibrary.isChisel(activeStack.getItem()))
             {
                 attackedWithChisel = true;
