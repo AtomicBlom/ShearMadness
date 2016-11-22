@@ -15,6 +15,7 @@ public class FlightBehaviour extends BehaviourBase {
     private int framesTillNextTurn;
     private double destinationMotionY;
     private double currentMotionY;
+    private BlockPos sheepLocation = BlockPos.ORIGIN;
 
     public FlightBehaviour(EntitySheep sheep, float floatHeight, boolean moveForward) {
         super(sheep);
@@ -32,6 +33,11 @@ public class FlightBehaviour extends BehaviourBase {
     }
 
     @Override
+    public void onSheepMovedBlock(BlockPos previousLocation, BlockPos newLocation) {
+        sheepLocation = newLocation;
+    }
+
+    @Override
     public void onBehaviourStopped(BlockPos previousPos) {
         getEntity().fallDistance = 0;
     }
@@ -39,7 +45,7 @@ public class FlightBehaviour extends BehaviourBase {
     @Override
     public void updateTask() {
         final EntitySheep entity = getEntity();
-        final BlockPos height = entity.worldObj.getHeight(entity.getPosition());
+        final BlockPos height = entity.worldObj.getHeight(sheepLocation);
         final double actualHeight = entity.posY - height.getY();
 
 
