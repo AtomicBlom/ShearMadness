@@ -67,13 +67,13 @@ public final class Chiseling
         if (!checkItemStacksEqual(currentChisel, chiselItemStack))
         {
             final ItemStack copy = chiselItemStack.copy();
-            copy.func_190920_e(1);
+            copy.setCount(1);
             capability.chisel(copy);
 
             if (!isCreative)
             {
-                chiselItemStack.func_190918_g(1);
-                if (!chiselItemStack.func_190926_b())
+                chiselItemStack.shrink(1);
+                if (!chiselItemStack.isEmpty())
                 {
                     chiselItemStack.writeToNBT(chiselTarget);
                     tagCompound.setTag("chiselTarget", chiselTarget);

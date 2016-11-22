@@ -27,7 +27,7 @@ public final class ItemStackUtils
     {
         final ByteBuf buffer = new PooledByteBufAllocator(false).heapBuffer();
         final PacketBuffer packetBuffer = new PacketBuffer(buffer);
-        packetBuffer.writeItemStackToBuffer(itemStack);
+        packetBuffer.writeItemStack(itemStack);
         return Arrays.hashCode(packetBuffer.array());
     }
 }

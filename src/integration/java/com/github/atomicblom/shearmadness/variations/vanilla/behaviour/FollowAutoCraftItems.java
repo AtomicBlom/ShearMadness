@@ -151,12 +151,12 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             if (itemsConsumed[i] != null) {
                 final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, itemsConsumed[i]);
                 entityItem.setDefaultPickupDelay();
-                entityWorld.spawnEntityInWorld(entityItem);
+                entityWorld.spawnEntity(entityItem);
             }
             if (originalCraftingGrid[i] != null) {
                 final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, originalCraftingGrid[i]);
                 entityItem.setDefaultPickupDelay();
-                entityWorld.spawnEntityInWorld(entityItem);
+                entityWorld.spawnEntity(entityItem);
             }
         }
         final NBTTagCompound extraData = entity.getCapability(Capability.CHISELED_SHEEP, null).getExtraData();
@@ -166,11 +166,11 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
     private void consumeItem(World worldObj) {
         if (targetedItem != null && targetedItem.isEntityAlive()) {
             final ItemStack entityItem = targetedItem.getEntityItem();
-            while (entityItem.func_190916_E() > 0 && consumeItem(entityItem)) {
-                entityItem.func_190918_g(1);
+            while (entityItem.getCount() > 0 && consumeItem(entityItem)) {
+                entityItem.shrink(1);
             }
 
-            if (entityItem.func_190916_E() == 0) {
+            if (entityItem.getCount() == 0) {
                 worldObj.removeEntity(targetedItem);
             }
 
@@ -212,7 +212,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         final ItemStack craftedItem = instance.findMatchingRecipe(container.craftMatrix, worldObj);
         if (craftedItem != null) {
             EntityItem entityItem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, craftedItem);
-            worldObj.spawnEntityInWorld(entityItem);
+            worldObj.spawnEntity(entityItem);
             entityItem.rotationYaw = entity.renderYawOffset + 180;
             entityItem.moveRelative(0, 0.3f, 1);
 
@@ -220,7 +220,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             for (final ItemStack remainingItem : remainingItems) {
                 if (remainingItem == null) continue;
                 entityItem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, remainingItem);
-                worldObj.spawnEntityInWorld(entityItem);
+                worldObj.spawnEntity(entityItem);
                 entityItem.rotationYaw = entity.renderYawOffset + 180;
                 entityItem.moveRelative(0, 0.3f, 1);
             }
@@ -285,7 +285,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             if (!consumeItem(consumedItemStack)) {
                 final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, consumedItemStack);
                 entityItem.setDefaultPickupDelay();
-                entityWorld.spawnEntityInWorld(entityItem);
+                entityWorld.spawnEntity(entityItem);
                 Logger.trace("Unable to consume %s", consumedItemStack);
             } else {
                 Logger.trace("Consumed %s", consumedItemStack);

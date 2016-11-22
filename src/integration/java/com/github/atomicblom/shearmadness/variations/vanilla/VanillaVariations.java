@@ -5,6 +5,7 @@ import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessVariationEvent;
 import com.github.atomicblom.shearmadness.api.transformation.RailTransformations;
 import com.github.atomicblom.shearmadness.api.transformation.StairTransformations;
+import com.github.atomicblom.shearmadness.variations.vanilla.visuals.CraftingTableModelMaker;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -52,6 +53,11 @@ public class VanillaVariations
                         BlockStairs.class
                 ),
                 new StairTransformations()
+        );
+
+        registry.registerVariation(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.CRAFTING_TABLE),
+                new CraftingTableModelMaker()
         );
     }
 }

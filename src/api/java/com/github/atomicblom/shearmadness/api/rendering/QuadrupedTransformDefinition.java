@@ -87,7 +87,7 @@ public class QuadrupedTransformDefinition
         ));
     }
 
-    protected static Matrix4f createPartMatrix(Vector3f size, Vector3f additionalTranslate)
+    public static Matrix4f createPartMatrix(Vector3f size, Vector3f additionalTranslate)
     {
         final Vector3f adjustedSize = size.translate(-0.5f, -0.5f, -0.5f);
         final Matrix4f matrix = new Matrix4f();
