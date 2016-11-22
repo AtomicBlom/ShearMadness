@@ -56,7 +56,7 @@ minecraft {
 
 repositories {
     maven {
-        name = "chisel"
+        name = "tterrag"
         url = "http://maven.tterrag.com/"
     }
 }

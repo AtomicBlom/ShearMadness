@@ -23,11 +23,15 @@ public final class ItemStackUtils
         item.motionZ += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
     }
 
+    private static final PooledByteBufAllocator allocator = new PooledByteBufAllocator(false);
+
     public static int getHash(ItemStack itemStack)
     {
-        final ByteBuf buffer = new PooledByteBufAllocator(false).heapBuffer();
+        final ByteBuf buffer = allocator.heapBuffer();
         final PacketBuffer packetBuffer = new PacketBuffer(buffer);
-        packetBuffer.writeItemStack(itemStack);
-        return Arrays.hashCode(packetBuffer.array());
+        packetBuffer.writeItemStackToBuffer(itemStack);
+        final int i = Arrays.hashCode(packetBuffer.array());
+        packetBuffer.release();
+        return i;
     }
 }
