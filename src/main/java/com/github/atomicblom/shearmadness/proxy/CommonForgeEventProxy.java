@@ -88,7 +88,7 @@ public class CommonForgeEventProxy
     }
 
     @SuppressWarnings("BooleanVariableAlwaysNegated")
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void onAttack(AttackEntityEvent event)
     {
         //Process for chiseling a sheep
