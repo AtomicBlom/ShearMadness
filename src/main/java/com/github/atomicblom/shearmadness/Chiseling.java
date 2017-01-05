@@ -60,7 +60,11 @@ public final class Chiseling
     {
         final NBTTagCompound tagCompound = heldChisel.getTagCompound();
         assert tagCompound != null;
-        final NBTTagCompound chiselTarget = tagCompound.getCompoundTag("chiselTarget");
+        final NBTTagCompound chiselData = tagCompound.getCompoundTag("chiseldata");
+        final NBTTagCompound chiselTarget = chiselData.getCompoundTag("target");
+        if (!chiselTarget.hasKey("id")) {
+            return false;
+        }
         final ItemStack currentChisel = capability.getChiselItemStack();
         final ItemStack chiselItemStack = ItemStack.loadItemStackFromNBT(chiselTarget);
 
@@ -76,10 +80,10 @@ public final class Chiseling
                 if (chiselItemStack.stackSize > 0)
                 {
                     chiselItemStack.writeToNBT(chiselTarget);
-                    tagCompound.setTag("chiselTarget", chiselTarget);
+                    chiselData.setTag("target", chiselTarget);
                 } else
                 {
-                    tagCompound.removeTag("chiselTarget");
+                    chiselData.removeTag("target");
                 }
             }
             return true;
@@ -92,12 +96,13 @@ public final class Chiseling
         final NBTTagCompound tagCompound = heldChisel.getTagCompound();
         if (tagCompound != null)
         {
-            final NBTTagCompound chiselTarget = tagCompound.getCompoundTag("chiselTarget");
-
+            final NBTTagCompound chiseldata = tagCompound.getCompoundTag("chiseldata");
+            final NBTTagCompound chiselTarget = chiseldata.getCompoundTag("target");
             if (chiselTarget.hasKey("id"))
             {
                 return true;
             }
+
         }
         return false;
     }
