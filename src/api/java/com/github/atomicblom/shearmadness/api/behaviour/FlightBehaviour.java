@@ -45,7 +45,7 @@ public class FlightBehaviour extends BehaviourBase {
     @Override
     public void updateTask() {
         final EntitySheep entity = getEntity();
-        final BlockPos height = entity.worldObj.getHeight(sheepLocation);
+        final BlockPos height = entity.world.getHeight(sheepLocation);
         final double actualHeight = entity.posY - height.getY();
 
 

@@ -16,7 +16,7 @@ public class CheckSheepChiseledRequestMessageHandler implements IMessageHandler<
     @Override
     public SheepChiseledMessage onMessage(CheckSheepChiseledRequestMessage message, MessageContext ctx)
     {
-        final WorldServer worldObj = (WorldServer) ctx.getServerHandler().playerEntity.getEntityWorld();
+        final WorldServer worldObj = (WorldServer) ctx.getServerHandler().player.getEntityWorld();
         final Entity entity = worldObj.getEntityFromUuid(UUID.fromString(message.getSheepUUID()));
         if (entity == null)
         {

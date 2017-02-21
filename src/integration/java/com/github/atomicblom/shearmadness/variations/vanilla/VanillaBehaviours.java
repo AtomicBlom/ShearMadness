@@ -28,12 +28,12 @@ public class VanillaBehaviours
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.CACTUS),
-                entity -> new DamageBehaviour(entity, Behaviours::allowCactus, DamageSource.cactus)
+                entity -> new DamageBehaviour(entity, Behaviours::allowCactus, DamageSource.CACTUS)
         );
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.MAGMA),
-                entity -> new DamageBehaviour(entity, Behaviours::allowFireDamage, DamageSource.hotFloor)
+                entity -> new DamageBehaviour(entity, Behaviours::allowFireDamage, DamageSource.HOT_FLOOR)
         );
 
         registry.registerBehaviour(
@@ -63,7 +63,7 @@ public class VanillaBehaviours
 
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.CRAFTING_TABLE),
-                sheep -> new FollowAutoCraftItems(sheep)
+                FollowAutoCraftItems::new
         );
     }
 }

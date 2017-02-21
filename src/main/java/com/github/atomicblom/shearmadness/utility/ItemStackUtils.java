@@ -29,7 +29,7 @@ public final class ItemStackUtils
     {
         final ByteBuf buffer = allocator.heapBuffer();
         final PacketBuffer packetBuffer = new PacketBuffer(buffer);
-        packetBuffer.writeItemStackToBuffer(itemStack);
+        packetBuffer.writeItemStack(itemStack);
         final int i = Arrays.hashCode(packetBuffer.array());
         packetBuffer.release();
         return i;
