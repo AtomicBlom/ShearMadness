@@ -1,5 +1,7 @@
 package com.github.atomicblom.shearmadness.variations.chancecubes.client;
 
+import com.github.atomicblom.shearmadness.api.particles.CustomParticleFactoryBase;
+import com.github.atomicblom.shearmadness.api.particles.ICustomParticleFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
@@ -77,7 +79,7 @@ public class SheepHeadParticle extends Particle
             GlStateManager.rotate(180.0F - entityIn.rotationYaw, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotate(60.0F - 150.0F * f1 - entityIn.rotationPitch, 1.0F, 0.0F, 0.0F);
             GlStateManager.translate(0.0F, -0.4F, -1.5F);
-            GlStateManager.scale(0.42553192F, 0.42553192F, 0.42553192F);
+            //GlStateManager.scale(0.42553192F, 0.42553192F, 0.42553192F);
             this.entity.rotationYaw = 0.0F;
             this.entity.rotationYawHead = 0.0F;
             this.entity.prevRotationYaw = 0.0F;
@@ -89,7 +91,7 @@ public class SheepHeadParticle extends Particle
     }
 
     @SideOnly(Side.CLIENT)
-    public static class Factory implements IParticleFactory
+    public static class Factory extends CustomParticleFactoryBase
     {
         public Particle createParticle(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_)
         {

@@ -6,7 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import java.util.function.Supplier;
 
 @SuppressWarnings("ClassHasNoToStringMethod")
-public class ExplosiveBehaviour extends BehaviourBase {
+public class ExplosiveBehaviour extends BehaviourBase<ExplosiveBehaviour> {
 
     private Long primedTime = null;
     private BlockPos aboveCurrentPosition = null;

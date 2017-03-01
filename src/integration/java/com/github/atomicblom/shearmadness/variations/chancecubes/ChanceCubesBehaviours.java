@@ -13,10 +13,10 @@ import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehavio
 @Mod.EventBusSubscriber
 public class ChanceCubesBehaviours {
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    @Optional.Method(modid = ChanceCubesReference.CHANCE_CUBES)
+    @Optional.Method(modid = ChanceCubesReference.CHANCE_CUBES_MODID)
     public static void onShearMadnessRegisterBehaviours(RegisterShearMadnessBehaviourEvent event) {
-        IBehaviourRegistry registry = event.getRegistry();
-        registry.registerBehaviour((itemStack) -> ItemStackHelper.isStackForBlock(itemStack, ChanceCubesLibrary.chance_cube),
+        final IBehaviourRegistry registry = event.getRegistry();
+        registry.registerBehaviour(itemStack -> ItemStackHelper.isStackForBlock(itemStack, ChanceCubesLibrary.chance_cube),
                 ChanceCubeBehaviour::new);
     }
 }

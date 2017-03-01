@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 
-import static com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesLibrary.CHANCE_CUBE_PARTICIPATION;
+import static com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesReference.CHANCE_CUBE_PARTICIPATION;
 
 /**
  * Created by codew on 1/03/2017.
