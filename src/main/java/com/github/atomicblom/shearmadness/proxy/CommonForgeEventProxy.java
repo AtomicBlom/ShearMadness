@@ -157,7 +157,7 @@ public class CommonForgeEventProxy
     public void onCommonEntityJoinWorldEvent(EntityJoinWorldEvent event)
     {
         final Entity entity = event.getEntity();
-        if (entity.hasCapability(Capability.CHISELED_SHEEP, null))
+        if (entity instanceof EntityLiving && entity.hasCapability(Capability.CHISELED_SHEEP, null))
         {
             final EntityLiving livingEntity = (EntityLiving) event.getEntity();
             final EntityAITasks tasks = livingEntity.tasks;
@@ -168,7 +168,7 @@ public class CommonForgeEventProxy
     @SubscribeEvent
     public void onEntityLivingDeathEvent(LivingDeathEvent event) {
         final Entity entity = event.getEntity();
-        if (entity.hasCapability(Capability.CHISELED_SHEEP, null)) {
+        if (entity instanceof EntityLiving && entity.hasCapability(Capability.CHISELED_SHEEP, null)) {
             final EntityLiving livingEntity = (EntityLiving) entity;
             livingEntity.tasks.taskEntries
                     .stream()
