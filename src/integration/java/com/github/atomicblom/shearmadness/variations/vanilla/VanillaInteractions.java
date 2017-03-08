@@ -1,7 +1,6 @@
 package com.github.atomicblom.shearmadness.variations.vanilla;
 
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSpecialInteractionEvent;
 import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.NoteBlockBehaviour;
 import com.github.atomicblom.shearmadness.variations.vanilla.interactions.AnvilInteraction;
@@ -11,7 +10,6 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

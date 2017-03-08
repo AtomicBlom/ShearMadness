@@ -11,8 +11,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.world.World;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
+@ParametersAreNonnullByDefault
 public class ContainerRepairSheep extends ContainerRepair
 {
     private final EntityLiving entity;
@@ -29,6 +31,7 @@ public class ContainerRepairSheep extends ContainerRepair
             return false;
         }
         final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
+        assert capability != null;
         final Item item = capability.getChiselItemStack().getItem();
         if (!(item instanceof ItemBlock) || !Objects.equals(((ItemBlock) item).block, Blocks.ANVIL)) {
             return false;

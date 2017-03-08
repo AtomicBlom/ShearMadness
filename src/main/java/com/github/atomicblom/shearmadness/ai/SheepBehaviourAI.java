@@ -13,6 +13,7 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class SheepBehaviourAI extends EntityAIBase
@@ -37,6 +38,7 @@ public class SheepBehaviourAI extends EntityAIBase
         }
     }
 
+    @Nullable
     public BehaviourBase getBehaviour(Class<? extends BehaviourBase> behaviour) {
         for (ActiveBehaviour activeBehaviour : activeBehaviours) {
             if (activeBehaviour.behaviour.getClass() == behaviour) {
@@ -62,7 +64,7 @@ public class SheepBehaviourAI extends EntityAIBase
                 previousActiveBehaviour.matched = false;
             }
 
-            if (itemStack != null) {
+            if (!itemStack.isEmpty()) {
                 for (BehaviourBase newBehaviour : BehaviourRegistry.INSTANCE.getApplicableBehaviours(itemStack, entity)) {
                     boolean matched = false;
                     for (ActiveBehaviour previousActiveBehaviour : previousActiveBehaviours) {

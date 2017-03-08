@@ -8,7 +8,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @SideOnly(Side.CLIENT)
+@ParametersAreNonnullByDefault
 public class RenderChiselSheep extends RenderLiving<EntitySheep>
 {
     private static final ResourceLocation SHEARED_SHEEP_TEXTURES = new ResourceLocation("textures/entity/sheep/sheep.png");

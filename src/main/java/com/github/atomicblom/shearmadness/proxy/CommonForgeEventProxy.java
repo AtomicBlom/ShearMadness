@@ -98,13 +98,13 @@ public class CommonForgeEventProxy
         final EntityPlayer entityPlayer = event.getEntityPlayer();
         ItemStack activeStack = entityPlayer.inventory.getCurrentItem();
         boolean attackedWithChisel = false;
-        if (activeStack != null && ChiselLibrary.isChisel(activeStack.getItem()))
+        if (ChiselLibrary.isChisel(activeStack.getItem()))
         {
             attackedWithChisel = true;
         } else
         {
             activeStack = entityPlayer.inventory.offHandInventory.get(0);
-            if (activeStack != null && ChiselLibrary.isChisel(activeStack.getItem()))
+            if (ChiselLibrary.isChisel(activeStack.getItem()))
             {
                 attackedWithChisel = true;
             }
@@ -129,6 +129,7 @@ public class CommonForgeEventProxy
         final Entity entity = event.getEntity();
         if (entity.hasCapability(Capability.CHISELED_SHEEP, null)) {
             final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
+            assert capability != null;
             if (capability.isChiseled())
             {
                 final List<EntityItem> drops = event.getDrops();

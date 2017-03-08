@@ -1,7 +1,6 @@
 package com.github.atomicblom.shearmadness.networking;
 
 import com.github.atomicblom.shearmadness.api.Capability;
-import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
@@ -23,6 +22,7 @@ public class SheepChiseledMessage implements IMessage
     {
         sheepId = sheep.getEntityId();
         final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
+        assert capability != null;
         isChiseled = capability.isChiseled();
         itemStack = capability.getChiselItemStack();
     }

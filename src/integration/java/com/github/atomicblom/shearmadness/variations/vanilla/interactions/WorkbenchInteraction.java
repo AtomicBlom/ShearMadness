@@ -1,6 +1,7 @@
 package com.github.atomicblom.shearmadness.variations.vanilla.interactions;
 
 import com.github.atomicblom.shearmadness.variations.vanilla.container.ContainerWorkbenchSheep;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,6 +12,10 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class WorkbenchInteraction implements IInteractionObject
 {
     private final World world;
@@ -28,7 +33,7 @@ public class WorkbenchInteraction implements IInteractionObject
     @Override
     public String getName()
     {
-        return null;
+        return "workbench_sheep";
     }
 
     /**

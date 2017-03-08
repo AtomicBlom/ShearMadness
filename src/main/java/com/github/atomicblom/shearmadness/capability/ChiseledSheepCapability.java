@@ -3,16 +3,17 @@ package com.github.atomicblom.shearmadness.capability;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
 import com.google.common.base.Objects;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class ChiseledSheepCapability implements IChiseledSheepCapability, IWriteExtraData
 {
-    @Nullable
-    private ItemStack itemStack = null;
+    private ItemStack itemStack = ItemStack.EMPTY;
     private int itemIdentifier;
     private NBTTagCompound customData = null;
 
@@ -23,7 +24,7 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability, IWrite
     }
 
     @Override
-    public void chisel(@Nonnull ItemStack itemStack)
+    public void chisel(ItemStack itemStack)
     {
         this.itemStack = itemStack;
         itemIdentifier = ItemStackUtils.getHash(itemStack);
@@ -31,7 +32,7 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability, IWrite
 
     @Override
     public void unChisel() {
-        itemStack = null;
+        itemStack = ItemStack.EMPTY;
         itemIdentifier = 0;
     }
 

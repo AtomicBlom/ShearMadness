@@ -10,6 +10,7 @@ import com.github.atomicblom.shearmadness.utility.Logger;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Sets;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelSheep1;
@@ -26,12 +27,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("StaticNonFinalField")
 @SideOnly(Side.CLIENT)
+@ParametersAreNonnullByDefault
 public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
 {
     private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/sheep/sheep_fur.png");
@@ -100,7 +103,6 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                     badModels.add(itemIdentifier);
                     modelCache.put(itemIdentifier, errorModelMaker.createModel(null, sheep));
                     Logger.warning("Error rendering chiselled sheep with item %s - %s", itemStack, exception);
-                    exception.printStackTrace();
                 }
             } else
             {

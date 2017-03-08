@@ -78,6 +78,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
     private boolean findItemToConsume(EntitySheep entity, World worldObj, BlockPos position) {
         final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
+        assert capability != null;
         final NBTTagCompound extraData = capability.getExtraData();
         if (!extraData.hasKey("AUTO_CRAFT")) {
             return true;
@@ -159,7 +160,9 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
                 entityWorld.spawnEntity(entityItem);
             }
         }
-        final NBTTagCompound extraData = entity.getCapability(Capability.CHISELED_SHEEP, null).getExtraData();
+        final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
+        assert capability != null;
+        final NBTTagCompound extraData = capability.getExtraData();
         extraData.removeTag("AUTO_CRAFT");
     }
 
@@ -210,7 +213,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
         final CraftingManager instance = CraftingManager.getInstance();
         final ItemStack craftedItem = instance.findMatchingRecipe(container.craftMatrix, worldObj);
-        if (craftedItem != null) {
+        if (!craftedItem.isEmpty()) {
             EntityItem entityItem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, craftedItem);
             worldObj.spawnEntity(entityItem);
             entityItem.rotationYaw = entity.renderYawOffset + 180;
@@ -233,6 +236,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
     private void updateItemsConsumed() {
         final IChiseledSheepCapability capability = getEntity().getCapability(Capability.CHISELED_SHEEP, null);
+        assert capability != null;
         final NBTTagCompound extraData = capability.getExtraData();
         if (!extraData.hasKey("AUTO_CRAFT")) { return; }
         final NBTTagCompound craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");

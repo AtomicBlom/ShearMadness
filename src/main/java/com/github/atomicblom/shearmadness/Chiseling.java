@@ -22,6 +22,7 @@ public final class Chiseling
         if (sheep.hasCapability(Capability.CHISELED_SHEEP, null))
         {
             final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
+            assert capability != null;
             final ItemStack chiselItemStack = capability.getChiselItemStack();
             if (updateCapability(activeStack, capability, entityPlayer.isCreative()))
             {
@@ -31,7 +32,7 @@ public final class Chiseling
                 {
                     CHANNEL.sendToAll(new SheepChiseledMessage(sheep));
 
-                    if (chiselItemStack != null)
+                    if (!chiselItemStack.isEmpty())
                     {
                         ItemStackUtils.dropItem(sheep, chiselItemStack);
                     }

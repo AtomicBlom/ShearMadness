@@ -17,6 +17,9 @@ public final class ItemStackUtils
     public static void dropItem(Entity nearEntity, ItemStack itemStack)
     {
         final EntityItem item = nearEntity.entityDropItem(itemStack, 1.0F);
+        if (item == null) {
+            return;
+        }
         final Random rand = new Random();
         item.motionY += rand.nextFloat() * 0.05F;
         item.motionX += (rand.nextFloat() - rand.nextFloat()) * 0.1F;

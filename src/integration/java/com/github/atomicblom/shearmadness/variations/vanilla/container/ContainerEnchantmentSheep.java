@@ -1,7 +1,6 @@
 package com.github.atomicblom.shearmadness.variations.vanilla.container;
 
 import com.github.atomicblom.shearmadness.api.Capability;
-import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
@@ -11,7 +10,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.ContainerEnchantment;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -22,9 +20,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Random;
 
+@ParametersAreNonnullByDefault
 public class ContainerEnchantmentSheep extends ContainerEnchantment
 {
     private final EntityLiving entity;
@@ -45,6 +45,7 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
             return false;
         }
         final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
+        assert capability != null;
         final Item item = capability.getChiselItemStack().getItem();
         if (!(item instanceof ItemBlock) || ((ItemBlock) item).block != Blocks.ENCHANTING_TABLE) {
             return false;
@@ -56,13 +57,14 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
     /**
      * Callback for when the crafting matrix is changed.
      */
+    @Override
     public void onCraftMatrixChanged(IInventory inventoryIn)
     {
         if (inventoryIn == tableInventory)
         {
             final ItemStack itemstack = inventoryIn.getStackInSlot(0);
 
-            if (itemstack != null && itemstack.isItemEnchantable())
+            if (itemstack.isItemEnchantable())
             {
                 if (!world.isRemote)
                 {
@@ -97,7 +99,7 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
                         final IChiseledSheepCapability capability = nearbyEntity.getCapability(Capability.CHISELED_SHEEP, null);
                         if (distance < 25 && capability != null) {
                             final ItemStack chiselItemStack = capability.getChiselItemStack();
-                            if (chiselItemStack != null && chiselItemStack.getItem() instanceof ItemBlock) {
+                            if (chiselItemStack.getItem() instanceof ItemBlock) {
                                 power += ((ItemBlock) chiselItemStack.getItem()).block.getEnchantPowerBonus(world, nearbyEntity.getPosition());
                             }
                         }
@@ -123,7 +125,7 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
                         {
                             final List<EnchantmentData> list = getEnchantmentList(itemstack, j1, enchantLevels[j1]);
 
-                            if (list != null && !list.isEmpty())
+                            if (!list.isEmpty())
                             {
                                 final EnchantmentData enchantmentdata = list.get(rand.nextInt(list.size()));
                                 enchantClue[j1] = Enchantment.getEnchantmentID(enchantmentdata.enchantmentobj);

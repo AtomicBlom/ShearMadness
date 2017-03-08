@@ -3,6 +3,7 @@ package com.github.atomicblom.shearmadness.variations.vanilla.visuals;
 import com.github.atomicblom.shearmadness.api.modelmaker.DefaultModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.ModelSheep1;
@@ -14,13 +15,11 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Vector3f;
 
-/**
- * Created by codew on 4/11/2016.
- */
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class CraftingTableModelMaker extends DefaultModelMaker {
-
-
-
     @Override
     public ModelQuadruped createModel(ItemStack itemStack, EntityLivingBase entity) {
         ModelQuadruped baseModel = super.createModel(itemStack, entity);

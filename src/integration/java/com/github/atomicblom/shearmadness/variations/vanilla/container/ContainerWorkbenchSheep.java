@@ -2,21 +2,19 @@ package com.github.atomicblom.shearmadness.variations.vanilla.container;
 
 import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
-import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
-import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
-import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.FollowAutoCraftItems;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class ContainerWorkbenchSheep extends ContainerWorkbench
 {
     private final EntityLiving entity;
@@ -27,7 +25,7 @@ public class ContainerWorkbenchSheep extends ContainerWorkbench
     {
         super(playerInventory, worldIn, entity.getPosition());
         this.entity = entity;
-        this.world = worldIn;
+        world = worldIn;
         capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         onContainerOpened();
     }
@@ -80,14 +78,14 @@ public class ContainerWorkbenchSheep extends ContainerWorkbench
             {
                 final ItemStack itemstack = craftMatrix.removeStackFromSlot(i);
 
-                if (itemstack != null)
+                if (!itemstack.isEmpty())
                 {
                     craftMatrixNBT.setTag(((Integer)i).toString(), itemstack.serializeNBT());
                 }
             }
 
             extraData.setTag("AUTO_CRAFT", craftMatrixNBT);
-            craftMatrixNBT.setLong("lastChanged", this.entity.getEntityWorld().getTotalWorldTime());
+            craftMatrixNBT.setLong("lastChanged", entity.getEntityWorld().getTotalWorldTime());
         }
 
         super.onContainerClosed(playerIn);

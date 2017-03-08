@@ -58,9 +58,10 @@ public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
     }
 
     public static void tuneNoteBlockSheep(EntitySheep sheep) {
-        final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
         final World world = sheep.getEntityWorld();
 
+        final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
+        assert capability != null;
         final NBTTagCompound extraData = capability.getExtraData();
         byte note = getTuning(extraData);
         note = (byte)((note + 1) % 25);

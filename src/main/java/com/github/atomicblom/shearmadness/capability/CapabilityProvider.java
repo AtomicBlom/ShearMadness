@@ -8,10 +8,12 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.github.atomicblom.shearmadness.api.Capability.CHISELED_SHEEP;
 
 @SuppressWarnings({"ObjectEquality", "ConstantConditions", "ClassHasNoToStringMethod"})
+@ParametersAreNonnullByDefault
 public class CapabilityProvider implements ICapabilityProvider, INBTSerializable<NBTBase>
 {
     private final IChiseledSheepCapability capability;

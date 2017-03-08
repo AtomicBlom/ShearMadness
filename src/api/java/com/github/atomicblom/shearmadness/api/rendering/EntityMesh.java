@@ -16,6 +16,7 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
  * Note that TexturedQuads only have Position and UV information, other data will be discarded.
  */
 @SideOnly(Side.CLIENT)
+@ParametersAreNonnullByDefault
 public class EntityMesh extends ModelBox
 {
     private final List<FutureQuad<BakedQuad>> allBakedQuads = new ArrayList<>(6);
@@ -44,19 +46,19 @@ public class EntityMesh extends ModelBox
      */
     public void addBakedQuads(Matrix4f positionTransform, Matrix3f textureTransform, Collection<BakedQuad> bakedQuads)
     {
-        if (bakedQuads != null && bakedQuads.size() > 0) {
+        if (!bakedQuads.isEmpty()) {
             allBakedQuads.add(new FutureQuad<>(bakedQuads, positionTransform, textureTransform));
         }
     }
 
     public void addTexturedQuads(Matrix4f positionTransform, Matrix3f textureTransform, Collection<TexturedQuad> texturedQuads) {
-        if (texturedQuads != null && texturedQuads.size() > 0) {
+        if (!texturedQuads.isEmpty()) {
             allTexturedQuads.add(new FutureQuad<>(texturedQuads, positionTransform, textureTransform));
         }
     }
 
     public void addTexturedQuads(Matrix4f positionTransform, Matrix3f textureTransform, TexturedQuad... texturedQuads) {
-        if (texturedQuads != null && texturedQuads.length > 0) {
+        if (texturedQuads.length > 0) {
             allTexturedQuads.add(new FutureQuad<>(Lists.newArrayList(texturedQuads), positionTransform, textureTransform));
         }
     }
