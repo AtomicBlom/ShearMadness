@@ -1,7 +1,9 @@
 package com.github.atomicblom.shearmadness.variations.chancecubes.client;
 
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.api.particles.CustomParticleFactoryBase;
 import com.github.atomicblom.shearmadness.api.particles.ICustomParticleFactory;
+import com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesLibrary;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
@@ -13,10 +15,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityGuardian;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import static com.github.atomicblom.shearmadness.api.Capability.CHISELED_SHEEP;
 
 @SideOnly(Side.CLIENT)
 public class SheepHeadParticle extends Particle
@@ -52,6 +57,10 @@ public class SheepHeadParticle extends Particle
         if (this.entity == null)
         {
             this.entity = new EntitySheep(this.worldObj);
+            if (entity.hasCapability(CHISELED_SHEEP, null)) {
+                IChiseledSheepCapability capability = entity.getCapability(CHISELED_SHEEP, null);
+                capability.chisel(new ItemStack(ChanceCubesLibrary.chance_cube, 1));
+            }
         }
     }
 
@@ -64,22 +73,26 @@ public class SheepHeadParticle extends Particle
         {
             RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
             rendermanager.setRenderPosition(Particle.interpPosX, Particle.interpPosY, Particle.interpPosZ);
-            float f = 0.42553192F;
-            float f1 = ((float)this.particleAge + partialTicks) / (float)this.particleMaxAge;
+
+            float particleAge = ((float)this.particleAge + partialTicks) / (float)this.particleMaxAge;
             GlStateManager.depthMask(true);
             GlStateManager.enableBlend();
             GlStateManager.enableDepth();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            float f2 = 240.0F;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+            float lightLevel = 240.0F;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightLevel, lightLevel);
             GlStateManager.pushMatrix();
-            float f3 = 0.05F + 0.5F * MathHelper.sin(f1 * (float)Math.PI);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, f3);
+            float alpha = 0.05F + 0.5F * MathHelper.sin(particleAge * (float)Math.PI);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, alpha);
             GlStateManager.translate(0.0F, 1.8F, 0.0F);
             GlStateManager.rotate(180.0F - entityIn.rotationYaw, 0.0F, 1.0F, 0.0F);
-            GlStateManager.rotate(60.0F - 150.0F * f1 - entityIn.rotationPitch, 1.0F, 0.0F, 0.0F);
-            GlStateManager.translate(0.0F, -0.4F, -1.5F);
-            //GlStateManager.scale(0.42553192F, 0.42553192F, 0.42553192F);
+            float speed = 150.0F;
+            GlStateManager.rotate(20 - (60.0F - speed * particleAge - entityIn.rotationPitch), 1.0F, 0.0F, 0.0F);
+            float scale = 1.2F;
+            GlStateManager.translate(0.0F, -0.4F, -2.2);
+            GlStateManager.rotate(30.0f, 1.0F, 0.0F, 0.0F);
+            GlStateManager.scale(scale, scale, scale);
+
             this.entity.rotationYaw = 0.0F;
             this.entity.rotationYawHead = 0.0F;
             this.entity.prevRotationYaw = 0.0F;
@@ -90,10 +103,11 @@ public class SheepHeadParticle extends Particle
         }
     }
 
-    @SideOnly(Side.CLIENT)
     public static class Factory extends CustomParticleFactoryBase
     {
-        public Particle createParticle(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_)
+        @Override
+        @SideOnly(Side.CLIENT)
+        public Particle createCustomParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_)
         {
             return new SheepHeadParticle(worldIn, xCoordIn, yCoordIn, zCoordIn);
         }

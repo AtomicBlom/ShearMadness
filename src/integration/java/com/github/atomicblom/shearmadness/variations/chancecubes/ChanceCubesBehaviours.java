@@ -16,7 +16,20 @@ public class ChanceCubesBehaviours {
     @Optional.Method(modid = ChanceCubesReference.CHANCE_CUBES_MODID)
     public static void onShearMadnessRegisterBehaviours(RegisterShearMadnessBehaviourEvent event) {
         final IBehaviourRegistry registry = event.getRegistry();
-        registry.registerBehaviour(itemStack -> ItemStackHelper.isStackForBlock(itemStack, ChanceCubesLibrary.chance_cube),
-                ChanceCubeBehaviour::new);
+
+        registry.registerBehaviour(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, ChanceCubesLibrary.chance_cube),
+                (sheep) -> new ChanceCubeBehaviour(sheep, ChanceCubeType.NORMAL)
+        );
+
+        registry.registerBehaviour(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, ChanceCubesLibrary.chance_icosadedron),
+                (sheep) -> new ChanceCubeBehaviour(sheep, ChanceCubeType.ICOSAHEDRON)
+        );
+
+        registry.registerBehaviour(
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, ChanceCubesLibrary.chance_cube_giant_compact, ChanceCubesLibrary.chance_cube_giant),
+                (sheep) -> new ChanceCubeBehaviour(sheep, ChanceCubeType.GIANT)
+        );
     }
 }

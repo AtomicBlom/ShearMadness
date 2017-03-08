@@ -16,7 +16,7 @@ public class ChanceCubeCommand extends CommandBase{
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "chancecubes";
+        return "command.shearmadness:chancecube.usage";
     }
 
     @Override
@@ -25,7 +25,11 @@ public class ChanceCubeCommand extends CommandBase{
             if (((ICapabilityProvider) sender).hasCapability(ChanceCubesReference.CHANCE_CUBE_PARTICIPATION, null)) {
                 final IChanceCubeParticipationCapability capability = ((ICapabilityProvider) sender).getCapability(ChanceCubesReference.CHANCE_CUBE_PARTICIPATION, null);
                 final boolean isParticipating = !capability.isParticipating();
-                sender.addChatMessage(new TextComponentTranslation(isParticipating ? "chancecubes_participating" : "chancecubes_notparticipating"));
+                sender.addChatMessage(new TextComponentTranslation(
+                        isParticipating ?
+                                "message.shearmadness:chancecube.participating" :
+                                "message.shearmadness:chancecube.notparticipating"
+                ));
                 capability.setParticipation(isParticipating);
             }
         }
