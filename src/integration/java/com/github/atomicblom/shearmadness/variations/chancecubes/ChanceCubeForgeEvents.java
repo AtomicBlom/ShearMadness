@@ -17,6 +17,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -28,6 +29,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 
 import static com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesReference.ChanceCubeParticipationCapability;
+import static com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesReference.ChanceCubeSheepDied;
 
 @SuppressWarnings({"MethodMayBeStatic", "UnnecessarilyQualifiedInnerClassAccess"})
 @Mod.EventBusSubscriber
@@ -45,6 +47,12 @@ public class ChanceCubeForgeEvents {
     @SubscribeEvent
     public static void onRegisterAdditionalCapabilities(RegisterAdditionalCapabilitiesEvent event) {
         CapabilityManager.INSTANCE.register(IChanceCubeParticipationCapability.class, ChanceCubeParticipationStorage.instance, com.github.atomicblom.shearmadness.variations.chancecubes.capability.ChanceCubeParticipationCapability::new);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterSounds(RegistryEvent.Register<SoundEvent> event) {
+        final IForgeRegistry<SoundEvent> registry = event.getRegistry();
+        registry.register(new SoundEvent(ChanceCubeSheepDied).setRegistryName(ChanceCubeSheepDied));
     }
 
     @SubscribeEvent

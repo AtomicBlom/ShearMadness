@@ -13,7 +13,7 @@ public final class ChanceCubesReference {
     public static final Capability<IChanceCubeParticipationCapability> CHANCE_CUBE_PARTICIPATION;
 
     public static final ResourceLocation ChanceCubeParticipationCapability = new ResourceLocation(CommonReference.MOD_ID, "chance_cube_participation");
-
+    public static final ResourceLocation ChanceCubeSheepDied = new ResourceLocation(CommonReference.MOD_ID, "chancecube_sheepdied");
     static {
         CHANCE_CUBE_PARTICIPATION = null;
     }

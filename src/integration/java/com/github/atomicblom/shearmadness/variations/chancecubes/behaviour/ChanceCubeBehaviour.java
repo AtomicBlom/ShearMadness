@@ -5,17 +5,18 @@ import chanceCubes.registry.ChanceCubeRegistry;
 import chanceCubes.registry.GiantCubeRegistry;
 import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
+import com.github.atomicblom.shearmadness.networking.PlayCustomSoundMessage;
 import com.github.atomicblom.shearmadness.networking.SpawnCustomParticleMessage;
 import com.github.atomicblom.shearmadness.utility.Logger;
-import com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubeType;
-import com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesConfiguration;
-import com.github.atomicblom.shearmadness.variations.chancecubes.DelayedTasks;
-import com.github.atomicblom.shearmadness.variations.chancecubes.ParticleLibrary;
+import com.github.atomicblom.shearmadness.utility.SoundLibrary;
+import com.github.atomicblom.shearmadness.variations.chancecubes.*;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.util.List;
 
@@ -34,12 +35,16 @@ public class ChanceCubeBehaviour extends BehaviourBase<ChanceCubeBehaviour> {
         final EntitySheep entity = getEntity();
         final World worldObj = entity.worldObj;
 
+        final int distance = ChanceCubesConfiguration.distance.getInt();
         final List<EntityPlayer> players = worldObj.getPlayers(
                 EntityPlayer.class,
-                playerEntity -> playerEntity != null &&
-                        playerEntity.getDistanceToEntity(entity) < ChanceCubesConfiguration.distance.getInt() &&
-                        playerEntity.hasCapability(CHANCE_CUBE_PARTICIPATION, null) &&
-                        playerEntity.getCapability(CHANCE_CUBE_PARTICIPATION, null).isParticipating()
+                playerEntity -> {
+
+                    return playerEntity != null &&
+                            playerEntity.getDistanceToEntity(entity) < distance &&
+                            playerEntity.hasCapability(CHANCE_CUBE_PARTICIPATION, null) &&
+                            playerEntity.getCapability(CHANCE_CUBE_PARTICIPATION, null).isParticipating();
+                }
         );
 
         if (players.isEmpty()) {
@@ -48,16 +53,36 @@ public class ChanceCubeBehaviour extends BehaviourBase<ChanceCubeBehaviour> {
         final EntityPlayer selectedPlayer = players.get(worldObj.rand.nextInt(players.size()));
         if (selectedPlayer instanceof EntityPlayerMP) {
             final BlockPos position = selectedPlayer.getPosition();
-            DelayedTasks.addDelayedTask(worldObj.getTotalWorldTime() + 10,
+            DelayedTasks.addDelayedTask(
+                    worldObj.getTotalWorldTime() + 10,
                     () -> {
                         if (selectedPlayer.getEntityWorld() != worldObj) {
                             return;
                         }
                         Logger.info("%s, you lucky devil. You get a chance cube sheep.", selectedPlayer.getGameProfile().getName());
 
+                        ShearMadnessMod.CHANNEL.sendToAllAround(
+                                new PlayCustomSoundMessage(
+                                        selectedPlayer.posX, selectedPlayer.posY, selectedPlayer.posZ,
+                                        ChanceCubeSounds.chancecube_sheepdied, SoundCategory.NEUTRAL,
+                                        0.5F, 1.0f,
+                                        true
+                                ),
+                                new NetworkRegistry.TargetPoint(
+                                        worldObj.provider.getDimension(),
+                                        entity.posX, entity.posY, entity.posZ,
+                                        distance
+                                        )
+                        );
+
                         ShearMadnessMod.CHANNEL.sendTo(
                                 new SpawnCustomParticleMessage(
-                                        ParticleLibrary.sheep_head.getRegistryName(), true, position.getX(), position.getY(), position.getZ(), 0, 0, 0, 0, 1),
+                                        ParticleLibrary.sheep_head.getRegistryName(),
+                                        true,
+                                        position.getX(), position.getY(), position.getZ(),
+                                        0, 0, 0,
+                                        0, 1
+                                ),
                                 (EntityPlayerMP)selectedPlayer);
                     });
         }

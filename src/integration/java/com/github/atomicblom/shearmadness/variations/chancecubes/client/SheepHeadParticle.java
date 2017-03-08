@@ -87,7 +87,7 @@ public class SheepHeadParticle extends Particle
             GlStateManager.translate(0.0F, 1.8F, 0.0F);
             GlStateManager.rotate(180.0F - entityIn.rotationYaw, 0.0F, 1.0F, 0.0F);
             float speed = 150.0F;
-            GlStateManager.rotate(20 - (60.0F - speed * particleAge - entityIn.rotationPitch), 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(260 - (60.0F - speed * particleAge - entityIn.rotationPitch), 1.0F, 0.0F, 0.0F);
             float scale = 1.2F;
             GlStateManager.translate(0.0F, -0.4F, -2.2);
             GlStateManager.rotate(30.0f, 1.0F, 0.0F, 0.0F);
