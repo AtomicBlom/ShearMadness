@@ -16,7 +16,7 @@ public final class ChanceCubesConfiguration {
     public static void onConfigSync(ShearMadnessSyncSettingsEvent event) {
         Configuration config = event.getConfig();
         String category = Configuration.CATEGORY_GENERAL + ".behaviours.chancecubes";
-        enabled = config.get(category, "enabled", false, "Should chance cube sheep cause trouble");
+        enabled = config.get(category, "enabled", true, "Should chance cube sheep cause trouble");
         distance = config.get(category, "distance", 500, "The distance a sheep can affect players.");
 
     }
