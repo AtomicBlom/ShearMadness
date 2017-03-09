@@ -31,6 +31,28 @@ public class ChanceCubeBehaviour extends BehaviourBase<ChanceCubeBehaviour> {
     }
 
     @Override
+    public void onBehaviourStarted(BlockPos currentPos) {
+        if (type != ChanceCubeType.GIANT) return;
+
+        EntitySheep entity = getEntity();
+        World worldObj = entity.worldObj;
+        final int distance = ChanceCubesConfiguration.distance.getInt();
+        ShearMadnessMod.CHANNEL.sendToAllAround(
+                new PlayCustomSoundMessage(
+                        entity.posX, entity.posY, entity.posZ,
+                        ChanceCubeSounds.chancecube_giantcubespawned, SoundCategory.NEUTRAL,
+                        0.3F, 1.0f,
+                        true
+                ),
+                new NetworkRegistry.TargetPoint(
+                        worldObj.provider.getDimension(),
+                        entity.posX, entity.posY, entity.posZ,
+                        distance
+                )
+        );
+    }
+
+    @Override
     public void onBehaviourStopped(BlockPos previousPos) {
         final EntitySheep entity = getEntity();
         final World worldObj = entity.worldObj;

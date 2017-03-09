@@ -14,6 +14,7 @@ public final class ChanceCubesReference {
 
     public static final ResourceLocation ChanceCubeParticipationCapability = new ResourceLocation(CommonReference.MOD_ID, "chance_cube_participation");
     public static final ResourceLocation ChanceCubeSheepDied = new ResourceLocation(CommonReference.MOD_ID, "chancecube_sheepdied");
+    public static final ResourceLocation ChanceCubeGiantCubeSpawned = new ResourceLocation(CommonReference.MOD_ID, "chancecube_giantcubespawned");
     static {
         CHANCE_CUBE_PARTICIPATION = null;
     }

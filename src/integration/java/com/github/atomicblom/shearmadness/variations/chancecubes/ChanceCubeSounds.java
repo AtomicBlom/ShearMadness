@@ -8,8 +8,10 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class ChanceCubeSounds {
 
     public static final SoundEvent chancecube_sheepdied;
+    public static final SoundEvent chancecube_giantcubespawned;
 
     static {
         chancecube_sheepdied = null;
+        chancecube_giantcubespawned = null;
     }
 }
