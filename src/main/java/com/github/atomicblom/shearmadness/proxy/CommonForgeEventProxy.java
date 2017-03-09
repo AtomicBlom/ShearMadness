@@ -8,6 +8,7 @@ import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
+import com.github.atomicblom.shearmadness.api.events.ShearMadnessSheepKilledEvent;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSpecialInteractionEvent;
 import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
@@ -74,7 +75,6 @@ public class CommonForgeEventProxy
     private void checkSpecialSheepInteraction(EntityInteract event)
     {
         final EntitySheep sheep = (EntitySheep) event.getTarget();
-
         final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
         if (capability == null) return;
         if (!capability.isChiseled()) return;
@@ -131,15 +131,18 @@ public class CommonForgeEventProxy
                 final List<EntityItem> drops = event.getDrops();
                 final ItemStack chiselItemStack = capability.getChiselItemStack();
                 final Item chiselItem = chiselItemStack.getItem();
-                if (ItemStackHelper.isStackForBlock(chiselItemStack, Blocks.TNT) && event.getSource().isExplosion())
-                {
-                    drops.clear();
-                    return;
-                }
 
                 drops.removeIf(entityItem -> ItemStackHelper.isStackForBlock(entityItem.getEntityItem(), Blocks.WOOL));
 
                 drops.add(new EntityItem(entity.worldObj, entity.posX, entity.posY, entity.posZ, chiselItemStack.copy()));
+
+                MinecraftForge.EVENT_BUS.post(new ShearMadnessSheepKilledEvent(
+                        drops,
+                        event.getSource(),
+                        event.getLootingLevel(),
+                        chiselItemStack,
+                        entity
+                ));
             }
         }
     }
