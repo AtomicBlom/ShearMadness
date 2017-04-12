@@ -6,8 +6,10 @@ import com.github.atomicblom.shearmadness.api.behaviour.DamageBehaviour;
 import com.github.atomicblom.shearmadness.api.behaviour.ExplosiveBehaviour;
 import com.github.atomicblom.shearmadness.api.behaviour.PlaceInvisibleBlockBehaviour;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
+import com.github.atomicblom.shearmadness.api.events.ShearMadnessSheepKilledEvent;
 import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
+import com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesLibrary;
 import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.FollowAutoCraftItems;
 import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.NoteBlockBehaviour;
 import net.minecraft.init.Blocks;
@@ -65,5 +67,12 @@ public class VanillaBehaviours
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.CRAFTING_TABLE),
                 FollowAutoCraftItems::new
         );
+    }
+
+    @SubscribeEvent
+    public static void onSheepKilled(ShearMadnessSheepKilledEvent event) {
+        if (ItemStackHelper.isStackForBlock(event.getChiselItemStack(), Blocks.TNT) && event.getSource().isExplosion()) {
+            event.noDrops();
+        }
     }
 }

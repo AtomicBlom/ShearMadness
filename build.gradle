@@ -116,3 +116,12 @@ task apiJar(type: Jar) {
     classifier = 'api'
 }
 tasks.build.dependsOn apiJar
+
+dependencies {
+    repositories {
+        maven {
+            url 'http://maven.theprogrammingturkey.com/'
+        }
+    }
+    deobfCompile(group: 'com.theprogrammingturkey.chancecubes', name: 'ChanceCubes', version: config.chancecubes_version)
+}
