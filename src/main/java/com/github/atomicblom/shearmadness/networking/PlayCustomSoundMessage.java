@@ -48,7 +48,7 @@ public class PlayCustomSoundMessage implements IMessage
         this.posZ = buf.readDouble();
 
         this.category = SoundCategory.values()[buf.readInt()];
-        this.soundIn = new ResourceLocation(buf.readStringFromBuffer(255));
+        this.soundIn = new ResourceLocation(buf.readString(255));
 
         this.volume = buf.readFloat();
         this.pitch = buf.readFloat();

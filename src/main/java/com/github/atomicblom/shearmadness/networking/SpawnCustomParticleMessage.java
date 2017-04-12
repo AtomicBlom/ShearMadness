@@ -49,7 +49,7 @@ public class SpawnCustomParticleMessage implements IMessage
     @Override
     public void fromBytes(ByteBuf byteBuf) {
         PacketBuffer buf = new PacketBuffer(byteBuf);
-        this.particleResourceLocation = new ResourceLocation(buf.readStringFromBuffer(255));
+        this.particleResourceLocation = new ResourceLocation(buf.readString(255));
         this.longDistance = buf.readBoolean();
         this.xCoord = buf.readFloat();
         this.yCoord = buf.readFloat();
@@ -64,7 +64,7 @@ public class SpawnCustomParticleMessage implements IMessage
 
         for (int j = 0; j < argumentCount; ++j)
         {
-            this.particleArguments[j] = buf.readVarIntFromBuffer();
+            this.particleArguments[j] = buf.readVarInt();
         }
     }
 
@@ -85,7 +85,7 @@ public class SpawnCustomParticleMessage implements IMessage
 
         for (int j = 0; j < this.particleArguments.length; ++j)
         {
-            buf.writeVarIntToBuffer(this.particleArguments[j]);
+            buf.writeVarInt(this.particleArguments[j]);
         }
     }
 

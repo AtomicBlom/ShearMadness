@@ -1,6 +1,7 @@
 package com.github.atomicblom.shearmadness.utility;
 
 import com.google.common.collect.Lists;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -10,12 +11,15 @@ import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ShearMadnessCommand extends CommandBase {
     private final List<CommandBase> childCommands;
 
@@ -24,12 +28,12 @@ public class ShearMadnessCommand extends CommandBase {
     }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "shearmadness";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender) {
         return "shearmadness [subcommand]";
     }
 
@@ -40,8 +44,8 @@ public class ShearMadnessCommand extends CommandBase {
         }
         final Optional<CommandBase> first = childCommands
                 .stream()
-                .sorted(Comparator.comparing(ICommand::getCommandName))
-                .filter(command -> command.getCommandName().equals(args[0]))
+                .sorted(Comparator.comparing(ICommand::getName))
+                .filter(command -> command.getName().equals(args[0]))
                 .findFirst();
         if (!first.isPresent()) {
             throw new CommandException("nosuchsubcommand");
@@ -54,12 +58,12 @@ public class ShearMadnessCommand extends CommandBase {
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
 
         if (args.length <= 1) {
             return childCommands
                     .stream()
-                    .map(ICommand::getCommandName)
+                    .map(ICommand::getName)
                     .sorted()
                     .filter(command -> command.startsWith(args[0]))
                     .collect(Collectors.toList());
@@ -67,8 +71,8 @@ public class ShearMadnessCommand extends CommandBase {
 
         final Optional<CommandBase> first = childCommands
                 .stream()
-                .sorted(Comparator.comparing(ICommand::getCommandName))
-                .filter(command -> command.getCommandName() == args[0])
+                .sorted(Comparator.comparing(ICommand::getName))
+                .filter(command -> command.getName() == args[0])
                 .findFirst();
 
         if (!first.isPresent()) {
@@ -77,6 +81,6 @@ public class ShearMadnessCommand extends CommandBase {
 
         final String[] parameters = Arrays.copyOfRange(args, 1, args.length - 2);
 
-        return first.get().getTabCompletionOptions(server, sender, parameters, pos);
+        return first.get().getTabCompletions(server, sender, parameters, pos);
     }
 }

@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("MethodMayBeStatic")
-@Mod(modid = CommonReference.MOD_ID, version = CommonReference.VERSION, guiFactory = Reference.MOD_GUI_FACTORY, dependencies = "required-after:chisel@[MC1.11.2-0.0.8.2,)", acceptedMinecraftVersions = "[1.11, 1.12)")
+@Mod(modid = CommonReference.MOD_ID, version = CommonReference.VERSION, guiFactory = Reference.MOD_GUI_FACTORY, dependencies = "required-after:chisel@[MC1.11.2-0.0.9.13,)", acceptedMinecraftVersions = "[1.11, 1.12)")
 public class ShearMadnessMod
 {
     public static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(CommonReference.MOD_ID);

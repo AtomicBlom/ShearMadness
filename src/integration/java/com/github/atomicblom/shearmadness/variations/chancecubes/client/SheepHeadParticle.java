@@ -56,7 +56,7 @@ public class SheepHeadParticle extends Particle
 
         if (this.entity == null)
         {
-            this.entity = new EntitySheep(this.worldObj);
+            this.entity = new EntitySheep(this.world);
             if (entity.hasCapability(CHISELED_SHEEP, null)) {
                 IChiseledSheepCapability capability = entity.getCapability(CHISELED_SHEEP, null);
                 capability.chisel(new ItemStack(ChanceCubesLibrary.chance_cube, 1));

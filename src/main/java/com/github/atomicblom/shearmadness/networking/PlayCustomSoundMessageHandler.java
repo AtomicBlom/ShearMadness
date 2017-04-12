@@ -16,7 +16,7 @@ public class PlayCustomSoundMessageHandler implements IMessageHandler<PlayCustom
     {
         final IForgeRegistry<SoundEvent> registry = GameRegistry.findRegistry(SoundEvent.class);
 
-        Minecraft.getMinecraft().thePlayer.worldObj.playSound(
+        Minecraft.getMinecraft().player.world.playSound(
                 message.getPosX(), message.getPosY(), message.getPosZ(),
                 registry.getValue(message.getSoundEvent()),
                 message.getCategory(),

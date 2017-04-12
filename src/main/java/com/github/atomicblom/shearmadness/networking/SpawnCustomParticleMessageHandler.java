@@ -22,7 +22,7 @@ public class SpawnCustomParticleMessageHandler implements IMessageHandler<SpawnC
         final ICustomParticleFactory factory = registry.getValue(message.getParticleResourceLocation());
 
         final Particle particle = factory.getParticleFactory().createParticle(-1,
-                Minecraft.getMinecraft().thePlayer.worldObj,
+                Minecraft.getMinecraft().player.world,
                 message.getXCoordinate(),
                 message.getYCoordinate(),
                 message.getZCoordinate(),
