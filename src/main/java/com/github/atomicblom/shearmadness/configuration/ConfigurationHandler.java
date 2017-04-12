@@ -1,7 +1,7 @@
 package com.github.atomicblom.shearmadness.configuration;
 
+import com.github.atomicblom.shearmadness.api.events.ShearMadnessSyncSettingsEvent;
 import com.github.atomicblom.shearmadness.utility.Logger;
-import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.variations.CommonReference;
 import com.google.common.base.Objects;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.*;
 public enum ConfigurationHandler
 {
     INSTANCE;
-    private static final String CONFIG_VERSION = "1";
+    private static final String CONFIG_VERSION = "2";
     private File fileRef = null;
     private Configuration config = null;
     private Optional<Configuration> configOld = Optional.empty();
@@ -43,7 +43,7 @@ public enum ConfigurationHandler
 
         config = new Configuration(configFile, CONFIG_VERSION);
 
-        if (!CONFIG_VERSION.equals(config.getDefinedConfigVersion()))
+        if (!CONFIG_VERSION.equals(config.getLoadedConfigVersion()))
         {
             final File fileBak = new File(fileRef.getAbsolutePath() + '_' + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".old");
             Logger.warning("Your %s config file is out of date and could cause issues. The existing file will be renamed to %s and a new one will be generated.",
@@ -83,11 +83,14 @@ public enum ConfigurationHandler
 
                 config = new Configuration(fileRef, CONFIG_VERSION);
             }
+            convertOldConfig();
         }
+
+        MinecraftForge.EVENT_BUS.post(new ShearMadnessSyncSettingsEvent(config));
 
         Settings.syncConfig(config);
 
-        convertOldConfig();
+
         saveConfig();
     }
 

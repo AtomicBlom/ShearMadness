@@ -25,10 +25,6 @@ public final class Reference
 
     private Reference() {}
 
-    public static final class ModID {
-
-    }
-
     public static final class Blocks {
         public static final String NORMAL_VARIANT = "normal";
 
