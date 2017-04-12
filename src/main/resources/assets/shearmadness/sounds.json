@@ -7,5 +7,25 @@
       }
     ],
     "subtitle": "subtitle.shearmadness:sheepchiseled"
+  },
+
+  "chancecube_sheepdied": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "shearmadness:chancecube_deadsheep"
+      }
+    ],
+    "subtitle": "subtitle.shearmadness:chancecube_sheepdied"
+  },
+
+  "chancecube_giantcubespawned": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "shearmadness:chancecube_giantcubespawned"
+      }
+    ],
+    "subtitle": "subtitle.shearmadness:chancecube_giantcubespawned"
   }
 }
