@@ -26,6 +26,7 @@ public class ChiseledSheepCapabilityStorage implements IStorage<IChiseledSheepCa
 
         final NBTTagCompound extraData = instance.getExtraData();
         compound.setTag("extraData", extraData);
+        compound.setInteger("itemVariantId", instance.getItemVariantIdentifier());
         return compound;
     }
 
@@ -41,7 +42,9 @@ public class ChiseledSheepCapabilityStorage implements IStorage<IChiseledSheepCa
             instance.chisel(stack);
         }
 
-        if (instance instanceof  IWriteExtraData) {
+        instance.setItemVariantIdentifier(compound.getInteger("itemVariantId"));
+
+        if (instance instanceof IWriteExtraData) {
             ((IWriteExtraData) instance).setExtraData(compound.getCompoundTag("extraData"));
         }
     }

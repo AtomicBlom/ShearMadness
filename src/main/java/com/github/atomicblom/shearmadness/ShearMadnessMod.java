@@ -50,6 +50,7 @@ public class ShearMadnessMod
         CHANNEL.registerMessage(SheepChiseledMessageHandler.class, SheepChiseledMessage.class, 1, Side.CLIENT);
         CHANNEL.registerMessage(SpawnCustomParticleMessageHandler.class, SpawnCustomParticleMessage.class, 2, Side.CLIENT);
         CHANNEL.registerMessage(PlayCustomSoundMessageHandler.class, PlayCustomSoundMessage.class, 3, Side.CLIENT);
+        CHANNEL.registerMessage(SheepChiselDataUpdatedMessageHandler.class, SheepChiselDataUpdatedMessage.class, 4, Side.CLIENT);
 
         //Capabilities
         CapabilityManager.INSTANCE.register(IChiseledSheepCapability.class, ChiseledSheepCapabilityStorage.instance, ChiseledSheepCapability::new);

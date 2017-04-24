@@ -3,10 +3,12 @@ package com.github.atomicblom.shearmadness.capability;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
@@ -15,17 +17,20 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability, IWrite
 {
     private ItemStack itemStack = ItemStack.EMPTY;
     private int itemIdentifier;
+    private int variantIdentifier;
     private NBTTagCompound customData = null;
+
 
     @Override
     public boolean isChiseled()
     {
-        return itemStack != null;
+        return !itemStack.isEmpty();
     }
 
     @Override
-    public void chisel(ItemStack itemStack)
+    public void chisel(@Nonnull ItemStack itemStack)
     {
+        Preconditions.checkNotNull(itemStack);
         this.itemStack = itemStack;
         itemIdentifier = ItemStackUtils.getHash(itemStack);
     }
@@ -45,7 +50,17 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability, IWrite
     @Override
     public int getItemIdentifier()
     {
-        return itemIdentifier;
+        return itemIdentifier * 31 + variantIdentifier;
+    }
+
+    @Override
+    public void setItemVariantIdentifier(int variantIdentifier) {
+        this.variantIdentifier = variantIdentifier;
+    }
+
+    @Override
+    public int getItemVariantIdentifier() {
+        return variantIdentifier;
     }
 
     @Override
@@ -66,6 +81,7 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability, IWrite
     {
         return Objects.toStringHelper(this)
                 .add("itemIdentifier", itemIdentifier)
+                .add("variantIdentifier", variantIdentifier)
                 .add("itemStack", itemStack)
                 .add("isChiseled", isChiseled())
                 .toString();

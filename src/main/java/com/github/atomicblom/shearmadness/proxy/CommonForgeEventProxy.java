@@ -56,7 +56,7 @@ public class CommonForgeEventProxy
         if (event.getHand() != EnumHand.MAIN_HAND) return;
         if (!(event.getTarget() instanceof EntitySheep)) return;
         final ItemStack itemStack = event.getItemStack();
-        if (itemStack == null) {
+        if (itemStack.isEmpty()) {
             checkSpecialSheepInteraction(event);
             return;
         }

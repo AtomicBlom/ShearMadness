@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nonnull;
+
 import static com.github.atomicblom.shearmadness.ShearMadnessMod.CHANNEL;
 
 @SuppressWarnings({"BooleanMethodNameMustStartWithQuestion", "UtilityClass"})
@@ -109,13 +111,13 @@ public final class Chiseling
     }
 
     @SuppressWarnings({"ObjectEquality", "RedundantIfStatement", "MethodWithMoreThanThreeNegations"})
-    private static boolean checkItemStacksEqual(ItemStack currentChisel, ItemStack newChisel)
+    private static boolean checkItemStacksEqual(@Nonnull ItemStack currentChisel, @Nonnull ItemStack newChisel)
     {
-        if (currentChisel == null && newChisel == null)
+        if (currentChisel.isEmpty() && newChisel.isEmpty())
         {
             return true;
         }
-        if (currentChisel == null ^ newChisel == null)
+        if (currentChisel.isEmpty() ^ newChisel.isEmpty())
         {
             return false;
         }

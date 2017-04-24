@@ -20,5 +20,9 @@ public interface IChiseledSheepCapability
 
     int getItemIdentifier();
 
+    void setItemVariantIdentifier(int variantIdentifier);
+
+    int getItemVariantIdentifier();
+
     NBTTagCompound getExtraData();
 }

@@ -1,5 +1,7 @@
 package com.github.atomicblom.shearmadness.variations.vanilla.visuals;
 
+import com.github.atomicblom.shearmadness.api.Capability;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.api.modelmaker.DefaultModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
@@ -11,7 +13,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.nbt.NBTTagCompound;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -24,7 +31,13 @@ public class CraftingTableModelMaker extends DefaultModelMaker {
     public ModelQuadruped createModel(ItemStack itemStack, EntityLivingBase entity) {
         ModelQuadruped baseModel = super.createModel(itemStack, entity);
 
-        CraftingItemIdentifier newModel = new CraftingItemIdentifier();
+        final ItemStack craftedItem = getCraftingItemStack(entity);
+
+        if (craftedItem.isEmpty()) {
+            return baseModel;
+        }
+
+        final CraftingItemIdentifier newModel = new CraftingItemIdentifier();
         newModel.body = baseModel.body;
         newModel.head = baseModel.head;
         newModel.leg1 = baseModel.leg1;
@@ -32,7 +45,7 @@ public class CraftingTableModelMaker extends DefaultModelMaker {
         newModel.leg3 = baseModel.leg3;
         newModel.leg4 = baseModel.leg4;
 
-        final IBakedModel bakedModelForItem = getBakedModelForItem(itemStack, entity);
+        final IBakedModel bakedModelForItem = getBakedModelForItem(craftedItem, entity);
 
         PartDefinition definition = new PartDefinition(
                 new Vector3f(0.0f, 6.0f, -8.0f),
@@ -45,6 +58,43 @@ public class CraftingTableModelMaker extends DefaultModelMaker {
         newModel.itemIndicator = getModelRendererForBlockState(definition, null, bakedModelForItem);
 
         return newModel;
+    }
+
+    public ItemStack getCraftingItemStack(EntityLivingBase entity) {
+
+        if (!entity.hasCapability(Capability.CHISELED_SHEEP, null) && !(entity instanceof EntitySheep)) {
+            return ItemStack.EMPTY;
+        }
+
+        final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
+        assert capability != null;
+
+        final NBTTagCompound extraData = capability.getExtraData();
+        if (!extraData.hasKey("AUTO_CRAFT")) { return ItemStack.EMPTY; }
+
+        final NBTTagCompound craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
+
+        final ItemStack[] originalCraftingGrid = new ItemStack[9];
+        for (int i = 0; i < 9; ++i)
+        {
+            originalCraftingGrid[i] = ItemStack.EMPTY;
+
+            final String key = ((Integer) i).toString();
+
+            final boolean nbtHasItemInIndex = craftMatrixNBT.hasKey(key);
+
+            if (nbtHasItemInIndex) {
+                final ItemStack itemstack = new ItemStack(craftMatrixNBT.getCompoundTag(key));
+                originalCraftingGrid[i] = itemstack;
+            }
+        }
+        final ContainerWorkbench container = new ContainerWorkbench(new InventoryPlayer(null), entity.getEntityWorld(), entity.getPosition());
+        for (int i = 0; i < 9; ++i) {
+            container.craftMatrix.setInventorySlotContents(i, originalCraftingGrid[i]);
+        }
+        final CraftingManager craftingManager = CraftingManager.getInstance();
+
+        return craftingManager.findMatchingRecipe(container.craftMatrix, entity.getEntityWorld());
     }
 
     private static class CraftingItemIdentifier extends ModelSheep1 {

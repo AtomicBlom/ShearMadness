@@ -1,8 +1,11 @@
 package com.github.atomicblom.shearmadness.variations.vanilla.behaviour;
 
+import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.networking.SheepChiselDataUpdatedMessage;
+import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
 import com.github.atomicblom.shearmadness.utility.Logger;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -17,6 +20,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -34,7 +38,13 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
 
     public FollowAutoCraftItems(EntitySheep entity) {
+
         super(entity);
+        for (int i = 0; i < 9; i++) {
+            itemsToCollect[i] = ItemStack.EMPTY;
+            itemsConsumed[i] = ItemStack.EMPTY;
+            originalCraftingGrid[i] = ItemStack.EMPTY;
+        }
     }
 
     @Override
@@ -134,7 +144,6 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             }
 
             if (entity.getNavigator().tryMoveToEntityLiving(recipeItem, 1)) {
-
                 Logger.trace("Moving to %s", recipeItem);
                 return true;
             }
@@ -149,12 +158,12 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         final World entityWorld = entity.getEntityWorld();
 
         for (int i = 0; i < 9; ++i) {
-            if (itemsConsumed[i] != null) {
+            if (!itemsConsumed[i].isEmpty()) {
                 final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, itemsConsumed[i]);
                 entityItem.setDefaultPickupDelay();
                 entityWorld.spawnEntity(entityItem);
             }
-            if (originalCraftingGrid[i] != null) {
+            if (!originalCraftingGrid[i].isEmpty()) {
                 final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, originalCraftingGrid[i]);
                 entityItem.setDefaultPickupDelay();
                 entityWorld.spawnEntity(entityItem);
@@ -198,7 +207,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
     private int checkItemsLeftToConsume() {
         int itemsLeft = 0;
         for (int i = 0; i < 9; ++i) {
-            if (itemsToCollect[i] != null) {
+            if (!itemsToCollect[i].isEmpty()) {
                 itemsLeft++;
             }
         }
@@ -211,17 +220,17 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             container.craftMatrix.setInventorySlotContents(i, itemsConsumed[i]);
         }
 
-        final CraftingManager instance = CraftingManager.getInstance();
-        final ItemStack craftedItem = instance.findMatchingRecipe(container.craftMatrix, worldObj);
+        final CraftingManager craftingManager = CraftingManager.getInstance();
+        final ItemStack craftedItem = craftingManager.findMatchingRecipe(container.craftMatrix, worldObj);
         if (!craftedItem.isEmpty()) {
             EntityItem entityItem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, craftedItem);
             worldObj.spawnEntity(entityItem);
             entityItem.rotationYaw = entity.renderYawOffset + 180;
             entityItem.moveRelative(0, 0.3f, 1);
 
-            final NonNullList<ItemStack> remainingItems = instance.getRemainingItems(container.craftMatrix, worldObj);
+            final NonNullList<ItemStack> remainingItems = craftingManager.getRemainingItems(container.craftMatrix, worldObj);
             for (final ItemStack remainingItem : remainingItems) {
-                if (remainingItem == null) continue;
+                if (remainingItem.isEmpty()) continue;
                 entityItem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, remainingItem);
                 worldObj.spawnEntity(entityItem);
                 entityItem.rotationYaw = entity.renderYawOffset + 180;
@@ -231,6 +240,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
         System.arraycopy(originalCraftingGrid, 0, itemsToCollect, 0, 9);
         itemsConsumed = new ItemStack[9];
+        for (int i = 0; i < 9; ++i) itemsConsumed[i] = ItemStack.EMPTY;
         updateItemsConsumed();
     }
 
@@ -248,7 +258,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
         for (int i = 0; i < 9; ++i)
         {
-            if (itemsConsumed[i] != null) {
+            if (!itemsConsumed[i].isEmpty()) {
                 final String key = ((Integer) i).toString();
                 consumed.setTag(key, itemsConsumed[i].serializeNBT());
             }
@@ -266,6 +276,9 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         int itemCount = 0;
         for (int i = 0; i < 9; ++i)
         {
+            itemsToCollect[i] = ItemStack.EMPTY;
+            originalCraftingGrid[i] = ItemStack.EMPTY;
+
             final String key = ((Integer) i).toString();
 
             final boolean nbtHasItemInIndex = craftMatrixNBT.hasKey(key);
@@ -278,12 +291,16 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             }
         }
 
+        updateItemVariantFromCraftingGrid(originalCraftingGrid);
+
         Logger.trace("Looking for %d items", itemCount);
 
         final Entity entity = getEntity();
         final World entityWorld = entity.getEntityWorld();
 
         itemsConsumed = new ItemStack[9];
+        for (int i = 0; i < 9; ++i) itemsConsumed[i] = ItemStack.EMPTY;
+
         for (final String key : consumed.getKeySet()) {
             final ItemStack consumedItemStack = new ItemStack(consumed.getCompoundTag(key));
             if (!consumeItem(consumedItemStack)) {
@@ -299,20 +316,39 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         checkDigested();
     }
 
+    private void updateItemVariantFromCraftingGrid(ItemStack[] originalCraftingGrid) {
+        final EntitySheep sheep = getEntity();
+        final World world = sheep.world;
+        final ContainerWorkbench container = new ContainerWorkbench(new InventoryPlayer(null), world, sheep.getPosition());
+        for (int i = 0; i < 9; ++i) {
+            container.craftMatrix.setInventorySlotContents(i, originalCraftingGrid[i]);
+        }
+        final CraftingManager craftingManager = CraftingManager.getInstance();
+
+        final ItemStack craftedItem = craftingManager.findMatchingRecipe(container.craftMatrix, world);
+        final int hash = ItemStackUtils.getHash(craftedItem);
+
+        final IChiseledSheepCapability capability = getEntity().getCapability(Capability.CHISELED_SHEEP, null);
+        assert capability != null;
+        capability.setItemVariantIdentifier(hash);
+
+        ShearMadnessMod.CHANNEL.sendToAll(new SheepChiselDataUpdatedMessage(sheep));
+    }
+
     private boolean consumeItem(ItemStack consumedItemStack) {
         for (int i = 0; i < 9; i++) {
             if (areItemStacksEqual(consumedItemStack, itemsToCollect[i])) {
                 itemsConsumed[i] = itemsToCollect[i];
-                itemsToCollect[i] = null;
+                itemsToCollect[i] = ItemStack.EMPTY;
                 return true;
             }
         }
         return false;
     }
 
-    private static boolean areItemStacksEqual(@Nullable ItemStack stackA, @Nullable ItemStack stackB)
+    private static boolean areItemStacksEqual(@Nonnull ItemStack stackA, @Nonnull ItemStack stackB)
     {
-        return stackA == null && stackB == null ? true : (stackA != null && stackB != null ? isItemStackEqual(stackA, stackB) : false);
+        return stackA.isEmpty() && stackB.isEmpty() || !stackA.isEmpty() && !stackB.isEmpty() && isItemStackEqual(stackA, stackB);
     }
 
     /**
