@@ -13,6 +13,10 @@ public enum Settings
     private boolean debugModels = false;
     private boolean debugInvisibleBlocks = false;
 
+    public static final String IS_CI_BUILD = "@CI_BUILD@";
+
+    public static boolean isReleaseBuild() { return Boolean.parseBoolean(IS_CI_BUILD); }
+
     public static boolean debugModels()
     {
         return INSTANCE.debugModels;

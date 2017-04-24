@@ -8,6 +8,7 @@ import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapabilityStorage;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.ConfigurationHandler;
+import com.github.atomicblom.shearmadness.configuration.Settings;
 import com.github.atomicblom.shearmadness.networking.*;
 import com.github.atomicblom.shearmadness.proxy.Proxies;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
@@ -44,6 +45,10 @@ public class ShearMadnessMod
     public void preInit(FMLPreInitializationEvent event)
     {
         ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+
+        if (!Settings.isReleaseBuild()) {
+            Logger.info("You are not running a release build of Shear Madness. This message is purely for informational purposes.");
+        }
 
         //Networking
         CHANNEL.registerMessage(CheckSheepChiseledRequestMessageHandler.class, CheckSheepChiseledRequestMessage.class, 0, Side.SERVER);
