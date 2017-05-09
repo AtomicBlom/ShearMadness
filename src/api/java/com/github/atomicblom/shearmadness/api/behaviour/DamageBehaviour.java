@@ -1,6 +1,7 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -37,7 +38,15 @@ public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
             final double distance = entity.getDistanceSqToEntity(nearbyEntity);
 
             if (distance < 1.2) {
-                nearbyEntity.attackEntityFrom(damageSource, 1.0f);
+                if (nearbyEntity instanceof EntityAnimal) {
+                    final EntityAnimal animal = (EntityAnimal) nearbyEntity;
+                    int wasInLove = animal.inLove;
+                    if (!nearbyEntity.attackEntityFrom(damageSource, 1.0f)) {
+                        animal.inLove = wasInLove;
+                    }
+                } else {
+                    nearbyEntity.attackEntityFrom(damageSource, 1.0f);
+                }
             }
         }
     }
@@ -45,5 +54,9 @@ public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
     @Override
     public boolean isEquivalentTo(DamageBehaviour other) {
         return super.isEquivalentTo(other) && Objects.equals(damageSource, other.damageSource);
+    }
+
+    public DamageSource getDamageSource() {
+        return damageSource;
     }
 }
