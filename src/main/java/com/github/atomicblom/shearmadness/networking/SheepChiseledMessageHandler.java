@@ -5,6 +5,8 @@ import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapabilit
 import com.github.atomicblom.shearmadness.utility.SoundLibrary;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -12,6 +14,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class SheepChiseledMessageHandler implements IMessageHandler<SheepChiseledMessage, IMessage>
 {
+
+    public static long lastSoundPlayed = 0;
+
     @SuppressWarnings({"ReturnOfNull", "ConstantConditions"})
     @Override
     public IMessage onMessage(SheepChiseledMessage message, MessageContext ctx)
@@ -31,7 +36,11 @@ public class SheepChiseledMessageHandler implements IMessageHandler<SheepChisele
         final boolean chiseled = message.isChiseled();
         if (chiseled) {
             capability.chisel(message.getChiselItemStack());
-            entity.worldObj.playSound(entity.posX, entity.posY, entity.posZ, SoundLibrary.sheepchiseled, SoundCategory.NEUTRAL, 0.5F, 1.0f, true);
+            long totalWorldTime = entity.getEntityWorld().getTotalWorldTime();
+            if (lastSoundPlayed < totalWorldTime) {
+                lastSoundPlayed = totalWorldTime;
+                entity.worldObj.playSound(entity.posX, entity.posY, entity.posZ, SoundLibrary.sheepchiseled, SoundCategory.NEUTRAL, 0.5F, 1.0f, true);
+            }
         } else {
             capability.unChisel();
         }

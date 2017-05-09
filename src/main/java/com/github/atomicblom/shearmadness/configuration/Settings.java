@@ -67,6 +67,8 @@ public enum Settings
         private boolean allowTNT = true;
         private boolean allowFireDamage = true;
         private boolean allowAutoCrafting = true;
+        private BreedingBehaviour breedingBehaviour = BreedingBehaviour.Unchiseled;
+
 
 
         public static boolean allowRedstone() {
@@ -88,6 +90,7 @@ public enum Settings
             return INSTANCE.allowFireDamage;
         }
         public static boolean allowAutoCrafting() { return INSTANCE.allowAutoCrafting; }
+        public static BreedingBehaviour getBreedingBehaviour() { return INSTANCE.breedingBehaviour; }
 
 
         private static void syncConfig(Configuration config) {
@@ -98,6 +101,8 @@ public enum Settings
             INSTANCE.allowTNT = config.getBoolean("allowTNT", CATEGORY, true, Reference.ALLOW_TNT_COMMENT);
             INSTANCE.allowFireDamage = config.getBoolean("allowFireDamage", CATEGORY, true, Reference.ALLOW_FIRE_DAMAGE_COMMENT);
             INSTANCE.allowAutoCrafting = config.getBoolean("allowAutoCrafting", CATEGORY, true, Reference.ALLOW_AUTO_CRAFTING);
+            final String breedingBehaviourText = config.getString("breedingBehaviour", CATEGORY, BreedingBehaviour.Unchiseled.name(), Reference.BREEDING_BEHAVIOUR);
+            INSTANCE.breedingBehaviour = BreedingBehaviour.valueOf(breedingBehaviourText);
         }
     }
 
