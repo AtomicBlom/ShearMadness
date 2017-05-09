@@ -11,6 +11,7 @@ import com.github.atomicblom.shearmadness.configuration.ConfigurationHandler;
 import com.github.atomicblom.shearmadness.configuration.Settings;
 import com.github.atomicblom.shearmadness.networking.*;
 import com.github.atomicblom.shearmadness.proxy.Proxies;
+import com.github.atomicblom.shearmadness.utility.Logger;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.utility.ShearMadnessCommand;
 import com.github.atomicblom.shearmadness.variations.CommonReference;
