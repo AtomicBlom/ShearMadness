@@ -22,6 +22,9 @@ public final class Reference
     public static final String DEBUG_MODELS = "Models will be regenerated every frame drawn.";
     public static final String DEBUG_INVISIBLE_BLOCKS = "Invisible Blocks will be shown in-game.";
     public static final String ALLOW_AUTO_CRAFTING = "Crafting Table sheep will use their recipe to consume and produce items.";
+    public static final String BREEDING_BEHAVIOUR = "Sets the behaviour of when two sheep breed\n" +
+            "* Unchiseled     - Baby sheep will be born without the parent's block (default)\n" +
+            "* SimpleBreeding - Baby sheep will have a 50% chance of being chiseled the same as one parent or the other";
 
     private Reference() {}
 
