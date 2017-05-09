@@ -53,8 +53,6 @@ public class CommonForgeEventProxy
     {
         //Process for shearing a sheep
         if (event.getWorld().isRemote) return;
-        if (event.getHand() != EnumHand.MAIN_HAND) return;
-        final EnumHand hand = event.getHand();
         if (!(event.getTarget() instanceof EntitySheep)) return;
         final ItemStack itemStack = event.getItemStack();
         if (itemStack.isEmpty()) {
