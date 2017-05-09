@@ -13,6 +13,7 @@ import com.github.atomicblom.shearmadness.proxy.Proxies;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.utility.ShearMadnessCommand;
 import com.github.atomicblom.shearmadness.variations.CommonReference;
+import com.github.atomicblom.shearmadness.world.WorldDecoration;
 import com.google.common.collect.Lists;
 import net.minecraft.command.CommandBase;
 import net.minecraftforge.common.MinecraftForge;
@@ -52,6 +53,7 @@ public class ShearMadnessMod
         //Eventing
         MinecraftForge.EVENT_BUS.register(Proxies.forgeEventProxy);
         MinecraftForge.EVENT_BUS.register(Proxies.renderProxy);
+        MinecraftForge.TERRAIN_GEN_BUS.register(new WorldDecoration());
 
         MinecraftForge.EVENT_BUS.post(new RegisterAdditionalCapabilitiesEvent());
 

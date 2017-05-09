@@ -15,6 +15,8 @@ public final class Shearing
 {
     private Shearing() {}
 
+    public static long lastSoundPlayed = 0;
+
     public static void shearSheep(ItemStack itemStack, EntitySheep sheep, IChiseledSheepCapability capability)
     {
         if (Settings.Shearing.getBehaviour() == ShearBehaviour.CannotShear) {
@@ -31,7 +33,11 @@ public final class Shearing
 
         ItemStackUtils.dropItem(sheep, itemToDrop);
 
-        sheep.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, 1.0F);
+        long totalWorldTime = sheep.getEntityWorld().getTotalWorldTime();
+        if (lastSoundPlayed < totalWorldTime) {
+            lastSoundPlayed = totalWorldTime;
+            sheep.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, 1.0F);
+        }
         itemStack.damageItem(1, sheep);
 
         if (Settings.Shearing.getBehaviour() == ShearBehaviour.RevertSheep) {
