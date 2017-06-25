@@ -20,7 +20,7 @@ public final class ItemStackHelper
         if (itemStack.isEmpty()) return false;
         final Item item = itemStack.getItem();
         if (item instanceof ItemBlock) {
-            if (Objects.equals(((ItemBlock) item).block, block)) {
+            if (Objects.equals(((ItemBlock) item).getBlock(), block)) {
                 return true;
             }
         }
@@ -32,7 +32,7 @@ public final class ItemStackHelper
         if (itemStack.isEmpty()) return false;
         final Item item = itemStack.getItem();
         if (item instanceof ItemBlock) {
-            if (blockClass.isAssignableFrom(((ItemBlock) item).block.getClass())) {
+            if (blockClass.isAssignableFrom(((ItemBlock) item).getBlock().getClass())) {
                 return true;
             }
         }
@@ -51,7 +51,7 @@ public final class ItemStackHelper
         if (itemStack.isEmpty()) return false;
         final Item item = itemStack.getItem();
         if (item instanceof ItemBlock) {
-            final Block block = ((ItemBlock) item).block;
+            final Block block = ((ItemBlock) item).getBlock();
             while (blocks.hasNext()) {
                 if (Objects.equals(blocks.next(), block)) {
                     return true;

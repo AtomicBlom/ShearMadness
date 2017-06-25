@@ -3,6 +3,7 @@ package com.github.atomicblom.shearmadness.configuration;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSyncSettingsEvent;
 import com.github.atomicblom.shearmadness.utility.Logger;
 import com.github.atomicblom.shearmadness.variations.CommonReference;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -126,7 +127,7 @@ public enum ConfigurationHandler
     @Override
     public String toString()
     {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("fileRef", fileRef)
                 .add("config", config)
                 .add("configOld", configOld)

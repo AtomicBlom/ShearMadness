@@ -92,9 +92,7 @@ public class CraftingTableModelMaker extends DefaultModelMaker {
         for (int i = 0; i < 9; ++i) {
             container.craftMatrix.setInventorySlotContents(i, originalCraftingGrid[i]);
         }
-        final CraftingManager craftingManager = CraftingManager.getInstance();
-
-        return craftingManager.findMatchingRecipe(container.craftMatrix, entity.getEntityWorld());
+        return CraftingManager.findMatchingResult(container.craftMatrix, entity.getEntityWorld());
     }
 
     private static class CraftingItemIdentifier extends ModelSheep1 {

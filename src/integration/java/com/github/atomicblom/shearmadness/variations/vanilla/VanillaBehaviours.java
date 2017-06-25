@@ -9,7 +9,6 @@ import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehavio
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSheepKilledEvent;
 import com.github.atomicblom.shearmadness.configuration.Settings.Behaviours;
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
-import com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesLibrary;
 import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.FollowAutoCraftItems;
 import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.NoteBlockBehaviour;
 import net.minecraft.init.Blocks;

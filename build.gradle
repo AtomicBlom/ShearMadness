@@ -17,7 +17,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'java'
@@ -28,11 +28,11 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 ///////////////////////////////////////////////////
 // IDE Settings
 ///////////////////////////////////////////////////
-idea {
-    project {
-        languageLevel = '1.8'
-    }
-}
+//idea {
+//    project {
+//        languageLevel = '1.8'
+//    }
+//}
 
 ///////////////////////////////////////////////////
 // ForgeGradle
@@ -64,6 +64,7 @@ repositories {
 
 dependencies {
     compile 'team.chisel:Chisel:MC' + config.minecraft_version + '-' + config.chisel_version
+    compile 'team.chisel.ctm:CTM:MC' + config.minecraft_version + '-' + config.ctm_version
 }
 
 processResources

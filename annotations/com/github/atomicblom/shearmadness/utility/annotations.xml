@@ -1,8 +1,0 @@
-<root>
-    <item name='com.github.atomicblom.shearmadness.utility.BlockLibrary invisibleGlowstone'>
-        <annotation name='org.jetbrains.annotations.NotNull'/>
-    </item>
-    <item name='com.github.atomicblom.shearmadness.utility.BlockLibrary invisibleRedstone'>
-        <annotation name='org.jetbrains.annotations.NotNull'/>
-    </item>
-</root>

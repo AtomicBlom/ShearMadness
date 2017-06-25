@@ -31,11 +31,20 @@ public final class Reference
     public static final class Blocks {
         public static final String NORMAL_VARIANT = "normal";
 
-        public static final ResourceLocation InvisibleRedstone = new ResourceLocation(CommonReference.MOD_ID, "invisible_redstone");
-        public static final ResourceLocation InvisibleGlowstone = new ResourceLocation(CommonReference.MOD_ID, "invisible_glowstone");
-        public static final ResourceLocation InvisibleBookshelf = new ResourceLocation(CommonReference.MOD_ID, "invisible_bookshelf");
+        public static final ResourceLocation InvisibleRedstone = resource("invisible_redstone");
+        public static final ResourceLocation InvisibleGlowstone = resource("invisible_glowstone");
+        public static final ResourceLocation InvisibleBookshelf = resource("invisible_bookshelf");
 
         private Blocks() {}
     }
 
+	public static class Sounds {
+        public static final ResourceLocation SheepChiseled = resource("sheepchiseled");
+
+        private Sounds() {}
+    }
+
+    private static ResourceLocation resource(String name) {
+        return new ResourceLocation(CommonReference.MOD_ID, name);
+    }
 }

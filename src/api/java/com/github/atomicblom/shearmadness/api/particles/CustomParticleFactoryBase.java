@@ -40,7 +40,7 @@ public abstract class CustomParticleFactoryBase implements ICustomParticleFactor
     }
 
     @Override
-    public Class<? super ICustomParticleFactory> getRegistryType() {
+    public Class<ICustomParticleFactory> getRegistryType() {
         return ICustomParticleFactory.class;
     }
 }

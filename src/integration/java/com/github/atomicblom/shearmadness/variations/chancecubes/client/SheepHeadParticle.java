@@ -2,18 +2,15 @@ package com.github.atomicblom.shearmadness.variations.chancecubes.client;
 
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.api.particles.CustomParticleFactoryBase;
-import com.github.atomicblom.shearmadness.api.particles.ICustomParticleFactory;
 import com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesLibrary;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityGuardian;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
@@ -67,7 +64,7 @@ public class SheepHeadParticle extends Particle
     /**
      * Renders the particle
      */
-    public void renderParticle(VertexBuffer worldRendererIn, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ)
+    public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ)
     {
         if (this.entity != null)
         {

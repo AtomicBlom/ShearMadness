@@ -2,6 +2,7 @@ package com.github.atomicblom.shearmadness.networking;
 
 import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
@@ -80,7 +81,7 @@ public class SheepChiseledMessage implements IMessage
     @Override
     public String toString()
     {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("sheepId", sheepId)
                 .add("isChiseled", isChiseled)
                 .add("itemStack", itemStack)

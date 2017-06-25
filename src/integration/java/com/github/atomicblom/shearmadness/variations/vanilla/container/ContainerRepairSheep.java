@@ -33,7 +33,7 @@ public class ContainerRepairSheep extends ContainerRepair
         final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         assert capability != null;
         final Item item = capability.getChiselItemStack().getItem();
-        if (!(item instanceof ItemBlock) || !Objects.equals(((ItemBlock) item).block, Blocks.ANVIL)) {
+        if (!(item instanceof ItemBlock) || !Objects.equals(((ItemBlock) item).getBlock(), Blocks.ANVIL)) {
             return false;
         }
 

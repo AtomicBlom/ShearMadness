@@ -47,7 +47,7 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
         final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         assert capability != null;
         final Item item = capability.getChiselItemStack().getItem();
-        if (!(item instanceof ItemBlock) || ((ItemBlock) item).block != Blocks.ENCHANTING_TABLE) {
+        if (!(item instanceof ItemBlock) || ((ItemBlock) item).getBlock() != Blocks.ENCHANTING_TABLE) {
             return false;
         }
 
@@ -100,7 +100,7 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
                         if (distance < 25 && capability != null) {
                             final ItemStack chiselItemStack = capability.getChiselItemStack();
                             if (chiselItemStack.getItem() instanceof ItemBlock) {
-                                power += ((ItemBlock) chiselItemStack.getItem()).block.getEnchantPowerBonus(world, nearbyEntity.getPosition());
+                                power += ((ItemBlock) chiselItemStack.getItem()).getBlock().getEnchantPowerBonus(world, nearbyEntity.getPosition());
                             }
                         }
                     }
@@ -128,7 +128,7 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
                             if (!list.isEmpty())
                             {
                                 final EnchantmentData enchantmentdata = list.get(rand.nextInt(list.size()));
-                                enchantClue[j1] = Enchantment.getEnchantmentID(enchantmentdata.enchantmentobj);
+                                enchantClue[j1] = Enchantment.getEnchantmentID(enchantmentdata.enchantment);
                                 worldClue[j1] = enchantmentdata.enchantmentLevel;
                             }
                         }

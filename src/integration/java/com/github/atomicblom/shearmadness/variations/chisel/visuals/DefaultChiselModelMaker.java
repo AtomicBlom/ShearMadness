@@ -14,10 +14,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import team.chisel.api.carving.CarvingUtils;
 import team.chisel.api.carving.ICarvingVariation;
-import team.chisel.client.ChiselExtendedState;
+import team.chisel.ctm.client.state.ChiselExtendedState;
+
 
 public class DefaultChiselModelMaker implements IModelMaker
 {

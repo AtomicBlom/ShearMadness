@@ -2,6 +2,7 @@ package com.github.atomicblom.shearmadness.capability;
 
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import mcp.MethodsReturnNonnullByDefault;
@@ -79,7 +80,7 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability, IWrite
     @Override
     public String toString()
     {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("itemIdentifier", itemIdentifier)
                 .add("variantIdentifier", variantIdentifier)
                 .add("itemStack", itemStack)

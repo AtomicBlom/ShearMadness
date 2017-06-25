@@ -5,7 +5,7 @@ import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -66,7 +66,7 @@ public class EntityMesh extends ModelBox
     @SuppressWarnings("ObjectAllocationInLoop")
     @Override
     @SideOnly(Side.CLIENT)
-    public void render(VertexBuffer renderer, float scale)
+    public void render(BufferBuilder renderer, float scale)
     {
         if (quadList == null)
         {
@@ -79,9 +79,9 @@ public class EntityMesh extends ModelBox
                     {
                         final PositionTextureVertex vertexPosition = texturedQuad.vertexPositions[i];
                         @SuppressWarnings("NumericCastThatLosesPrecision")
-                        final Vector4f position = new Vector4f((float) vertexPosition.vector3D.xCoord,
-                                (float) vertexPosition.vector3D.yCoord,
-                                (float) vertexPosition.vector3D.zCoord, 1);
+                        final Vector4f position = new Vector4f((float) vertexPosition.vector3D.x,
+                                (float) vertexPosition.vector3D.y,
+                                (float) vertexPosition.vector3D.z, 1);
 
                         final Vector3f textureCoords = new Vector3f(
                                 vertexPosition.texturePositionX,

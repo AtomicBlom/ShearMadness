@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent.NewRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.RegistryBuilder;
+import net.minecraftforge.registries.RegistryBuilder;
 
 @Mod.EventBusSubscriber
 public final class RegistryEventHandler {
@@ -16,6 +16,7 @@ public final class RegistryEventHandler {
         new RegistryBuilder<ICustomParticleFactory>()
                 .setType(ICustomParticleFactory.class)
                 .setName(new ResourceLocation(CommonReference.MOD_ID, "custom_particles"))
+                .setIDRange(0, Short.MAX_VALUE)
                 .create();
     }
 }

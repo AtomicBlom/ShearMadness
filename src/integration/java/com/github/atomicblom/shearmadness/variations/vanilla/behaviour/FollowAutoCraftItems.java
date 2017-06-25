@@ -116,7 +116,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
                 //So I'ma ignore - numbers to work around that something he's working around.
                 if (age > 0 && age < 20 * 2) return false;
 
-                final ItemStack stack = ((EntityItem) e).getEntityItem();
+                final ItemStack stack = ((EntityItem) e).getItem();
 
                 for (final ItemStack itemStack : itemsToCollect) {
                     if (areItemStacksEqual(stack, itemStack)) {
@@ -177,7 +177,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
     private void consumeItem(World worldObj) {
         if (targetedItem != null && targetedItem.isEntityAlive()) {
-            final ItemStack entityItem = targetedItem.getEntityItem();
+            final ItemStack entityItem = targetedItem.getItem();
             while (entityItem.getCount() > 0 && consumeItem(entityItem)) {
                 entityItem.shrink(1);
             }
@@ -220,21 +220,20 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             container.craftMatrix.setInventorySlotContents(i, itemsConsumed[i]);
         }
 
-        final CraftingManager craftingManager = CraftingManager.getInstance();
-        final ItemStack craftedItem = craftingManager.findMatchingRecipe(container.craftMatrix, worldObj);
+        final ItemStack craftedItem = CraftingManager.findMatchingResult(container.craftMatrix, worldObj);
         if (!craftedItem.isEmpty()) {
             EntityItem entityItem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, craftedItem);
             worldObj.spawnEntity(entityItem);
             entityItem.rotationYaw = entity.renderYawOffset + 180;
-            entityItem.moveRelative(0, 0.3f, 1);
+            entityItem.moveRelative(0, 1, 0.3f, 1);
 
-            final NonNullList<ItemStack> remainingItems = craftingManager.getRemainingItems(container.craftMatrix, worldObj);
+            final NonNullList<ItemStack> remainingItems = CraftingManager.getRemainingItems(container.craftMatrix, worldObj);
             for (final ItemStack remainingItem : remainingItems) {
                 if (remainingItem.isEmpty()) continue;
                 entityItem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, remainingItem);
                 worldObj.spawnEntity(entityItem);
                 entityItem.rotationYaw = entity.renderYawOffset + 180;
-                entityItem.moveRelative(0, 0.3f, 1);
+                entityItem.moveRelative(0, 1, 0.3f, 1);
             }
         }
 
@@ -323,9 +322,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         for (int i = 0; i < 9; ++i) {
             container.craftMatrix.setInventorySlotContents(i, originalCraftingGrid[i]);
         }
-        final CraftingManager craftingManager = CraftingManager.getInstance();
-
-        final ItemStack craftedItem = craftingManager.findMatchingRecipe(container.craftMatrix, world);
+        final ItemStack craftedItem = CraftingManager.findMatchingResult(container.craftMatrix, world);
         final int hash = ItemStackUtils.getHash(craftedItem);
 
         final IChiseledSheepCapability capability = getEntity().getCapability(Capability.CHISELED_SHEEP, null);

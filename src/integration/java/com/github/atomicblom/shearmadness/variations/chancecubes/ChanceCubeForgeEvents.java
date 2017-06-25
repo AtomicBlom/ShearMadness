@@ -1,13 +1,10 @@
 package com.github.atomicblom.shearmadness.variations.chancecubes;
 
-import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.events.RegisterAdditionalCapabilitiesEvent;
 import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessCommandEvent;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSheepKilledEvent;
 import com.github.atomicblom.shearmadness.api.particles.ICustomParticleFactory;
-import com.github.atomicblom.shearmadness.networking.SpawnCustomParticleMessage;
-import com.github.atomicblom.shearmadness.utility.Logger;
 import com.github.atomicblom.shearmadness.variations.CommonReference;
 import com.github.atomicblom.shearmadness.variations.chancecubes.capability.ChanceCubeParticipationCapabilityProvider;
 import com.github.atomicblom.shearmadness.variations.chancecubes.capability.ChanceCubeParticipationStorage;
@@ -15,23 +12,18 @@ import com.github.atomicblom.shearmadness.variations.chancecubes.capability.ICha
 import com.github.atomicblom.shearmadness.variations.chancecubes.client.SheepHeadParticle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.registry.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 
-import static com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesReference.ChanceCubeGiantCubeSpawned;
-import static com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesReference.ChanceCubeParticipationCapability;
-import static com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesReference.ChanceCubeSheepDied;
+import static com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesReference.*;
 
 @SuppressWarnings({"MethodMayBeStatic", "UnnecessarilyQualifiedInnerClassAccess"})
 @Mod.EventBusSubscriber
