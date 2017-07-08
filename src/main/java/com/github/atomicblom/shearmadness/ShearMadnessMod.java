@@ -71,12 +71,7 @@ public class ShearMadnessMod
     public void init(FMLInitializationEvent event)
     {
         MinecraftForge.EVENT_BUS.post(new RegisterShearMadnessBehaviourEvent(BehaviourRegistry.INSTANCE));
-        if (event.getSide() == Side.CLIENT) {
-            MinecraftForge.EVENT_BUS.post(new RegisterShearMadnessVariationEvent(VariationRegistry.INSTANCE));
-            final RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-            renderManager.entityRenderMap.remove(EntitySheep.class);
-            renderManager.entityRenderMap.put(EntitySheep.class, new RenderChiselSheep(renderManager, new ModelSheep2(), 0.7f));
-        }
+
     }
 
     @EventHandler

@@ -28,23 +28,8 @@ public class ModGuiFactory implements IModGuiFactory
     }
 
     @Override
-    @Deprecated
-    public Class<? extends GuiScreen> mainConfigGuiClass()
-    {
-        return ConfigGUI.class;
-    }
-
-    @Override
     @Nullable
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
-    {
-        return null;
-    }
-
-    @Override
-    @Deprecated
-    @Nullable
-    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
     {
         return null;
     }
