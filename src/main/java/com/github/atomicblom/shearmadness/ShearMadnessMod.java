@@ -40,7 +40,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import java.util.List;
 
 @SuppressWarnings("MethodMayBeStatic")
-@Mod(modid = CommonReference.MOD_ID, version = CommonReference.VERSION, guiFactory = Reference.MOD_GUI_FACTORY, dependencies = "required-after:chisel@[MC1.12-0.0.11.0,)", acceptedMinecraftVersions = "[1.12, 1.13)")
+@Mod(modid = CommonReference.MOD_ID, version = CommonReference.VERSION, guiFactory = Reference.MOD_GUI_FACTORY, dependencies = "required-after:chisel@[MC1.12-0.0.14.0,)", acceptedMinecraftVersions = "[1.12, 1.13)")
 public class ShearMadnessMod
 {
     public static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(CommonReference.MOD_ID);

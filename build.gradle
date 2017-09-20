@@ -63,8 +63,8 @@ repositories {
 }
 
 dependencies {
-    compile 'team.chisel:Chisel:MC' + config.minecraft_version + '-' + config.chisel_version
-    compile 'team.chisel.ctm:CTM:MC' + config.minecraft_version + '-' + config.ctm_version
+    compile 'team.chisel:Chisel:MC' + config.chisel_version
+    compile 'team.chisel.ctm:CTM:MC' + config.ctm_version
 }
 
 processResources
