@@ -26,7 +26,7 @@ public class SillyVarations
 
         final IVariationRegistry registry = event.getRegistry();
         registry.registerVariation(
-                itemStack -> ItemStackHelper.isStackForBlock(itemStack, ChiselLibrary.marbleextra) && itemStack.getItemDamage() == 7,
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, ChiselLibrary.marble2) && itemStack.getItemDamage() == 7,
                 new InfiltratorModelMaker()
                 );
     }

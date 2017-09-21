@@ -7,5 +7,5 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder("chisel")
 public class ChiselLibrary
 {
-    public static final Block marbleextra = null;
+    public static final Block marble2 = null;
 }

@@ -19,6 +19,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -66,6 +67,7 @@ public class EntityEventHandler
 		final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
 		if (capability == null) return;
 		if (!capability.isChiseled()) return;
+		if (event.getHand() != EnumHand.MAIN_HAND) return;
 
 		final EntityPlayer entityPlayer = event.getEntityPlayer();
 
