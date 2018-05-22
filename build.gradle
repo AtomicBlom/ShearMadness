@@ -58,12 +58,13 @@ minecraft {
 repositories {
     maven {
         name = "tterrag"
-        url = "http://maven.tterrag.com/"
+        url = "https://maven.tterrag.com/"
     }
 }
 
 dependencies {
     compile 'team.chisel:Chisel:MC' + config.minecraft_version + '-' + config.chisel_version
+    compile 'team.chisel.ctm:CTM:MC' + config.minecraft_version + '-' + config.ctm_version
 }
 
 processResources
@@ -121,7 +122,7 @@ tasks.build.dependsOn apiJar
 dependencies {
     repositories {
         maven {
-            url 'http://maven.theprogrammingturkey.com/'
+            url 'https://maven.theprogrammingturkey.com/'
         }
     }
     deobfCompile(group: 'com.theprogrammingturkey.chancecubes', name: 'ChanceCubes', version: config.chancecubes_version)
