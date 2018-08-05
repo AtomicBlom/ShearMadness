@@ -131,10 +131,10 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             return false;
         });
 
-        recipeItems.sort((e, e2) -> ((Double)e.getDistanceSqToEntity(entity)).compareTo(e2.getDistanceSqToEntity(entity)));
+        recipeItems.sort((e, e2) -> ((Double)e.getDistanceSq(entity)).compareTo(e2.getDistanceSq(entity)));
 
         for (final Entity recipeItem : recipeItems) {
-            final double distanceSqToEntity = entity.getDistanceSqToEntity(recipeItem);
+            final double distanceSqToEntity = entity.getDistanceSq(recipeItem);
             if (distanceSqToEntity < 0.75) {
                 //Eat thing.
                 Logger.trace("Eating %s", recipeItem);

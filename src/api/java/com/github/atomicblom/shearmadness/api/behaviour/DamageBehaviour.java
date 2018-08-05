@@ -35,7 +35,7 @@ public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
         final EntitySheep entity = getEntity();
         for (final Entity nearbyEntity : entity.getEntityWorld().getEntitiesWithinAABBExcludingEntity(entity, searchBox))
         {
-            final double distance = entity.getDistanceSqToEntity(nearbyEntity);
+            final double distance = entity.getDistanceSq(nearbyEntity);
 
             if (distance < 1.2) {
                 if (nearbyEntity instanceof EntityAnimal) {

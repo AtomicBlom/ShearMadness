@@ -63,7 +63,7 @@ public class ChanceCubeBehaviour extends BehaviourBase<ChanceCubeBehaviour> {
                 playerEntity -> {
 
                     return playerEntity != null &&
-                            playerEntity.getDistanceToEntity(entity) < distance &&
+                            playerEntity.getDistance(entity) < distance &&
                             playerEntity.hasCapability(CHANCE_CUBE_PARTICIPATION, null) &&
                             playerEntity.getCapability(CHANCE_CUBE_PARTICIPATION, null).isParticipating();
                 }
