@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import team.chisel.api.carving.CarvingUtils;
 import team.chisel.api.carving.ICarvingVariation;
-import team.chisel.ctm.client.state.ChiselExtendedState;
+import team.chisel.ctm.client.state.CTMExtendedState;
 
 
 public class DefaultChiselModelMaker implements IModelMaker
@@ -50,7 +50,7 @@ public class DefaultChiselModelMaker implements IModelMaker
     {
         final IBlockState blockState = variation.getBlockState();
         final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        ChiselExtendedState chiselState = new ChiselExtendedState(blockState, world, position);
+        CTMExtendedState chiselState = new CTMExtendedState(blockState, world, position);
         final IBakedModel model = blockRenderer.getModelForState(blockState);
 
 

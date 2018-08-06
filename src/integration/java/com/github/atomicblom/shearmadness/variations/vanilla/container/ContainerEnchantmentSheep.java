@@ -93,7 +93,7 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
                     final AxisAlignedBB searchBox = new AxisAlignedBB(position.add(-5, -2, -5), position.add(5, 2, 5));
                     for (final Entity nearbyEntity : entity.getEntityWorld().getEntitiesWithinAABBExcludingEntity(entity, searchBox))
                     {
-                        final double distance = entity.getDistanceSqToEntity(nearbyEntity);
+                        final double distance = entity.getDistanceSq(nearbyEntity);
 
                         //5^2
                         final IChiseledSheepCapability capability = nearbyEntity.getCapability(Capability.CHISELED_SHEEP, null);
