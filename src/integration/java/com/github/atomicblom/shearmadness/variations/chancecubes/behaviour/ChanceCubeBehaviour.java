@@ -15,6 +15,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.logging.log4j.Logger;
 
@@ -100,16 +101,17 @@ public class ChanceCubeBehaviour extends BehaviourBase {
                                 )
                         );
 
-                        ShearMadnessMod.CHANNEL.send(
-                                PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)selectedPlayer),
-                                new SpawnCustomParticleMessage(
-                                        ParticleLibrary.sheep_head.getRegistryName(),
-                                        true,
-                                        position.getX(), position.getY(), position.getZ(),
-                                        0, 0, 0,
-                                        0, 1
-                                )
-                        );
+
+
+                        ServerWorld serverWorld = (ServerWorld)worldObj;
+                        serverWorld.spawnParticle(
+                                (ServerPlayerEntity)selectedPlayer,
+                                ChanceCubeParticleTypes.sheep_head,
+                                true,
+                                position.getX(), position.getY(), position.getZ(),
+                                1,
+                                0, 0, 0,
+                                1);
                     });
         }
 

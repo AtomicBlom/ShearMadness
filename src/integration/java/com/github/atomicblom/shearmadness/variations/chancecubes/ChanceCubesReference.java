@@ -16,6 +16,8 @@ public final class ChanceCubesReference {
     @CapabilityInject(IChanceCubeParticipationCapability.class)
     public static final Capability<IChanceCubeParticipationCapability> CHANCE_CUBE_PARTICIPATION;
 
+    public static final ResourceLocation SheepHeadParticle = new ResourceLocation(CommonReference.MOD_ID, "sheep_head");
+
     public static final ResourceLocation ChanceCubeParticipationCapability = new ResourceLocation(CommonReference.MOD_ID, "chance_cube_participation");
     public static final ResourceLocation ChanceCubeSheepDied = new ResourceLocation(CommonReference.MOD_ID, "chancecube_sheepdied");
     public static final ResourceLocation ChanceCubeGiantCubeSpawned = new ResourceLocation(CommonReference.MOD_ID, "chancecube_giantcubespawned");

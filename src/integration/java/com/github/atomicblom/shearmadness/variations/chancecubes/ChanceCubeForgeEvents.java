@@ -62,7 +62,11 @@ public class ChanceCubeForgeEvents {
 
     @SubscribeEvent
     public static void registerParticles(RegistryEvent.Register<ParticleType<?>> event) {
-        Minecraft.getInstance().particles.registerFactory(new BasicParticleType(true), new SheepHeadParticle.Factory());
+        BasicParticleType basicParticleType = new BasicParticleType(true);
+        basicParticleType.setRegistryName(SheepHeadParticle);
+        Minecraft.getInstance().particles.registerFactory(basicParticleType,
+                new SheepHeadParticle.Factory()
+        );
     }
 
     @SubscribeEvent
