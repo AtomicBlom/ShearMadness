@@ -2,64 +2,62 @@ package com.github.atomicblom.shearmadness.variations.vanilla.container;
 
 import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.ContainerWorkbench;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.WorkbenchContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class ContainerWorkbenchSheep extends ContainerWorkbench
+public class ContainerWorkbenchSheep extends WorkbenchContainer
 {
-    private final EntityLiving entity;
-    private final World world;
-    private final IChiseledSheepCapability capability;
+    //FIXME: MCP field_75162_e -> craftingMatrix
 
-    public ContainerWorkbenchSheep(InventoryPlayer playerInventory, World worldIn, EntityLiving entity)
-    {
-        super(playerInventory, worldIn, entity.getPosition());
-        this.entity = entity;
-        world = worldIn;
-        capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
+    private final LivingEntity entity;
+    private final World world;
+
+    public ContainerWorkbenchSheep(int windowId, PlayerInventory playerInventory, SheepEntity sheep) {
+        super(windowId, playerInventory);
+        this.entity = sheep;
+        world = sheep.world;
         onContainerOpened();
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer playerIn) {
-        if (capability == null) {
-            return false;
-        }
-
-        if (!ItemStackHelper.isStackForBlock(capability.getChiselItemStack(), Blocks.CRAFTING_TABLE)) {
-            return false;
-        }
-
-        return playerIn.getDistanceSq(entity.getPosition()) <= 64.0D;
+    public boolean canInteractWith(PlayerEntity playerIn) {
+        return entity.getCapability(Capability.CHISELED_SHEEP).map(capability -> {
+            if (!ItemStackHelper.isStackForBlock(capability.getChiselItemStack(), Blocks.CRAFTING_TABLE)) {
+                return false;
+            }
+            return playerIn.getDistanceSq(entity) <= 64.0D;
+        }).orElse(false);
     }
 
     private void onContainerOpened() {
         if (!world.isRemote) {
-            final NBTTagCompound extraData = capability.getExtraData();
-            final NBTTagCompound craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
+            entity.getCapability(Capability.CHISELED_SHEEP).ifPresent(capability -> {
+                final CompoundNBT extraData = capability.getExtraData();
+                final CompoundNBT craftMatrixNBT = extraData.getCompound("AUTO_CRAFT");
 
-            for (int i = 0; i < 9; ++i)
-            {
-                final String key = ((Integer) i).toString();
+                for (int i = 0; i < 9; ++i)
+                {
+                    final String key = ((Integer) i).toString();
 
-                if (craftMatrixNBT.hasKey(key)) {
-                    final ItemStack itemstack = new ItemStack(craftMatrixNBT.getCompoundTag(key));
-                    craftMatrix.setInventorySlotContents(i, itemstack);
+                    if (craftMatrixNBT.contains(key)) {
+                        final ItemStack itemstack = ItemStack.read(craftMatrixNBT.getCompound(key));
+                        field_75162_e.setInventorySlotContents(i, itemstack);
+                    }
                 }
-            }
 
-            detectAndSendChanges();
-            onCraftMatrixChanged(craftMatrix);
+                detectAndSendChanges();
+                onCraftMatrixChanged(field_75162_e);
+            });
         }
     }
 
@@ -67,25 +65,25 @@ public class ContainerWorkbenchSheep extends ContainerWorkbench
      * Called when the container is closed.
      */
     @Override
-    public void onContainerClosed(EntityPlayer playerIn)
+    public void onContainerClosed(PlayerEntity playerIn)
     {
         if (!world.isRemote)
         {
-            final NBTTagCompound extraData = capability.getExtraData();
-            final NBTTagCompound craftMatrixNBT = new NBTTagCompound();
+            entity.getCapability(Capability.CHISELED_SHEEP).ifPresent(capability -> {
+                final CompoundNBT extraData = capability.getExtraData();
+                final CompoundNBT craftMatrixNBT = new CompoundNBT();
 
-            for (int i = 0; i < 9; ++i)
-            {
-                final ItemStack itemstack = craftMatrix.removeStackFromSlot(i);
+                for (int i = 0; i < 9; ++i) {
+                    final ItemStack itemstack = field_75162_e.removeStackFromSlot(i);
 
-                if (!itemstack.isEmpty())
-                {
-                    craftMatrixNBT.setTag(((Integer)i).toString(), itemstack.serializeNBT());
+                    if (!itemstack.isEmpty()) {
+                        craftMatrixNBT.put(((Integer) i).toString(), itemstack.serializeNBT());
+                    }
                 }
-            }
 
-            extraData.setTag("AUTO_CRAFT", craftMatrixNBT);
-            craftMatrixNBT.setLong("lastChanged", entity.getEntityWorld().getTotalWorldTime());
+                extraData.put("AUTO_CRAFT", craftMatrixNBT);
+                craftMatrixNBT.putLong("lastChanged", entity.getEntityWorld().getGameTime());
+            });
         }
 
         super.onContainerClosed(playerIn);

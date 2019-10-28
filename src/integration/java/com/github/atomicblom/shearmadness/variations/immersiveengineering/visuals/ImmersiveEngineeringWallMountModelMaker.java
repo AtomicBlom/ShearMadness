@@ -1,19 +1,18 @@
 package com.github.atomicblom.shearmadness.variations.immersiveengineering.visuals;
 
 import com.github.atomicblom.shearmadness.api.modelmaker.DefaultModelMaker;
-import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.EntityMesh;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
-import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
-import net.minecraft.client.model.ModelQuadruped;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.ModelSheep1;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.entity.EntityLivingBase;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix3f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix4f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Vector3f;
+import net.minecraft.client.renderer.entity.model.QuadrupedModel;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.entity.model.SheepWoolModel;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  * Created by codew on 16/09/2016.
@@ -21,17 +20,17 @@ import org.lwjgl.util.vector.Vector3f;
 public class ImmersiveEngineeringWallMountModelMaker extends DefaultModelMaker {
 
     @Override
-    public ModelQuadruped createModel(ItemStack itemStack, EntityLivingBase entity)
+    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity)
     {
-        ModelQuadruped quadruped = super.createModel(itemStack, entity);
+        QuadrupedModel<SheepEntity> quadruped = super.createModel(itemStack, entity);
 
         final float nintyDegrees = (float) Math.toRadians(90);
 
-        quadruped.body = new ModelRenderer(new ModelSheep1(), 0, 0);
-        quadruped.head = createModelRenderer(getTransforms().getHeadPartDefinition().get());
+        quadruped.body = new RendererModel(new SheepWoolModel<>(), 0, 0);
+        quadruped.headModel = createModelRenderer(getTransforms().getHeadPartDefinition().get());
 
-        final EntityMesh mesh = new EntityMesh(quadruped.head);
-        quadruped.head.cubeList.add(mesh);
+        final EntityMesh mesh = new EntityMesh(quadruped.headModel);
+        quadruped.headModel.cubeList.add(mesh);
 
         final Matrix4f antenna1Matrix = new Matrix4f();
 

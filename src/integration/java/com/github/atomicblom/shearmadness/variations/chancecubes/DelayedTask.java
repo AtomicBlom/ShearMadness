@@ -1,10 +1,9 @@
 package com.github.atomicblom.shearmadness.variations.chancecubes;
 
-import com.github.atomicblom.shearmadness.utility.Logger;
-
-import java.util.concurrent.Callable;
+import org.apache.logging.log4j.Logger;
 
 public class DelayedTask implements Comparable<DelayedTask> {
+    private static Logger LOGGER = ChanceCubesReference.LOGGER;
     private final long expectedTick;
     private final Action task;
 
@@ -18,7 +17,7 @@ public class DelayedTask implements Comparable<DelayedTask> {
         try {
             task.execute();
         } catch (Exception e) {
-            Logger.warning("Failed to execute Delayed Task", e);
+            LOGGER.warn("Failed to execute Delayed Task", e);
         }
     }
 

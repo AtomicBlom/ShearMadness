@@ -3,47 +3,52 @@ package com.github.atomicblom.shearmadness.variations.vanilla.behaviour;
 import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.networking.SheepChiselDataUpdatedMessage;
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
-import com.github.atomicblom.shearmadness.utility.Logger;
-import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.PacketDistributor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Supplier;
 
-public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
+public class FollowAutoCraftItems extends BehaviourBase {
+
+    private Logger Logger = LogManager.getLogger("shearmadness");
 
     private long lastExecutionTime;
     private int eatingItemTimer;
     private int poopingItemTimer;
 
-    private EntityItem targetedItem;
+    private ItemEntity targetedItem;
     private long autocraftChangeTime;
     private ItemStack[] itemsToCollect = new ItemStack[9];
     private ItemStack[] itemsConsumed = new ItemStack[9];
     private ItemStack[] originalCraftingGrid = new ItemStack[9];
 
 
-    public FollowAutoCraftItems(EntitySheep entity) {
+    public FollowAutoCraftItems(SheepEntity entity, Supplier<Boolean> configuration) {
+        super(entity, configuration);
 
-        super(entity);
         for (int i = 0; i < 9; i++) {
             itemsToCollect[i] = ItemStack.EMPTY;
             itemsConsumed[i] = ItemStack.EMPTY;
@@ -53,7 +58,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
     @Override
     public void updateTask() {
-        final EntitySheep entity = getEntity();
+        final SheepEntity entity = getEntity();
         final World worldObj = entity.getEntityWorld();
 
         if (eatingItemTimer > 0) {
@@ -77,117 +82,117 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
                 //calculate recipe and fire item out bum.
                 Logger.trace("Crafting Item");
                 createItem(entity, worldObj);
-                lastExecutionTime = worldObj.getTotalWorldTime();
+                lastExecutionTime = worldObj.getGameTime();
             }
 
             return;
         }
 
-        if (lastExecutionTime + 20 < worldObj.getTotalWorldTime()) {
-            lastExecutionTime = worldObj.getTotalWorldTime();
+        if (lastExecutionTime + 20 < worldObj.getGameTime()) {
+            lastExecutionTime = worldObj.getGameTime();
             if (findItemToConsume(entity, worldObj, position)) return;
             Logger.trace("No items found");
         }
     }
 
-    private boolean findItemToConsume(EntitySheep entity, World worldObj, BlockPos position) {
-        final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
-        assert capability != null;
-        final NBTTagCompound extraData = capability.getExtraData();
-        if (!extraData.hasKey("AUTO_CRAFT")) {
-            return true;
-        }
-        final NBTTagCompound craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
-        if (craftMatrixNBT.hasKey("lastChanged")) {
-            final long lastChanged = craftMatrixNBT.getLong("lastChanged");
-            if (lastChanged != autocraftChangeTime) {
-                updateItemsConsumed();
-                reloadAutoCraftProperties(craftMatrixNBT);
+    private boolean findItemToConsume(SheepEntity entity, World worldObj, BlockPos position) {
+        return entity.getCapability(Capability.CHISELED_SHEEP).map(capability -> {
+            final CompoundNBT extraData = capability.getExtraData();
+            if (!extraData.contains("AUTO_CRAFT")) {
+                return true;
             }
-            autocraftChangeTime = lastChanged;
-        } else {
-            return true;
-        }
+            final CompoundNBT craftMatrixNBT = extraData.getCompound("AUTO_CRAFT");
+            if (craftMatrixNBT.contains("lastChanged")) {
+                final long lastChanged = craftMatrixNBT.getLong("lastChanged");
+                if (lastChanged != autocraftChangeTime) {
+                    updateItemsConsumed();
+                    reloadAutoCraftProperties(craftMatrixNBT);
+                }
+                autocraftChangeTime = lastChanged;
+            } else {
+                return true;
+            }
 
-        Logger.trace("Checking surroundings for items");
+            Logger.trace("Checking surroundings for items");
 
-        final AxisAlignedBB offset = new AxisAlignedBB(position).expand(16, 16, 16).offset(-8, -8, -8);
-        final List<Entity> recipeItems = worldObj.getEntitiesInAABBexcluding(entity, offset, (e) -> {
-            if (e instanceof EntityItem) {
-                if (e.isAirBorne) return false;
-                final int age = ((EntityItem) e).age;
-                //Immersive Engineering sets the age to -some silly number to work around something.
-                //So I'ma ignore - numbers to work around that something he's working around.
-                if (age > 0 && age < 20 * 2) return false;
+            final AxisAlignedBB offset = new AxisAlignedBB(position).expand(16, 16, 16).offset(-8, -8, -8);
+            final List<Entity> recipeItems = worldObj.getEntitiesInAABBexcluding(entity, offset, (e) -> {
+                if (e instanceof ItemEntity) {
+                    if (e.isAirBorne) return false;
+                    final int age = ((ItemEntity) e).age;
+                    //Immersive Engineering sets the age to -some silly number to work around something.
+                    //So I'ma ignore - numbers to work around that something he's working around.
+                    if (age > 0 && age < 20 * 2) return false;
 
-                final ItemStack stack = ((EntityItem) e).getItem();
+                    final ItemStack stack = ((ItemEntity) e).getItem();
 
-                for (final ItemStack itemStack : itemsToCollect) {
-                    if (areItemStacksEqual(stack, itemStack)) {
-                        return true;
+                    for (final ItemStack itemStack : itemsToCollect) {
+                        if (areItemStacksEqual(stack, itemStack)) {
+                            return true;
+                        }
                     }
+                }
+                return false;
+            });
+
+            recipeItems.sort(Comparator.comparingDouble(e -> e.getDistanceSq(entity)));
+
+            for (final Entity recipeItem : recipeItems) {
+                final double distanceSqToEntity = entity.getDistanceSq(recipeItem);
+                if (distanceSqToEntity < 0.75) {
+                    //Eat thing.
+                    Logger.trace("Eating {}", recipeItem);
+
+                    eatingItemTimer = 40;
+                    worldObj.setEntityState(entity, (byte)10);
+                    targetedItem = (ItemEntity) recipeItem;
+                    entity.getNavigator().clearPath();
+                    entity.getLookController().setLookPositionWithEntity(recipeItem, entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
+                    return true;
+                }
+
+                if (entity.getNavigator().tryMoveToEntityLiving(recipeItem, 1)) {
+                    Logger.trace("Moving to {}", recipeItem);
+                    return true;
                 }
             }
             return false;
-        });
-
-        recipeItems.sort((e, e2) -> ((Double)e.getDistanceSq(entity)).compareTo(e2.getDistanceSq(entity)));
-
-        for (final Entity recipeItem : recipeItems) {
-            final double distanceSqToEntity = entity.getDistanceSq(recipeItem);
-            if (distanceSqToEntity < 0.75) {
-                //Eat thing.
-                Logger.trace("Eating %s", recipeItem);
-
-                eatingItemTimer = 40;
-                worldObj.setEntityState(entity, (byte)10);
-                targetedItem = (EntityItem)recipeItem;
-                entity.getNavigator().clearPath();
-                entity.getLookHelper().setLookPositionWithEntity(recipeItem, entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
-                return true;
-            }
-
-            if (entity.getNavigator().tryMoveToEntityLiving(recipeItem, 1)) {
-                Logger.trace("Moving to %s", recipeItem);
-                return true;
-            }
-        }
-        return false;
+        }).orElse(false);
     }
 
 
     @Override
     public void onBehaviourStopped(BlockPos previousPos) {
-        final EntitySheep entity = getEntity();
+        final SheepEntity entity = getEntity();
         final World entityWorld = entity.getEntityWorld();
 
         for (int i = 0; i < 9; ++i) {
             if (!itemsConsumed[i].isEmpty()) {
-                final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, itemsConsumed[i]);
+                final ItemEntity entityItem = new ItemEntity(entityWorld, entity.posX, entity.posY, entity.posZ, itemsConsumed[i]);
                 entityItem.setDefaultPickupDelay();
-                entityWorld.spawnEntity(entityItem);
+                entityWorld.addEntity(entityItem);
             }
             if (!originalCraftingGrid[i].isEmpty()) {
-                final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, originalCraftingGrid[i]);
+                final ItemEntity entityItem = new ItemEntity(entityWorld, entity.posX, entity.posY, entity.posZ, originalCraftingGrid[i]);
                 entityItem.setDefaultPickupDelay();
-                entityWorld.spawnEntity(entityItem);
+                entityWorld.addEntity(entityItem);
             }
         }
-        final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
-        assert capability != null;
-        final NBTTagCompound extraData = capability.getExtraData();
-        extraData.removeTag("AUTO_CRAFT");
+        entity.getCapability(Capability.CHISELED_SHEEP).ifPresent(capability -> {
+            final CompoundNBT extraData = capability.getExtraData();
+            extraData.remove("AUTO_CRAFT");
+        });
     }
 
     private void consumeItem(World worldObj) {
-        if (targetedItem != null && targetedItem.isEntityAlive()) {
+        if (targetedItem != null && targetedItem.isAlive()) {
             final ItemStack entityItem = targetedItem.getItem();
             while (entityItem.getCount() > 0 && consumeItem(entityItem)) {
                 entityItem.shrink(1);
             }
 
             if (entityItem.getCount() == 0) {
-                worldObj.removeEntity(targetedItem);
+                targetedItem.remove();
             }
 
             Logger.trace("Add item to consumed");
@@ -204,7 +209,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
             poopingItemTimer = 44;
             Logger.trace("Digesting Item");
         } else {
-            Logger.trace("%d items left", itemsLeft);
+            Logger.trace("{} items left", itemsLeft);
         }
     }
 
@@ -218,62 +223,67 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         return itemsLeft;
     }
 
-    private void createItem(EntitySheep entity, World worldObj) {
-        InventoryCrafting crafting = new InventoryCrafting(new DumbContainer(), 3, 3);
+    private void createItem(SheepEntity entity, World worldObj) {
+        //FIXME: WindowID?
+        CraftingInventory crafting = new CraftingInventory(DumbContainer.create(200), 3, 3);
         for (int i = 0; i < 9; ++i) {
             crafting.setInventorySlotContents(i, itemsConsumed[i]);
         }
 
-        final ItemStack craftedItem = CraftingManager.findMatchingResult(crafting, worldObj);
-        if (!craftedItem.isEmpty()) {
-            EntityItem entityItem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, craftedItem);
+        worldObj.getRecipeManager().getRecipe(IRecipeType.CRAFTING, crafting, worldObj).ifPresent(recipe -> {
+            final ItemStack craftedItem = recipe.getRecipeOutput();
+            if (!craftedItem.isEmpty()) {
+                ItemEntity entityItem = new ItemEntity(worldObj, entity.posX, entity.posY, entity.posZ, craftedItem);
 
-            entityItem.rotationYaw = entity.renderYawOffset + 180;
-            entityItem.moveRelative(0, 0.05f, 0.4f, 1);
-            worldObj.spawnEntity(entityItem);
-
-            final NonNullList<ItemStack> remainingItems = CraftingManager.getRemainingItems(crafting, worldObj);
-            for (final ItemStack remainingItem : remainingItems) {
-                if (remainingItem.isEmpty()) continue;
-                entityItem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, remainingItem);
                 entityItem.rotationYaw = entity.renderYawOffset + 180;
-                entityItem.moveRelative(0, 0.05f, 0.4f, 1);
-                worldObj.spawnEntity(entityItem);
-            }
-        }
+                entityItem.moveRelative(0,  new Vec3d(0.05f, 0.4f, 1));
+                worldObj.addEntity(entityItem);
 
-        System.arraycopy(originalCraftingGrid, 0, itemsToCollect, 0, 9);
-        itemsConsumed = new ItemStack[9];
-        for (int i = 0; i < 9; ++i) itemsConsumed[i] = ItemStack.EMPTY;
-        updateItemsConsumed();
+                final NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(crafting);
+                for (final ItemStack remainingItem : remainingItems) {
+                    if (remainingItem.isEmpty()) continue;
+                    entityItem = new ItemEntity(worldObj, entity.posX, entity.posY, entity.posZ, remainingItem);
+                    entityItem.rotationYaw = entity.renderYawOffset + 180;
+                    entityItem.moveRelative(0, new Vec3d(0.05f, 0.4f, 1));
+                    worldObj.addEntity(entityItem);
+                }
+            }
+
+            System.arraycopy(originalCraftingGrid, 0, itemsToCollect, 0, 9);
+            itemsConsumed = new ItemStack[9];
+            for (int i = 0; i < 9; ++i) itemsConsumed[i] = ItemStack.EMPTY;
+            updateItemsConsumed();
+        });
+
     }
 
     private void updateItemsConsumed() {
-        final IChiseledSheepCapability capability = getEntity().getCapability(Capability.CHISELED_SHEEP, null);
-        assert capability != null;
-        final NBTTagCompound extraData = capability.getExtraData();
-        if (!extraData.hasKey("AUTO_CRAFT")) { return; }
-        final NBTTagCompound craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
-
-        if (!craftMatrixNBT.hasKey("CONSUMED")) {
-            craftMatrixNBT.setTag("CONSUMED", new NBTTagCompound());
-        }
-        final NBTTagCompound consumed = craftMatrixNBT.getCompoundTag("CONSUMED");
-
-        for (int i = 0; i < 9; ++i)
-        {
-            if (!itemsConsumed[i].isEmpty()) {
-                final String key = ((Integer) i).toString();
-                consumed.setTag(key, itemsConsumed[i].serializeNBT());
+        getEntity().getCapability(Capability.CHISELED_SHEEP).ifPresent(capability -> {
+            final CompoundNBT extraData = capability.getExtraData();
+            if (!extraData.contains("AUTO_CRAFT")) {
+                return;
             }
-        }
+            final CompoundNBT craftMatrixNBT = extraData.getCompound("AUTO_CRAFT");
+
+            if (!craftMatrixNBT.contains("CONSUMED")) {
+                craftMatrixNBT.put("CONSUMED", new CompoundNBT());
+            }
+            final CompoundNBT consumed = craftMatrixNBT.getCompound("CONSUMED");
+
+            for (int i = 0; i < 9; ++i) {
+                if (!itemsConsumed[i].isEmpty()) {
+                    final String key = ((Integer) i).toString();
+                    consumed.put(key, itemsConsumed[i].serializeNBT());
+                }
+            }
+        });
     }
 
-    private void reloadAutoCraftProperties(NBTTagCompound craftMatrixNBT) {
-        if (!craftMatrixNBT.hasKey("CONSUMED")) {
-            craftMatrixNBT.setTag("CONSUMED", new NBTTagCompound());
+    private void reloadAutoCraftProperties(CompoundNBT craftMatrixNBT) {
+        if (!craftMatrixNBT.contains("CONSUMED")) {
+            craftMatrixNBT.put("CONSUMED", new CompoundNBT());
         }
-        final NBTTagCompound consumed = craftMatrixNBT.getCompoundTag("CONSUMED");
+        final CompoundNBT consumed = craftMatrixNBT.getCompound("CONSUMED");
 
         itemsToCollect = new ItemStack[9];
         originalCraftingGrid = new ItemStack[9];
@@ -285,10 +295,10 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
             final String key = ((Integer) i).toString();
 
-            final boolean nbtHasItemInIndex = craftMatrixNBT.hasKey(key);
+            final boolean nbtHasItemInIndex = craftMatrixNBT.contains(key);
 
             if (nbtHasItemInIndex) {
-                final ItemStack itemstack = new ItemStack(craftMatrixNBT.getCompoundTag(key));
+                final ItemStack itemstack = ItemStack.read(craftMatrixNBT.getCompound(key));
                 itemsToCollect[i] = itemstack;
                 originalCraftingGrid[i] = itemstack;
                 itemCount++;
@@ -297,7 +307,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
         updateItemVariantFromCraftingGrid(originalCraftingGrid);
 
-        Logger.trace("Looking for %d items", itemCount);
+        Logger.trace("Looking for {} items", itemCount);
 
         final Entity entity = getEntity();
         final World entityWorld = entity.getEntityWorld();
@@ -305,15 +315,15 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         itemsConsumed = new ItemStack[9];
         for (int i = 0; i < 9; ++i) itemsConsumed[i] = ItemStack.EMPTY;
 
-        for (final String key : consumed.getKeySet()) {
-            final ItemStack consumedItemStack = new ItemStack(consumed.getCompoundTag(key));
+        for (final String key : consumed.keySet()) {
+            final ItemStack consumedItemStack = ItemStack.read(consumed.getCompound(key));
             if (!consumeItem(consumedItemStack)) {
-                final EntityItem entityItem = new EntityItem(entityWorld, entity.posX, entity.posY, entity.posZ, consumedItemStack);
+                final ItemEntity entityItem = new ItemEntity(entityWorld, entity.posX, entity.posY, entity.posZ, consumedItemStack);
                 entityItem.setDefaultPickupDelay();
-                entityWorld.spawnEntity(entityItem);
-                Logger.trace("Unable to consume %s", consumedItemStack);
+                entityWorld.addEntity(entityItem);
+                Logger.trace("Unable to consume {}", consumedItemStack);
             } else {
-                Logger.trace("Consumed %s", consumedItemStack);
+                Logger.trace("Consumed {}", consumedItemStack);
             }
         }
 
@@ -321,28 +331,37 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
     }
 
     static class DumbContainer extends Container {
+        DumbContainer(@Nullable ContainerType<?> p_i50105_1_, int p_i50105_2_) {
+            super(p_i50105_1_, p_i50105_2_);
+        }
+
+        static Container create(int windowId) {
+            return new DumbContainer(ContainerType.GENERIC_3X3, windowId);
+        }
+
         @Override
-        public boolean canInteractWith(EntityPlayer playerIn)
+        public boolean canInteractWith(PlayerEntity playerIn)
         {
             return true;
         }
     }
 
     private void updateItemVariantFromCraftingGrid(ItemStack[] originalCraftingGrid) {
-        final EntitySheep sheep = getEntity();
+        final SheepEntity sheep = getEntity();
         final World world = sheep.world;
-        InventoryCrafting crafting = new InventoryCrafting(new DumbContainer(), 3, 3);
+        //FIXME: window ID?
+        CraftingInventory crafting = new CraftingInventory(DumbContainer.create(200), 3, 3);
         for (int i = 0; i < 9; ++i) {
             crafting.setInventorySlotContents(i, originalCraftingGrid[i]);
         }
-        final ItemStack craftedItem = CraftingManager.findMatchingResult(crafting, world);
+        final ItemStack craftedItem = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, crafting, world).map(IRecipe::getRecipeOutput).orElse(ItemStack.EMPTY);
         final int hash = ItemStackUtils.getHash(craftedItem);
 
-        final IChiseledSheepCapability capability = getEntity().getCapability(Capability.CHISELED_SHEEP, null);
-        assert capability != null;
-        capability.setItemVariantIdentifier(hash);
+        getEntity().getCapability(Capability.CHISELED_SHEEP).ifPresent(capability -> {
+            capability.setItemVariantIdentifier(hash);
 
-        ShearMadnessMod.CHANNEL.sendToAll(new SheepChiselDataUpdatedMessage(sheep));
+            ShearMadnessMod.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> sheep), new SheepChiselDataUpdatedMessage(sheep));
+        });
     }
 
     private boolean consumeItem(ItemStack consumedItemStack) {
@@ -367,7 +386,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
     private static boolean isItemStackEqual(ItemStack thisa, ItemStack other)
     {
         if (thisa.getItem() != other.getItem()) return false;
-        if (thisa.getItemDamage() != other.getItemDamage()) return false;
+        if (thisa.getDamage() != other.getDamage()) return false;
         if (!ItemStack.areItemStackTagsEqual(thisa, other)) return false;
         return true;
     }

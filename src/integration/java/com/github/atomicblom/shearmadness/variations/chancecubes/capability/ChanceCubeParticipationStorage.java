@@ -1,8 +1,8 @@
 package com.github.atomicblom.shearmadness.variations.chancecubes.capability;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 
@@ -11,17 +11,17 @@ public class ChanceCubeParticipationStorage implements IStorage<IChanceCubeParti
     public static final IStorage<IChanceCubeParticipationCapability> instance = new ChanceCubeParticipationStorage();
 
     @Override
-    public NBTBase writeNBT(Capability<IChanceCubeParticipationCapability> capability, IChanceCubeParticipationCapability instance, EnumFacing side)
+    public INBT writeNBT(Capability<IChanceCubeParticipationCapability> capability, IChanceCubeParticipationCapability instance, Direction side)
     {
-        final NBTTagCompound compound = new NBTTagCompound();
-        compound.setBoolean("isParticipating", instance.isParticipating());
+        final CompoundNBT compound = new CompoundNBT();
+        compound.putBoolean("isParticipating", instance.isParticipating());
         return compound;
     }
 
     @Override
-    public void readNBT(Capability<IChanceCubeParticipationCapability> capability, IChanceCubeParticipationCapability instance, EnumFacing side, NBTBase nbt)
+    public void readNBT(Capability<IChanceCubeParticipationCapability> capability, IChanceCubeParticipationCapability instance, Direction side, INBT nbt)
     {
-        final NBTTagCompound compound = (NBTTagCompound) nbt;
+        final CompoundNBT compound = (CompoundNBT) nbt;
         instance.setParticipation(compound.getBoolean("isParticipating"));
     }
 }

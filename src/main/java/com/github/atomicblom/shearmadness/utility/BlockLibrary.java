@@ -2,9 +2,8 @@ package com.github.atomicblom.shearmadness.utility;
 
 import com.github.atomicblom.shearmadness.block.InvisibleBlock;
 import com.github.atomicblom.shearmadness.variations.CommonReference;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.registries.ObjectHolder;
 
-@SuppressWarnings("ALL")
 @ObjectHolder(CommonReference.MOD_ID)
 public final class BlockLibrary {
 

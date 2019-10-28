@@ -1,7 +1,7 @@
 package com.github.atomicblom.shearmadness.api;
 
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
 
 import java.util.Iterator;
@@ -17,11 +17,11 @@ public class BehaviourRegistry implements IBehaviourRegistry {
     private final List<ShearMadnessBehaviour> behaviours = new LinkedList<>();
 
     @Override
-    public void registerBehaviour(Function<ItemStack, Boolean> handlesVariant, Function<EntitySheep, BehaviourBase> behaviourFactory) {
+    public void registerBehaviour(Function<ItemStack, Boolean> handlesVariant, Function<SheepEntity, BehaviourBase> behaviourFactory) {
         behaviours.add(new ShearMadnessBehaviour(handlesVariant, behaviourFactory));
     }
 
-    public Iterable<BehaviourBase> getApplicableBehaviours(ItemStack itemStack, EntitySheep entity) {
+    public Iterable<BehaviourBase> getApplicableBehaviours(ItemStack itemStack, SheepEntity entity) {
         final Iterator<ShearMadnessBehaviour> baseIterator = behaviours.iterator();
 
         return () -> new BehaviourIterator(itemStack, baseIterator, entity);
@@ -29,12 +29,12 @@ public class BehaviourRegistry implements IBehaviourRegistry {
 
     private static class BehaviourIterator implements Iterator<BehaviourBase> {
         private final Iterator<ShearMadnessBehaviour> baseIterator;
-        private final EntitySheep entity;
+        private final SheepEntity entity;
         private ShearMadnessBehaviour nextBehaviour = null;
 
         private final ItemStack itemStack;
 
-        private BehaviourIterator(ItemStack itemStack, Iterator<ShearMadnessBehaviour> baseIterator, EntitySheep entity) {
+        private BehaviourIterator(ItemStack itemStack, Iterator<ShearMadnessBehaviour> baseIterator, SheepEntity entity) {
             this.baseIterator = baseIterator;
             this.entity = entity;
             this.itemStack = itemStack;

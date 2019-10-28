@@ -1,21 +1,21 @@
 package com.github.atomicblom.shearmadness.api.events;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
-import java.util.List;
+import java.util.Collection;
 
 public class ShearMadnessSheepKilledEvent extends Event {
-    private final List<EntityItem> drops;
+    private final Collection<ItemEntity> drops;
     private final DamageSource source;
     private final int lootingLevel;
     private final ItemStack chiselItemStack;
     private final Entity entity;
 
-    public ShearMadnessSheepKilledEvent(List<EntityItem> drops, DamageSource source, int lootingLevel, ItemStack chiselItemStack, Entity entity) {
+    public ShearMadnessSheepKilledEvent(Collection<ItemEntity> drops, DamageSource source, int lootingLevel, ItemStack chiselItemStack, Entity entity) {
 
         this.drops = drops;
         this.source = source;
@@ -24,7 +24,7 @@ public class ShearMadnessSheepKilledEvent extends Event {
         this.entity = entity;
     }
 
-    public List<EntityItem> getDrops() {
+    public Collection<ItemEntity> getDrops() {
         return drops;
     }
 

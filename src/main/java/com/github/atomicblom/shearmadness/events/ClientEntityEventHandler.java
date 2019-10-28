@@ -1,26 +1,46 @@
 package com.github.atomicblom.shearmadness.events;
 
+import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMessage;
+import com.github.atomicblom.shearmadness.variations.CommonReference;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.PacketDistributor;
 
-import static com.github.atomicblom.shearmadness.ShearMadnessMod.CHANNEL;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
-@Mod.EventBusSubscriber(Side.CLIENT)
-public class ClientEntityEventHandler
-{
+@Mod.EventBusSubscriber(modid = CommonReference.MOD_ID, value = Dist.CLIENT)
+public class ClientEntityEventHandler {
 
-	@SubscribeEvent
-	public static void onEntityJoinWorldEvent(EntityJoinWorldEvent event)
-	{
-		final Entity entity = event.getEntity();
-		if (entity instanceof EntitySheep)
-		{
-			CHANNEL.sendToServer(new CheckSheepChiseledRequestMessage(entity));
-		}
-	}
+    private static ConcurrentLinkedDeque<CheckSheepChiseledRequestMessage> pendingChecks = new ConcurrentLinkedDeque<>();
+
+    @SubscribeEvent
+    public static void onPlayerJoinedWorldEvent(ClientPlayerNetworkEvent.LoggedInEvent event) {
+        while (!pendingChecks.isEmpty()) {
+            ShearMadnessMod.CHANNEL.send(PacketDistributor.SERVER.noArg(), pendingChecks.removeFirst());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityJoinWorldEvent(EntityJoinWorldEvent event) {
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            final Entity entity = event.getEntity();
+            if (entity instanceof SheepEntity) {
+                CheckSheepChiseledRequestMessage message = new CheckSheepChiseledRequestMessage((SheepEntity) entity);
+                if (Minecraft.getInstance().player == null) {
+                    pendingChecks.add(message);
+                } else {
+                    ShearMadnessMod.CHANNEL.send(PacketDistributor.SERVER.noArg(), message);
+                }
+            }
+        });
+    }
 }

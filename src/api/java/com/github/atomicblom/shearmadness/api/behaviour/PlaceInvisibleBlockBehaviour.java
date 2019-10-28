@@ -1,19 +1,20 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import java.util.Objects;
 import java.util.function.Supplier;
 
 @SuppressWarnings("ClassHasNoToStringMethod")
-public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBlockBehaviour> {
+public class PlaceInvisibleBlockBehaviour extends BehaviourBase {
 
     private final World world;
-    private final IBlockState blockState;
+    private final BlockState blockState;
 
-    public PlaceInvisibleBlockBehaviour(EntitySheep sheep, Supplier<Boolean> configuration, IBlockState blockState) {
+    public PlaceInvisibleBlockBehaviour(SheepEntity sheep, Supplier<Boolean> configuration, BlockState blockState) {
         super(sheep, configuration);
         world = sheep.getEntityWorld();
         this.blockState = blockState;
@@ -50,20 +51,23 @@ public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBl
 
     private void resetBlock(BlockPos previousLocation) {
         BlockPos pos = previousLocation;
-        final EntitySheep entity = getEntity();
+        final SheepEntity entity = getEntity();
         if (!entity.isChild())
         {
             pos = pos.up();
         }
-        final IBlockState blockAtSheep = world.getBlockState(pos);
+        final BlockState blockAtSheep = world.getBlockState(pos);
         if (blockState.equals(blockAtSheep))
         {
-            world.setBlockToAir(pos);
+            world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
     }
 
     @Override
-    public boolean isEquivalentTo(PlaceInvisibleBlockBehaviour other) {
-        return super.isEquivalentTo(other) && Objects.equals(blockState, other.blockState);
+    public boolean isEquivalentTo(BehaviourBase other) {
+
+        if (!super.isEquivalentTo(other)) return false;
+        PlaceInvisibleBlockBehaviour otherBehaviour = (PlaceInvisibleBlockBehaviour)other;
+        return Objects.equals(blockState, otherBehaviour.blockState);
     }
 }

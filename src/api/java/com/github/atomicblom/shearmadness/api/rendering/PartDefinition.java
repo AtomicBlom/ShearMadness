@@ -1,16 +1,14 @@
 package com.github.atomicblom.shearmadness.api.rendering;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import com.github.atomicblom.shearmadness.api.rendering.vector.*;
 
 /**
  * Defines a set of transforms for a part of the quadruped.
  * texture transformation is not currently implemented.
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class PartDefinition
 {
     private Vector3f rotationPoint;

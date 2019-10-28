@@ -9,4 +9,11 @@ public final class CommonReference {
     public static final String VERSION = "@MOD_VERSION@";
 
     private CommonReference() {}
+
+    public static class IMCMethods {
+        public static final String REGISTER_BEHAVIOURS = "register_behaviours";
+        public static final String REGISTER_VARIATIONS = "register_variations";
+
+        private IMCMethods() {}
+    }
 }

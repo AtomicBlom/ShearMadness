@@ -2,16 +2,16 @@ package com.github.atomicblom.shearmadness.api;
 
 import com.github.atomicblom.shearmadness.api.modelmaker.DefaultModelMaker;
 import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
-import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class VariationRegistry implements IVariationRegistry
 {
     public static final VariationRegistry INSTANCE = new VariationRegistry();

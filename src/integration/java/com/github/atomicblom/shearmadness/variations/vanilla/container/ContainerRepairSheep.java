@@ -1,42 +1,38 @@
 package com.github.atomicblom.shearmadness.variations.vanilla.container;
 
 import com.github.atomicblom.shearmadness.api.Capability;
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.ContainerRepair;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.RepairContainer;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.world.World;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
-public class ContainerRepairSheep extends ContainerRepair
+public class ContainerRepairSheep extends RepairContainer
 {
-    private final EntityLiving entity;
+    private final LivingEntity entity;
 
-    public ContainerRepairSheep(InventoryPlayer playerInventory, World worldIn, EntityPlayer player, EntityLiving entity)
+    public ContainerRepairSheep(int windowId, PlayerInventory playerInventory, LivingEntity entity)
     {
-        super(playerInventory, worldIn, entity.getPosition(), player);
+        super(windowId, playerInventory);
         this.entity = entity;
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer playerIn) {
-        if (!entity.hasCapability(Capability.CHISELED_SHEEP, null)) {
-            return false;
-        }
-        final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
-        assert capability != null;
-        final Item item = capability.getChiselItemStack().getItem();
-        if (!(item instanceof ItemBlock) || !Objects.equals(((ItemBlock) item).getBlock(), Blocks.ANVIL)) {
-            return false;
-        }
+    public boolean canInteractWith(PlayerEntity playerIn) {
+        return entity.getCapability(Capability.CHISELED_SHEEP).map(capability -> {
+            final Item item = capability.getChiselItemStack().getItem();
+            if (!(item instanceof BlockItem) || !Objects.equals(((BlockItem) item).getBlock(), Blocks.ANVIL)) {
+                return false;
+            }
 
-        return playerIn.getDistanceSq(entity.getPosition()) <= 64.0D;
+            return playerIn.getDistanceSq(entity) <= 64.0D;
+        }).orElse(false);
     }
 }

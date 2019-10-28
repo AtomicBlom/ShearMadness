@@ -1,17 +1,17 @@
 package com.github.atomicblom.shearmadness.api.rendering;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix3f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix4f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Vector3f;
 import java.util.Optional;
 
 /**
  * A set of transformations for a quadruped's body parts.
  */
 @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "ProtectedField"})
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class QuadrupedTransformDefinition
 {
     public QuadrupedTransformDefinition()
@@ -113,22 +113,22 @@ public class QuadrupedTransformDefinition
         return headPartDefinition;
     }
 
-    public Optional<PartDefinition> getLeg1PartDefinition()
+    public Optional<PartDefinition> getLegFrontRightPartDefinition()
     {
         return leg1PartDefinition;
     }
 
-    public Optional<PartDefinition> getLeg2PartDefinition()
+    public Optional<PartDefinition> getLegFrontLeftPartDefinition()
     {
         return leg2PartDefinition;
     }
 
-    public Optional<PartDefinition> getLeg3PartDefinition()
+    public Optional<PartDefinition> getLegBackRightPartDefinition()
     {
         return leg3PartDefinition;
     }
 
-    public Optional<PartDefinition> getLeg4PartDefinition()
+    public Optional<PartDefinition> getLegBackLeftPartDefinition()
     {
         return leg4PartDefinition;
     }

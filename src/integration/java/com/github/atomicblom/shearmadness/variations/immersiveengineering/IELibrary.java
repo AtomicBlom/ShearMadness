@@ -1,7 +1,7 @@
 package com.github.atomicblom.shearmadness.variations.immersiveengineering;
 
 import net.minecraft.block.Block;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.registries.ObjectHolder;
 
 @ObjectHolder(IEReference.IMMERSIVE_ENGINEERING)
 public class IELibrary

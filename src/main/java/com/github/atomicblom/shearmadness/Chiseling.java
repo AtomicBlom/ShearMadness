@@ -1,14 +1,16 @@
 package com.github.atomicblom.shearmadness;
 
-import com.github.atomicblom.shearmadness.api.Capability;
-import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.network.PacketDistributor;
+import com.github.atomicblom.shearmadness.api.Capability;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 
 import javax.annotation.Nonnull;
 
@@ -19,20 +21,20 @@ public final class Chiseling
 {
     private Chiseling() {}
 
-    public static void chiselSheep(Entity sheep, EntityPlayer entityPlayer, ItemStack activeStack)
+    public static void chiselSheep(Entity sheep, PlayerEntity entityPlayer, ItemStack activeStack, Hand hand)
     {
-        if (sheep.hasCapability(Capability.CHISELED_SHEEP, null))
-        {
-            final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
-            assert capability != null;
+        LazyOptional<IChiseledSheepCapability> possibleCapability = sheep.getCapability(Capability.CHISELED_SHEEP);
+        possibleCapability.ifPresent(capability -> {
             final ItemStack chiselItemStack = capability.getChiselItemStack();
             if (updateCapability(activeStack, capability, entityPlayer.isCreative()))
             {
-                activeStack.damageItem(1, entityPlayer);
+                activeStack.damageItem(1, entityPlayer, player -> {
+                    player.sendBreakAnimation(hand);
+                });
 
                 if (!sheep.getEntityWorld().isRemote)
                 {
-                    CHANNEL.sendToAll(new SheepChiseledMessage(sheep));
+                    CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> sheep), new SheepChiseledMessage(sheep));
 
                     if (!chiselItemStack.isEmpty())
                     {
@@ -40,7 +42,7 @@ public final class Chiseling
                     }
                 }
             }
-        }
+        });
     }
 
     private static boolean updateCapability(ItemStack heldChisel, IChiseledSheepCapability capability, boolean isCreative)
@@ -61,15 +63,15 @@ public final class Chiseling
 
     private static boolean changeChiselBlock(ItemStack heldChisel, IChiseledSheepCapability capability, boolean isCreative)
     {
-        final NBTTagCompound tagCompound = heldChisel.getTagCompound();
+        final CompoundNBT tagCompound = heldChisel.getTag();
         assert tagCompound != null;
-        final NBTTagCompound chiselData = tagCompound.getCompoundTag("chiseldata");
-        final NBTTagCompound chiselTarget = chiselData.getCompoundTag("target");
-        if (!chiselTarget.hasKey("id")) {
+        final CompoundNBT chiselData = tagCompound.getCompound("chiseldata");
+        final CompoundNBT chiselTarget = chiselData.getCompound("target");
+        if (!chiselTarget.contains("id")) {
             return false;
         }
         final ItemStack currentChisel = capability.getChiselItemStack();
-        final ItemStack chiselItemStack = new ItemStack(chiselTarget);
+        final ItemStack chiselItemStack = ItemStack.read(chiselTarget);
 
         if (!checkItemStacksEqual(currentChisel, chiselItemStack))
         {
@@ -82,11 +84,11 @@ public final class Chiseling
                 chiselItemStack.shrink(1);
                 if (!chiselItemStack.isEmpty())
                 {
-                    chiselItemStack.writeToNBT(chiselTarget);
-                    chiselData.setTag("target", chiselTarget);
+                    chiselItemStack.write(chiselTarget);
+                    chiselData.put("target", chiselTarget);
                 } else
                 {
-                    chiselData.removeTag("target");
+                    chiselData.remove("target");
                 }
             }
             return true;
@@ -96,12 +98,12 @@ public final class Chiseling
 
     private static boolean hasChiselBlock(ItemStack heldChisel)
     {
-        final NBTTagCompound tagCompound = heldChisel.getTagCompound();
+        final CompoundNBT tagCompound = heldChisel.getTag();
         if (tagCompound != null)
         {
-            final NBTTagCompound chiseldata = tagCompound.getCompoundTag("chiseldata");
-            final NBTTagCompound chiselTarget = chiseldata.getCompoundTag("target");
-            if (chiselTarget.hasKey("id"))
+            final CompoundNBT chiseldata = tagCompound.getCompound("chiseldata");
+            final CompoundNBT chiselTarget = chiseldata.getCompound("target");
+            if (chiselTarget.contains("id"))
             {
                 return true;
             }
@@ -129,7 +131,7 @@ public final class Chiseling
         {
             return false;
         }
-        if (!newChisel.isItemStackDamageable() && newChisel.getMetadata() != currentChisel.getMetadata())
+        if (!newChisel.isDamageable() && newChisel.getDamage() != currentChisel.getDamage())
         {
             return false;
         }

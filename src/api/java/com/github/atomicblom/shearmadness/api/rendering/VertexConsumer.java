@@ -1,25 +1,23 @@
 package com.github.atomicblom.shearmadness.api.rendering;
 
-import net.minecraft.client.model.PositionTextureVertex;
-import net.minecraft.client.model.TexturedQuad;
+import net.minecraft.client.renderer.model.PositionTextureVertex;
+import net.minecraft.client.renderer.model.TexturedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.*;
+
 import javax.annotation.Nullable;
 
 /**
  * Pipes a BakedQuad into a TexturedQuad
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 class VertexConsumer implements IVertexConsumer
 {
 
@@ -59,7 +57,7 @@ class VertexConsumer implements IVertexConsumer
     }
 
     @Override
-    public void setQuadOrientation(EnumFacing orientation)
+    public void setQuadOrientation(Direction orientation)
     {
 
     }

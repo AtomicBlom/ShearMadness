@@ -1,17 +1,16 @@
 package com.github.atomicblom.shearmadness.api;
 
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
 
 import java.util.function.Function;
 
 class ShearMadnessBehaviour {
     private final Function<ItemStack, Boolean> handlesVariant;
-    private final Function<EntitySheep, BehaviourBase> behaviourFactory;
+    private final Function<SheepEntity, BehaviourBase> behaviourFactory;
 
-    ShearMadnessBehaviour(Function<ItemStack, Boolean> handlesVariant, Function<EntitySheep, BehaviourBase> behaviourFactory)
+    ShearMadnessBehaviour(Function<ItemStack, Boolean> handlesVariant, Function<SheepEntity, BehaviourBase> behaviourFactory)
     {
 
         this.handlesVariant = handlesVariant;
@@ -23,7 +22,7 @@ class ShearMadnessBehaviour {
         return handlesVariant.apply(itemStack);
     }
 
-    BehaviourBase createBehaviourBase(EntitySheep entity)
+    BehaviourBase createBehaviourBase(SheepEntity entity)
     {
         return behaviourFactory.apply(entity);
     }

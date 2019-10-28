@@ -1,57 +1,56 @@
 package com.github.atomicblom.shearmadness.variations.vanilla.container;
 
 import com.github.atomicblom.shearmadness.api.Capability;
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
-import net.minecraft.enchantment.Enchantment;
+import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.ContainerEnchantment;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.EnchantmentContainer;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
-public class ContainerEnchantmentSheep extends ContainerEnchantment
+public class ContainerEnchantmentSheep extends EnchantmentContainer
 {
-    private final EntityLiving entity;
+    private final LivingEntity entity;
     private final Random rand;
-    private final World world;
 
-    public ContainerEnchantmentSheep(InventoryPlayer playerInventory, World worldIn, EntityLiving entity)
-    {
-        super(playerInventory, worldIn, entity.getPosition());
-        this.entity = entity;
+    public ContainerEnchantmentSheep(int windowId, PlayerInventory playerInventory, LivingEntity sheep) {
+        super(windowId, playerInventory, IWorldPosCallable.of(sheep.world, sheep.getPosition()));
+
+        this.entity = sheep;
         rand = new Random();
-        world = worldIn;
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer playerIn) {
-        if (!entity.hasCapability(Capability.CHISELED_SHEEP, null)) {
-            return false;
-        }
-        final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
-        assert capability != null;
-        final Item item = capability.getChiselItemStack().getItem();
-        if (!(item instanceof ItemBlock) || ((ItemBlock) item).getBlock() != Blocks.ENCHANTING_TABLE) {
-            return false;
-        }
+    public boolean canInteractWith(PlayerEntity playerIn) {
+        return entity.getCapability(Capability.CHISELED_SHEEP).map(capability -> {
+            final Item item = capability.getChiselItemStack().getItem();
+            if (!(item instanceof BlockItem) || ((BlockItem) item).getBlock() != Blocks.ENCHANTING_TABLE) {
+                return false;
+            }
 
-        return playerIn.getDistanceSq(entity.getPosition()) <= 64.0D;
+            return playerIn.getDistanceSq(entity) <= 64.0D;
+        }).orElse(false);
+    }
+
+    private float getPower(World world, BlockPos pos) {
+        return world.getBlockState(pos).getEnchantPowerBonus(world, pos);
     }
 
     /**
@@ -64,12 +63,11 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
         {
             final ItemStack itemstack = inventoryIn.getStackInSlot(0);
 
-            if (itemstack.isItemEnchantable())
+            if (!itemstack.isEmpty() && itemstack.isEnchantable())
             {
-                if (!world.isRemote)
+                field_217006_g.consume((world, position) ->
                 {
                     float power = 0;
-                    final BlockPos position = entity.getPosition();
 
                     for (int j = -1; j <= 1; ++j)
                     {
@@ -77,14 +75,14 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
                         {
                             if ((j != 0 || k != 0) && world.isAirBlock(position.add(k, 0, j)) && world.isAirBlock(position.add(k, 1, j)))
                             {
-                                power += ForgeHooks.getEnchantPower(world, position.add(k * 2, 0, j * 2));
-                                power += ForgeHooks.getEnchantPower(world, position.add(k * 2, 1, j * 2));
+                                power += this.getPower(world, position.add(k * 2, 0, j * 2));
+                                power += this.getPower(world, position.add(k * 2, 1, j * 2));
                                 if (k != 0 && j != 0)
                                 {
-                                    power += ForgeHooks.getEnchantPower(world, position.add(k * 2, 0, j));
-                                    power += ForgeHooks.getEnchantPower(world, position.add(k * 2, 1, j));
-                                    power += ForgeHooks.getEnchantPower(world, position.add(k, 0, j * 2));
-                                    power += ForgeHooks.getEnchantPower(world, position.add(k, 1, j * 2));
+                                    power += this.getPower(world, position.add(k * 2, 0, j));
+                                    power += this.getPower(world, position.add(k * 2, 1, j));
+                                    power += this.getPower(world, position.add(k, 0, j * 2));
+                                    power += this.getPower(world, position.add(k, 1, j * 2));
                                 }
                             }
                         }
@@ -96,27 +94,32 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
                         final double distance = entity.getDistanceSq(nearbyEntity);
 
                         //5^2
-                        final IChiseledSheepCapability capability = nearbyEntity.getCapability(Capability.CHISELED_SHEEP, null);
-                        if (distance < 25 && capability != null) {
-                            final ItemStack chiselItemStack = capability.getChiselItemStack();
-                            if (chiselItemStack.getItem() instanceof ItemBlock) {
-                                power += ((ItemBlock) chiselItemStack.getItem()).getBlock().getEnchantPowerBonus(world, nearbyEntity.getPosition());
-                            }
+                        if (distance < 25) {
+                            power += nearbyEntity.getCapability(Capability.CHISELED_SHEEP).map(capability -> {
+                                final ItemStack chiselItemStack = capability.getChiselItemStack();
+                                if (chiselItemStack.getItem() instanceof BlockItem) {
+                                    BlockItem blockItem = (BlockItem)chiselItemStack.getItem();
+                                    return blockItem.getBlock().getDefaultState().getEnchantPowerBonus(world, nearbyEntity.getPosition());
+                                }
+                                return 0f;
+                            }).orElse(0f);
+
                         }
                     }
 
-                    rand.setSeed(xpSeed);
+                    rand.setSeed(xpSeed.get());
 
                     for (int i1 = 0; i1 < 3; ++i1)
                     {
                         enchantLevels[i1] = EnchantmentHelper.calcItemStackEnchantability(rand, i1, (int)power, itemstack);
                         enchantClue[i1] = -1;
                         worldClue[i1] = -1;
-
                         if (enchantLevels[i1] < i1 + 1)
                         {
                             enchantLevels[i1] = 0;
                         }
+
+                        enchantLevels[i1] = ForgeEventFactory.onEnchantmentLevelSet(world, position, i1, (int)power, itemstack, enchantLevels[i1]);
                     }
 
                     for (int j1 = 0; j1 < 3; ++j1)
@@ -124,18 +127,17 @@ public class ContainerEnchantmentSheep extends ContainerEnchantment
                         if (enchantLevels[j1] > 0)
                         {
                             final List<EnchantmentData> list = getEnchantmentList(itemstack, j1, enchantLevels[j1]);
-
-                            if (!list.isEmpty())
+                            if (list != null && !list.isEmpty())
                             {
                                 final EnchantmentData enchantmentdata = list.get(rand.nextInt(list.size()));
-                                enchantClue[j1] = Enchantment.getEnchantmentID(enchantmentdata.enchantment);
+                                enchantClue[j1] = Registry.ENCHANTMENT.getId(enchantmentdata.enchantment);
                                 worldClue[j1] = enchantmentdata.enchantmentLevel;
                             }
                         }
                     }
 
                     detectAndSendChanges();
-                }
+                });
             }
             else
             {

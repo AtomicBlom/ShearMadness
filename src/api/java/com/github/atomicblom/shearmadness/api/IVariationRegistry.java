@@ -1,18 +1,17 @@
 package com.github.atomicblom.shearmadness.api;
 
-import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
 import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
-import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
-import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
+
 import java.util.function.Function;
 
 /**
  * A registry for registering different mechanisms for rendering different blocks on sheep.
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public interface IVariationRegistry
 {
     /**

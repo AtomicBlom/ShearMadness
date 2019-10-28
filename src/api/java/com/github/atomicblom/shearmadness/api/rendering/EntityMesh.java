@@ -1,20 +1,20 @@
 package com.github.atomicblom.shearmadness.api.rendering;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.PositionTextureVertex;
-import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.ModelBox;
+import net.minecraft.client.renderer.model.PositionTextureVertex;
+import net.minecraft.client.renderer.model.TexturedQuad;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix3f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix4f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Vector3f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Vector4f;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
  * Add BakedQuads using the addBakedQuads method.
  * Note that TexturedQuads only have Position and UV information, other data will be discarded.
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class EntityMesh extends ModelBox
 {
@@ -35,7 +35,7 @@ public class EntityMesh extends ModelBox
     private TexturedQuad[] quadList = null;
     private boolean errored;
 
-    public EntityMesh(ModelRenderer renderer)
+    public EntityMesh(RendererModel renderer)
     {
         super(renderer, 0, 0, 0, 0, 0, 0, 0, 0, 0, false);
     }
@@ -65,7 +65,7 @@ public class EntityMesh extends ModelBox
 
     @SuppressWarnings("ObjectAllocationInLoop")
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void render(BufferBuilder renderer, float scale)
     {
         if (quadList == null)
@@ -75,9 +75,9 @@ public class EntityMesh extends ModelBox
             for (final FutureQuad<TexturedQuad> texturedQuads : allTexturedQuads) {
                 for (final TexturedQuad texturedQuad : texturedQuads.quads) {
                     final PositionTextureVertex[] newPositions = new PositionTextureVertex[4];
-                    for (int i = 0; i < texturedQuad.vertexPositions.length; i++)
+                    for (int i = 0; i < texturedQuad.field_78239_a.length; i++)
                     {
-                        final PositionTextureVertex vertexPosition = texturedQuad.vertexPositions[i];
+                        final PositionTextureVertex vertexPosition = texturedQuad.field_78239_a[i];
                         @SuppressWarnings("NumericCastThatLosesPrecision")
                         final Vector4f position = new Vector4f((float) vertexPosition.vector3D.x,
                                 (float) vertexPosition.vector3D.y,

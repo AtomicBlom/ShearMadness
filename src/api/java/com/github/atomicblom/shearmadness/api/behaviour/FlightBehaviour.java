@@ -1,8 +1,11 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.gen.Heightmap;
+
 import java.util.Random;
 
 @SuppressWarnings("ClassHasNoToStringMethod")
@@ -15,9 +18,9 @@ public class FlightBehaviour extends BehaviourBase {
     private int framesTillNextTurn;
     private double destinationMotionY;
     private double currentMotionY;
-    private BlockPos sheepLocation = BlockPos.ORIGIN;
+    private BlockPos sheepLocation = BlockPos.ZERO;
 
-    public FlightBehaviour(EntitySheep sheep, float floatHeight, boolean moveForward) {
+    public FlightBehaviour(SheepEntity sheep, float floatHeight, boolean moveForward) {
         super(sheep);
         this.floatHeight = floatHeight;
         this.moveForward = moveForward;
@@ -44,8 +47,8 @@ public class FlightBehaviour extends BehaviourBase {
 
     @Override
     public void updateTask() {
-        final EntitySheep entity = getEntity();
-        final BlockPos height = entity.world.getHeight(sheepLocation);
+        final SheepEntity entity = getEntity();
+        final BlockPos height = entity.world.getHeight(Heightmap.Type.MOTION_BLOCKING,  sheepLocation);
         final double actualHeight = entity.posY - height.getY();
 
 
@@ -53,21 +56,25 @@ public class FlightBehaviour extends BehaviourBase {
             currentMotionY *= 1.05;
         }
 
+        Vec3d motion = entity.getMotion();
+        double motionX = motion.x, motionY = motion.y, motionZ = motion.z;
+
         if (actualHeight < floatHeight) {
-            entity.motionY = currentMotionY;
+            motionY = currentMotionY;
         }
-        if (entity.motionY > 0.3) {
-            entity.motionY = 0.3;
+        if (motionY > 0.3) {
+            motionY = 0.3;
         }
-        if (entity.motionY < 0) {
-            entity.motionY = 0;
+        if (motionY < 0) {
+            motionY = 0;
         }
+        entity.setMotion(motionX, motionY, motionZ);
 
         entity.setJumping(true);
         entity.fallDistance = 0;
 
         if (moveForward) {
-            entity.travel(0, 1,0.6f);
+            entity.travel(new Vec3d(0, 1,0.6f));
             entity.rotationYaw = updateRotation(entity.rotationYaw, destinationYaw, 2);
             if (MathHelper.wrapDegrees(entity.rotationYaw - destinationYaw) < 2) {
                 if (framesTillNextTurn <= 0) {

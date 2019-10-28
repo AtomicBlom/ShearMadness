@@ -1,102 +1,62 @@
-// define the properties file
-ext.configFile = file "build.properties"
-configFile.withReader {
-    // read config.  it shall from now on be referenced as simply config or as project.config
-    def prop = new Properties()
-    prop.load(it)
-    project.ext.config = new ConfigSlurper().parse prop
-}
-
-// For those who want the bleeding edge
 buildscript {
     repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+        mavenCentral()
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
+version = this.properties["modVersion"]
+group = this.properties["modGroup"] // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = this.properties["modId"]
 
-///////////////////////////////////////////////////
-// IDE Settings
-///////////////////////////////////////////////////
-//idea {
-//    project {
-//        languageLevel = '1.8'
-//    }
-//}
-
-///////////////////////////////////////////////////
-// ForgeGradle
-///////////////////////////////////////////////////
-version = (hasProperty("CIRevision") ? CIRevision : config.mod_version)
-group = config.group_name
-archivesBaseName = "${config.mod_id}-${config.minecraft_version}"
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    version = config.minecraft_version + "-" + config.forge_version // grab latest forge
-    runDir = "run"
+    // The mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   Snapshot are built nightly.
+    // stable_#            Stables are built at the discretion of the MCP team.
+    // Use non-default mappings at your own risk. they may not always work.
+    // Simply re-run your setup task after changing the mappings to update your workspace.
+    mappings channel: this.properties["mcpMappingsChannel"], version: this.properties["mcpMappingsVersion"]
+    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
-    mappings = config.mcp_mappings
-    makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-    replace '@MOD_VERSION@', version
-    replace '@MOD_ID@', config.mod_id
-    replace '@CI_BUILD@', hasProperty("CIRevision") ? 'true' : 'false'
-}
+    // Default run configurations.
+    // These can be tweaked, removed, or duplicated as needed.
+    runs {
+        client {
+            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            workingDirectory project.file('run').canonicalPath
+            source sourceSets.main
+        }
 
-repositories {
-    maven {
-        name = "tterrag"
-        url = "http://maven.tterrag.com/"
-    }
-}
+        server {
+            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            workingDirectory project.file('run').canonicalPath
+            source sourceSets.main
+        }
 
-dependencies {
-    compile 'team.chisel:Chisel:MC' + config.chisel_version
-    compile 'team.chisel.ctm:CTM:MC' + config.ctm_version
-}
-
-processResources
-{
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include '**/*.info'
-        include '**/*.properties'
-
-        // replace version and mcversion
-        expand ([
-                'version':project.version,
-                'mcversion':project.minecraft.version,
-                'forge_version': config.forge_version,
-                'mod_version': config.mod_version,
-                'minecraft_version': config.minecraft_version
-        ])
-    }
-
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
-
-jar {
-    manifest {
-        attributes 'FMLAT': 'ShearMadness_at.cfg'
+        data {
+            workingDirectory project.file('run').canonicalPath
+            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', 'eightyone', '--all', '--output', file('src/generated/resources/')
+            source sourceSets.main
+        }
     }
 }
 
@@ -106,24 +66,80 @@ sourceSets {
             srcDirs = [ 'src/main/java', 'src/api/java', 'src/integration/java' ]
         }
     }
-    api {
-        java {
-            srcDirs = [ 'src/api/java' ]
-        }
-    }
 }
-
-task apiJar(type: Jar) {
-    from sourceSets.api.output
-    classifier = 'api'
-}
-tasks.build.dependsOn apiJar
 
 dependencies {
     repositories {
         maven {
-            url 'http://maven.theprogrammingturkey.com/'
+            name = "CurseForge"
+            url = "https://minecraft.curseforge.com/api/maven/"
         }
     }
-    deobfCompile(group: 'com.theprogrammingturkey.chancecubes', name: 'ChanceCubes', version: config.chancecubes_version)
+
+
+
+    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
+    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
+    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
+    minecraft 'net.minecraftforge:forge:' + this.properties["mcVersion"] + '-' + this.properties["forgeVersion"]
+
+    // You may put jars on which you depend on in ./libs or you may define them like so..
+    // compile "some.group:artifact:version:classifier"
+    // compile "some.group:artifact:version"
+
+    // Real examples
+    // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
+    // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
+
+    // The 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
+    // provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+    // These dependencies get remapped to your current MCP mappings
+    // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+    compile 'chance-cubes:ChanceCubes:1.14.4:4.0.0.298'
+
+    // For more info...
+    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
 }
+
+// Example for how to get properties into the manifest for reading by the runtime..
+jar {
+    manifest {
+        attributes([
+            "FMLAT": "accesstransformer.cfg",
+            "Specification-Title": this.properties["modId"],
+            "Specification-Vendor": this.properties["modCreator"],
+            "Specification-Version": "1", // We are version 1 of ourselves
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" : this.properties["modCreator"],
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+// Example configuration to allow publishing using the maven-publish task
+// we define a custom artifact that is sourced from the reobfJar output task
+// and then declare that to be published
+// Note you'll need to add a repository here
+def reobfFile = file("$buildDir/reobfJar/output.jar")
+def reobfArtifact = artifacts.add('default', reobfFile) {
+    type 'jar'
+    builtBy 'reobfJar'
+}
+
+//publishing {
+//    publications {
+//        mavenJava(MavenPublication) {
+//            artifact reobfArtifact
+//        }
+//    }
+//    repositories {
+//        maven {
+//            url "file:///${project.projectDir}/mcmodsrepo"
+//        }
+//    }
+//}

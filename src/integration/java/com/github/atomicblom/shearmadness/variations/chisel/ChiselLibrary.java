@@ -1,8 +1,7 @@
 package com.github.atomicblom.shearmadness.variations.chisel;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.registries.ObjectHolder;
 
 @SuppressWarnings("ALL")
 @ObjectHolder("chisel")

@@ -1,8 +1,8 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -10,11 +10,11 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 @SuppressWarnings("ClassHasNoToStringMethod")
-public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
+public class DamageBehaviour extends BehaviourBase {
     private final DamageSource damageSource;
     private AxisAlignedBB searchBox = null;
 
-    public DamageBehaviour(EntitySheep sheep, Supplier<Boolean> configuration, DamageSource damageSource) {
+    public DamageBehaviour(SheepEntity sheep, Supplier<Boolean> configuration, DamageSource damageSource) {
         super(sheep, configuration);
         this.damageSource = damageSource;
     }
@@ -32,14 +32,14 @@ public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
 
     @Override
     public void updateTask() {
-        final EntitySheep entity = getEntity();
+        final SheepEntity entity = getEntity();
         for (final Entity nearbyEntity : entity.getEntityWorld().getEntitiesWithinAABBExcludingEntity(entity, searchBox))
         {
             final double distance = entity.getDistanceSq(nearbyEntity);
 
             if (distance < 1.2) {
-                if (nearbyEntity instanceof EntityAnimal) {
-                    final EntityAnimal animal = (EntityAnimal) nearbyEntity;
+                if (nearbyEntity instanceof AnimalEntity) {
+                    final AnimalEntity animal = (AnimalEntity) nearbyEntity;
                     int wasInLove = animal.inLove;
                     if (!nearbyEntity.attackEntityFrom(damageSource, 1.0f)) {
                         animal.inLove = wasInLove;
@@ -52,8 +52,10 @@ public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
     }
 
     @Override
-    public boolean isEquivalentTo(DamageBehaviour other) {
-        return super.isEquivalentTo(other) && Objects.equals(damageSource, other.damageSource);
+    public boolean isEquivalentTo(BehaviourBase other) {
+        if (!super.isEquivalentTo(other)) return false;
+        DamageBehaviour otherBehaviour = (DamageBehaviour)other;
+        return Objects.equals(damageSource, otherBehaviour.damageSource);
     }
 
     public DamageSource getDamageSource() {

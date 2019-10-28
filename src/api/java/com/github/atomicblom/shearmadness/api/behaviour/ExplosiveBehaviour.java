@@ -1,17 +1,19 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Explosion;
+
 import java.util.function.Supplier;
 
 @SuppressWarnings("ClassHasNoToStringMethod")
-public class ExplosiveBehaviour extends BehaviourBase<ExplosiveBehaviour> {
+public class ExplosiveBehaviour extends BehaviourBase {
 
     private Long primedTime = null;
     private BlockPos aboveCurrentPosition = null;
 
-    public ExplosiveBehaviour(EntitySheep sheep, Supplier<Boolean> configuration) {
+    public ExplosiveBehaviour(SheepEntity sheep, Supplier<Boolean> configuration) {
         super(sheep, configuration);
     }
 
@@ -33,14 +35,14 @@ public class ExplosiveBehaviour extends BehaviourBase<ExplosiveBehaviour> {
             blockPowered |= getEntity().getEntityWorld().isBlockPowered(aboveCurrentPosition);
         }
 
-        final long totalWorldTime = getEntity().getEntityWorld().getTotalWorldTime();
+        final long totalWorldTime = getEntity().getEntityWorld().getGameTime();
         if (blockPowered && primedTime == null) {
             primedTime = totalWorldTime;
             getEntity().playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0f, 1.0f);
         }
 
         if (primedTime != null && totalWorldTime > primedTime + 80) {
-            getEntity().getEntityWorld().createExplosion(null, getEntity().posX, getEntity().posY + getEntity().height / 16.0F, getEntity().posZ, 4.0F, true);
+            getEntity().getEntityWorld().createExplosion(null, getEntity().posX, getEntity().posY + getEntity().getHeight() / 16.0F, getEntity().posZ, 4.0F, Explosion.Mode.BREAK);
         }
     }
 }

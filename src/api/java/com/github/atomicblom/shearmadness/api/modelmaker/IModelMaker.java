@@ -1,29 +1,31 @@
 package com.github.atomicblom.shearmadness.api.modelmaker;
 
-import com.github.atomicblom.shearmadness.api.rendering.EntityMesh;
-import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelQuadruped;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.ModelSheep1;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.entity.model.QuadrupedModel;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.entity.model.SheepWoolModel;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
+import com.github.atomicblom.shearmadness.api.rendering.EntityMesh;
+import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
+import com.github.atomicblom.shearmadness.api.rendering.vector.*;
+
+import java.util.Random;
 
 /**
  * Creates a custom Quadruped model
  */
 @FunctionalInterface
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public interface IModelMaker
 {
 
@@ -33,7 +35,7 @@ public interface IModelMaker
      * @param entity The entity to create a model for
      * @return a model for the given itemStack
      */
-    ModelQuadruped createModel(ItemStack itemStack, EntityLivingBase entity);
+    QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity);
 
     /**
      * Utility method to convert an IBakedModel to a ModelRenderer for use on an entity body part.
@@ -42,9 +44,9 @@ public interface IModelMaker
      * @param model the IBakedModel to transform
      * @return a body part for the entity
      */
-    default ModelRenderer getModelRendererForBlockState(PartDefinition partDefinition, IBlockState blockState, IBakedModel model)
+    default RendererModel getModelRendererForBlockState(PartDefinition partDefinition, BlockState blockState, IBakedModel model)
     {
-        final ModelRenderer renderer = new ModelRenderer(new ModelSheep1(), 0, 0);
+        final RendererModel renderer = new RendererModel(new SheepWoolModel<>(), 0, 0);
         if (partDefinition == null) {
             return renderer;
         }
@@ -62,8 +64,8 @@ public interface IModelMaker
         return renderer;
     }
 
-    default ModelRenderer createModelRenderer(PartDefinition partDefinition) {
-        final ModelRenderer renderer = new ModelRenderer(new ModelSheep1(), 0, 0);
+    default RendererModel createModelRenderer(PartDefinition partDefinition) {
+        final RendererModel renderer = new RendererModel(new SheepWoolModel<>(), 0, 0);
         if (partDefinition == null) {
             return renderer;
         }
@@ -76,33 +78,37 @@ public interface IModelMaker
         return renderer;
     }
 
-    default EntityMesh addBlockModelToEntityMesh(EntityMesh box, PartDefinition partDefinition, IBlockState blockState, IBakedModel model) {
+    @SuppressWarnings("deprecation")
+    default EntityMesh addBlockModelToEntityMesh(EntityMesh box, PartDefinition partDefinition, BlockState blockState, IBakedModel model) {
         final Matrix4f positionTransform = partDefinition.getPositionTransform();
         final Matrix3f textureTransform = partDefinition.getTextureTransform();
+
+        Random random = new Random();
+
         //FIXME: When chisel start reporting their render layers correctly, we can improve this logic.
         //if (blockState == null || blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.SOLID)) {
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID);
-            for (final EnumFacing value : EnumFacing.VALUES)
+            for (final Direction value : Direction.values())
             {
-                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, 0));
+                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, random));
             }
-            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, 0));
+            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, random));
         //}
         //if (blockState != null && blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.CUTOUT)) {
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT);
-            for (final EnumFacing value : EnumFacing.VALUES)
+            for (final Direction value : Direction.values())
             {
-                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, 0));
+                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, random));
             }
-            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, 0));
+            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, random));
         //}
         //if (blockState != null && blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.CUTOUT_MIPPED)) {
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-            for (final EnumFacing value : EnumFacing.VALUES)
+            for (final Direction value : Direction.values())
             {
-                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, 0));
+                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, random));
             }
-            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, 0));
+            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, random));
         //}
         /*if (blockState != null && blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.TRANSLUCENT)) {
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.TRANSLUCENT);
@@ -117,10 +123,10 @@ public interface IModelMaker
         return box;
     }
 
-    default IBakedModel getBakedModelForItem(ItemStack item, EntityLivingBase entity) {
-        final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+    default IBakedModel getBakedModelForItem(ItemStack item, LivingEntity entity) {
+        final ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
         IBakedModel itemModel = renderItem.getItemModelMesher().getItemModel(item);
-        itemModel = itemModel.getOverrides().handleItemState(itemModel, item, Minecraft.getMinecraft().world, entity);
+        itemModel = itemModel.getOverrides().getModelWithOverrides(itemModel, item, Minecraft.getInstance().world, entity);
         return itemModel;
     }
 }

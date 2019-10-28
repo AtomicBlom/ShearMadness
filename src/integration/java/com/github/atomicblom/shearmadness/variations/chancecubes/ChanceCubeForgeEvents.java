@@ -2,80 +2,70 @@ package com.github.atomicblom.shearmadness.variations.chancecubes;
 
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.events.RegisterAdditionalCapabilitiesEvent;
-import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessCommandEvent;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSheepKilledEvent;
-import com.github.atomicblom.shearmadness.api.particles.ICustomParticleFactory;
-import com.github.atomicblom.shearmadness.variations.CommonReference;
 import com.github.atomicblom.shearmadness.variations.chancecubes.capability.ChanceCubeParticipationCapabilityProvider;
 import com.github.atomicblom.shearmadness.variations.chancecubes.capability.ChanceCubeParticipationStorage;
 import com.github.atomicblom.shearmadness.variations.chancecubes.capability.IChanceCubeParticipationCapability;
 import com.github.atomicblom.shearmadness.variations.chancecubes.client.SheepHeadParticle;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import static com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCubesReference.*;
 
 @SuppressWarnings({"MethodMayBeStatic", "UnnecessarilyQualifiedInnerClassAccess"})
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = ChanceCubesReference.CHANCE_CUBES_MODID)
 public class ChanceCubeForgeEvents {
 
     @SubscribeEvent
-    @Optional.Method(modid = ChanceCubesReference.CHANCE_CUBES_MODID)
     public static void onCapabilityAttaching(AttachCapabilitiesEvent<Entity> event)
     {
-        if (event.getObject() instanceof EntityPlayer)
+
+        if (event.getObject() instanceof PlayerEntity)
         {
             event.addCapability(ChanceCubeParticipationCapability, new ChanceCubeParticipationCapabilityProvider());
         }
     }
 
     @SubscribeEvent
-    @Optional.Method(modid = ChanceCubesReference.CHANCE_CUBES_MODID)
     public static void onRegisterAdditionalCapabilities(RegisterAdditionalCapabilitiesEvent event) {
         CapabilityManager.INSTANCE.register(IChanceCubeParticipationCapability.class, ChanceCubeParticipationStorage.instance, com.github.atomicblom.shearmadness.variations.chancecubes.capability.ChanceCubeParticipationCapability::new);
     }
 
     @SubscribeEvent
-    @Optional.Method(modid = ChanceCubesReference.CHANCE_CUBES_MODID)
     public static void onRegisterSounds(RegistryEvent.Register<SoundEvent> event) {
         final IForgeRegistry<SoundEvent> registry = event.getRegistry();
         registry.register(new SoundEvent(ChanceCubeSheepDied).setRegistryName(ChanceCubeSheepDied));
         registry.register(new SoundEvent(ChanceCubeGiantCubeSpawned).setRegistryName(ChanceCubeGiantCubeSpawned));
     }
 
-    @SubscribeEvent
-    @Optional.Method(modid = ChanceCubesReference.CHANCE_CUBES_MODID)
-    public static void onRegisterCommands(RegisterShearMadnessCommandEvent event) {
-        event.addCommand(new ChanceCubeCommand());
-    }
+    //FIXME: Readd command
+//    @SubscribeEvent
+//    public static void onRegisterCommands(RegisterShearMadnessCommandEvent event) {
+//        event.addCommand(new ChanceCubeCommand());
+//    }
 
     @SubscribeEvent
-    @Optional.Method(modid = ChanceCubesReference.CHANCE_CUBES_MODID)
     public static void onWorldTick(TickEvent.WorldTickEvent event) {
-        DelayedTasks.processDelayedTasks(event.world.getTotalWorldTime());
+        DelayedTasks.processDelayedTasks(event.world.getGameTime());
     }
 
     @SubscribeEvent
-    @Optional.Method(modid = ChanceCubesReference.CHANCE_CUBES_MODID)
-    public static void onRegisterCustomParticles(RegistryEvent.Register<ICustomParticleFactory> event) {
-        final IForgeRegistry<ICustomParticleFactory> registry = event.getRegistry();
-        registry.register(new SheepHeadParticle.Factory()
-                .setRegistryName(new ResourceLocation(CommonReference.MOD_ID, "sheep_head"))
-        );
+    public static void registerParticles(RegistryEvent.Register<ParticleType<?>> event) {
+        Minecraft.getInstance().particles.registerFactory(new BasicParticleType(true), new SheepHeadParticle.Factory());
     }
 
     @SubscribeEvent
-    @Optional.Method(modid = ChanceCubesReference.CHANCE_CUBES_MODID)
     public static void onSheepKilled(ShearMadnessSheepKilledEvent event) {
         if (ItemStackHelper.isStackForBlock(event.getChiselItemStack(),
                 ChanceCubesLibrary.chance_cube,

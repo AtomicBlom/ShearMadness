@@ -2,55 +2,48 @@ package com.github.atomicblom.shearmadness.variations.vanilla;
 
 import com.github.atomicblom.shearmadness.api.IVariationRegistry;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
-import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessVariationEvent;
+
+import com.github.atomicblom.shearmadness.api.events.IRegisterShearMadnessVariations;
 import com.github.atomicblom.shearmadness.api.transformation.RailTransformations;
 import com.github.atomicblom.shearmadness.api.transformation.StairTransformations;
+import com.github.atomicblom.shearmadness.variations.CommonReference;
 import com.github.atomicblom.shearmadness.variations.vanilla.visuals.CraftingTableModelMaker;
-import net.minecraft.block.BlockStairs;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.StairsBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 
 import java.util.function.Function;
 
 @SuppressWarnings({"MethodMayBeStatic", "AnonymousInnerClass"})
-@Mod.EventBusSubscriber(Side.CLIENT)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CommonReference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class VanillaVariations
 {
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    @Optional.Method(modid = "shearmadness")
-    @SideOnly(Side.CLIENT)
-    public static void onShearMadnessRegisterVariations(RegisterShearMadnessVariationEvent event) {
-        final IVariationRegistry registry = event.getRegistry();
+    @SubscribeEvent
+    public static void onProcessIMC(InterModEnqueueEvent event) {
+        InterModComms.sendTo(CommonReference.MOD_ID, CommonReference.IMCMethods.REGISTER_VARIATIONS, () -> (IRegisterShearMadnessVariations) VanillaVariations::registerVariations);
+    }
 
-        //Java 7 Style Registration
-        //noinspection Convert2Lambda
+    public static void registerVariations(IVariationRegistry registry) {
         registry.registerVariation(
-                new Function<ItemStack, Boolean>() {
-                    @Override
-                    public Boolean apply(ItemStack itemStack)
-                    {
-                        return ItemStackHelper.isStackForBlock(
-                                itemStack,
-                                Blocks.RAIL,
-                                Blocks.ACTIVATOR_RAIL,
-                                Blocks.DETECTOR_RAIL,
-                                Blocks.GOLDEN_RAIL
-                        );
-                    }
-                },
+                itemStack -> ItemStackHelper.isStackForBlock(
+                        itemStack,
+                        Blocks.RAIL,
+                        Blocks.ACTIVATOR_RAIL,
+                        Blocks.DETECTOR_RAIL,
+                        Blocks.POWERED_RAIL
+                ),
                 new RailTransformations()
         );
 
         registry.registerVariation(
                 itemStack -> ItemStackHelper.isStackForBlockSubclassOf(
                         itemStack,
-                        BlockStairs.class
+                        StairsBlock.class
                 ),
                 new StairTransformations()
         );

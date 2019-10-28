@@ -1,7 +1,7 @@
 package com.github.atomicblom.shearmadness.capability;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public interface IWriteExtraData {
-    void setExtraData(NBTTagCompound extraData);
+    void setExtraData(CompoundNBT extraData);
 }

@@ -1,12 +1,11 @@
 package com.github.atomicblom.shearmadness.variations.chancecubes.capability;
 
-import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapability;
-import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapabilityStorage;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
@@ -15,7 +14,7 @@ import static com.github.atomicblom.shearmadness.variations.chancecubes.ChanceCu
 /**
  * Created by codew on 1/03/2017.
  */
-public class ChanceCubeParticipationCapabilityProvider implements ICapabilityProvider, INBTSerializable<NBTBase> {
+public class ChanceCubeParticipationCapabilityProvider implements ICapabilityProvider, INBTSerializable<INBT> {
 
     private final ChanceCubeParticipationCapability capability;
 
@@ -24,29 +23,23 @@ public class ChanceCubeParticipationCapabilityProvider implements ICapabilityPro
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability == CHANCE_CUBE_PARTICIPATION;
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing)
     {
         if (capability == CHANCE_CUBE_PARTICIPATION)
         {
-            return CHANCE_CUBE_PARTICIPATION.cast(this.capability);
+            return LazyOptional.of(() -> this.capability).cast();
         }
-        //noinspection ReturnOfNull
-        return null;
+        return LazyOptional.empty();
     }
 
     @Override
-    public NBTBase serializeNBT()
+    public INBT serializeNBT()
     {
         return ChanceCubeParticipationStorage.instance.writeNBT(CHANCE_CUBE_PARTICIPATION, capability, null);
     }
 
     @Override
-    public void deserializeNBT(NBTBase nbt)
+    public void deserializeNBT(INBT nbt)
     {
         ChanceCubeParticipationStorage.instance.readNBT(CHANCE_CUBE_PARTICIPATION, capability, null, nbt);
     }

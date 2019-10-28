@@ -1,68 +1,39 @@
 package com.github.atomicblom.shearmadness.variations.vanilla.interactions;
 
+import com.github.atomicblom.shearmadness.variations.vanilla.container.ContainerEnchantmentSheep;
 import com.github.atomicblom.shearmadness.variations.vanilla.container.ContainerWorkbenchSheep;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.Container;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.IInteractionObject;
-import net.minecraft.world.World;
+import net.minecraft.util.text.TranslationTextComponent;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class WorkbenchInteraction implements IInteractionObject
+public class WorkbenchInteraction implements INamedContainerProvider
 {
-    private final World world;
-    private final EntityLiving entity;
+    private final SheepEntity sheep;
 
-    public WorkbenchInteraction(World world, EntityLiving entity)
-    {
-        this.world = world;
-        this.entity = entity;
-    }
+    public WorkbenchInteraction(SheepEntity sheep) {
 
-    /**
-     * Get the name of this object. For players this returns their username
-     */
-    @Override
-    public String getName()
-    {
-        return "workbench_sheep";
-    }
-
-    /**
-     * Returns true if this thing is named
-     */
-    @Override
-    public boolean hasCustomName()
-    {
-        return false;
-    }
-
-    /**
-     * Get the formatted ChatComponent that will be used for the sender's username in chat
-     */
-    @Override
-    public ITextComponent getDisplayName()
-    {
-        return new TextComponentTranslation(Blocks.CRAFTING_TABLE.getUnlocalizedName() + ".name");
+        this.sheep = sheep;
     }
 
     @Override
-    public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
-    {
-        return new ContainerWorkbenchSheep(playerInventory, world, entity);
+    public ITextComponent getDisplayName() {
+        return new TranslationTextComponent(Blocks.CRAFTING_TABLE.getTranslationKey());
     }
 
+    @Nullable
     @Override
-    public String getGuiID()
-    {
-        return "minecraft:crafting_table";
+    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+        return new ContainerWorkbenchSheep(windowId, playerInventory, sheep);
     }
 }

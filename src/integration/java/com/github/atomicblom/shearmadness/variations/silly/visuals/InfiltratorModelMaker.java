@@ -2,30 +2,31 @@ package com.github.atomicblom.shearmadness.variations.silly.visuals;
 
 import com.github.atomicblom.shearmadness.api.modelmaker.DefaultModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.EntityMesh;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix3f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix4f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Vector3f;
 import com.github.atomicblom.shearmadness.variations.CommonReference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelQuadruped;
-import net.minecraft.client.model.PositionTextureVertex;
-import net.minecraft.client.model.TexturedQuad;
+import net.minecraft.client.renderer.entity.model.QuadrupedModel;
+import net.minecraft.client.renderer.model.PositionTextureVertex;
+import net.minecraft.client.renderer.model.TexturedQuad;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
 public class InfiltratorModelMaker extends DefaultModelMaker
 {
     @Override
-    public ModelQuadruped createModel(ItemStack itemStack, EntityLivingBase entity)
+    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity)
     {
-        final ModelQuadruped model = super.createModel(itemStack, entity);
+        final QuadrupedModel<SheepEntity> model = super.createModel(itemStack, entity);
 
         final Matrix4f partATransform = new Matrix4f().translate(new Vector3f(-2, -1, -8));
-        EntityMesh partA = new EntityMesh(model.head);
+        EntityMesh partA = new EntityMesh(model.headModel);
 
-        final TextureMap blockTextureMap = Minecraft.getMinecraft().getTextureMapBlocks();
+        final AtlasTexture blockTextureMap = Minecraft.getInstance().getTextureMap();
         final TextureAtlasSprite chickenSprite = blockTextureMap.getAtlasSprite(CommonReference.MOD_ID + ":chicken_nuggets");
 
         partA.addTexturedQuads(partATransform, new Matrix3f(),
@@ -101,7 +102,7 @@ public class InfiltratorModelMaker extends DefaultModelMaker
                                 new PositionTextureVertex(1, 4, 3, chickenSprite.getInterpolatedU(6), chickenSprite.getInterpolatedV(6))
                         })
                 );
-        model.head.cubeList.add(partA);
+        model.headModel.cubeList.add(partA);
 
         final TextureAtlasSprite chickenWings = blockTextureMap.getAtlasSprite(CommonReference.MOD_ID + ":chicken_winglets");
 
@@ -210,21 +211,21 @@ public class InfiltratorModelMaker extends DefaultModelMaker
         };
 
         final Matrix4f legTransform = new Matrix4f().scale(new Vector3f(1.01f, 1.01f, 1.01f)).translate(new Vector3f(-2, 4, -2));
-        EntityMesh rightForeLeg = new EntityMesh(model.leg3);
+        EntityMesh rightForeLeg = new EntityMesh(model.legFrontRight);
         rightForeLeg.addTexturedQuads(legTransform, new Matrix3f(), texturedQuads);
-        model.leg3.cubeList.add(rightForeLeg);
+        model.legFrontRight.cubeList.add(rightForeLeg);
 
-        EntityMesh leftForeLeg = new EntityMesh(model.leg4);
+        EntityMesh leftForeLeg = new EntityMesh(model.legFrontLeft);
         leftForeLeg.addTexturedQuads(legTransform, new Matrix3f(), texturedQuads);
-        model.leg4.cubeList.add(leftForeLeg);
+        model.legFrontLeft.cubeList.add(leftForeLeg);
 
-        EntityMesh rightRearLeg = new EntityMesh(model.leg1);
+        EntityMesh rightRearLeg = new EntityMesh(model.legBackRight);
         rightRearLeg.addTexturedQuads(legTransform, new Matrix3f(), texturedQuads);
-        model.leg1.cubeList.add(rightRearLeg);
+        model.legBackRight.cubeList.add(rightRearLeg);
 
-        EntityMesh leftRearLeg = new EntityMesh(model.leg2);
+        EntityMesh leftRearLeg = new EntityMesh(model.legBackLeft);
         leftRearLeg.addTexturedQuads(legTransform, new Matrix3f(), texturedQuads);
-        model.leg2.cubeList.add(leftRearLeg);
+        model.legBackLeft.cubeList.add(leftRearLeg);
 
         return model;
     }

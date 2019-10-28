@@ -1,7 +1,7 @@
 package com.github.atomicblom.shearmadness.api;
 
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 
 public final class Capability {
     @CapabilityInject(IChiseledSheepCapability.class)
