@@ -1,7 +1,7 @@
 package com.github.atomicblom.shearmadness.utility;
 
 import com.github.atomicblom.shearmadness.block.InvisibleBlock;
-import com.github.atomicblom.shearmadness.variations.CommonReference;
+import com.github.atomicblom.shearmadness.api.CommonReference;
 import net.minecraftforge.registries.ObjectHolder;
 
 @ObjectHolder(CommonReference.MOD_ID)

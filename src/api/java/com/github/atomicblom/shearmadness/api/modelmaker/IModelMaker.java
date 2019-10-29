@@ -44,7 +44,7 @@ public interface IModelMaker
      * @param model the IBakedModel to transform
      * @return a body part for the entity
      */
-    default RendererModel getModelRendererForBlockState(PartDefinition partDefinition, BlockState blockState, IBakedModel model)
+    default RendererModel getModelRendererForBlockState(PartDefinition partDefinition, BlockState blockState, IBakedModel model, String partName)
     {
         final RendererModel renderer = new RendererModel(new SheepWoolModel<>(), 0, 0);
         if (partDefinition == null) {
@@ -57,7 +57,7 @@ public interface IModelMaker
         );
 
         final EntityMesh box = new EntityMesh(renderer);
-
+        box.boxName = partName;
         addBlockModelToEntityMesh(box, partDefinition, blockState, model);
 
         renderer.cubeList.add(box);

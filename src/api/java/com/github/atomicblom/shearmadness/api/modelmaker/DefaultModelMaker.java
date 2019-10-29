@@ -14,7 +14,7 @@ public class DefaultModelMaker implements IModelMaker
 {
     private final QuadrupedTransformDefinition transforms;
 
-    public static RendererModel defaultRenderer = new RendererModel(new SheepWoolModel<>(), 0, 0);
+    public static RendererModel defaultRenderer = new RendererModel(new SheepWoolModel<>(), "default");
 
     public DefaultModelMaker(QuadrupedTransformDefinition transforms) {
         this.transforms = transforms;
@@ -36,12 +36,12 @@ public class DefaultModelMaker implements IModelMaker
         quadrupedModel.legBackRight = defaultRenderer;
         quadrupedModel.legBackLeft = defaultRenderer;
         final IBakedModel bakedModelForItem = getBakedModelForItem(itemStack, entity);
-        transforms.getBodyPartDefinition().ifPresent(definition -> quadrupedModel.body = getModelRendererForBlockState(definition, null, bakedModelForItem));
-        transforms.getHeadPartDefinition().ifPresent(definition -> quadrupedModel.headModel = getModelRendererForBlockState(definition, null, bakedModelForItem));
-        transforms.getLegFrontRightPartDefinition().ifPresent(definition -> quadrupedModel.legFrontRight = getModelRendererForBlockState(definition, null, bakedModelForItem));
-        transforms.getLegFrontLeftPartDefinition().ifPresent(definition -> quadrupedModel.legFrontLeft = getModelRendererForBlockState(definition, null, bakedModelForItem));
-        transforms.getLegBackRightPartDefinition().ifPresent(definition -> quadrupedModel.legBackRight = getModelRendererForBlockState(definition, null, bakedModelForItem));
-        transforms.getLegBackLeftPartDefinition().ifPresent(definition -> quadrupedModel.legBackLeft = getModelRendererForBlockState(definition, null, bakedModelForItem));
+        transforms.getBodyPartDefinition().ifPresent(definition -> quadrupedModel.body = getModelRendererForBlockState(definition, null, bakedModelForItem, "body"));
+        transforms.getHeadPartDefinition().ifPresent(definition -> quadrupedModel.headModel = getModelRendererForBlockState(definition, null, bakedModelForItem, "head"));
+        transforms.getLegFrontRightPartDefinition().ifPresent(definition -> quadrupedModel.legFrontRight = getModelRendererForBlockState(definition, null, bakedModelForItem, "legFrontRight"));
+        transforms.getLegFrontLeftPartDefinition().ifPresent(definition -> quadrupedModel.legFrontLeft = getModelRendererForBlockState(definition, null, bakedModelForItem, "legFrontLeft"));
+        transforms.getLegBackRightPartDefinition().ifPresent(definition -> quadrupedModel.legBackRight = getModelRendererForBlockState(definition, null, bakedModelForItem, "legBackRight"));
+        transforms.getLegBackLeftPartDefinition().ifPresent(definition -> quadrupedModel.legBackLeft = getModelRendererForBlockState(definition, null, bakedModelForItem, "legBackLeft"));
         return quadrupedModel;
     }
 

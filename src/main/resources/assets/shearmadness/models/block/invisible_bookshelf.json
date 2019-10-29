@@ -1,6 +1,6 @@
 {
   "parent": "shearmadness:block/invisible_block",
   "textures": {
-    "all": "blocks/bookshelf"
+    "all": "block/bookshelf"
   }
 }

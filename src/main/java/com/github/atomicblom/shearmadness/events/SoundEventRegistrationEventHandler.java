@@ -1,7 +1,7 @@
 package com.github.atomicblom.shearmadness.events;
 
 import com.github.atomicblom.shearmadness.utility.Reference;
-import com.github.atomicblom.shearmadness.variations.CommonReference;
+import com.github.atomicblom.shearmadness.api.CommonReference;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;

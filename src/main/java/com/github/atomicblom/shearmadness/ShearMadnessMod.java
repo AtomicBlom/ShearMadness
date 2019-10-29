@@ -13,7 +13,7 @@ import com.github.atomicblom.shearmadness.configuration.ConfigurationHandler;
 import com.github.atomicblom.shearmadness.networking.*;
 import com.github.atomicblom.shearmadness.utility.ContainerTypeLibrary;
 import com.github.atomicblom.shearmadness.utility.Reference;
-import com.github.atomicblom.shearmadness.variations.CommonReference;
+import com.github.atomicblom.shearmadness.api.CommonReference;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;

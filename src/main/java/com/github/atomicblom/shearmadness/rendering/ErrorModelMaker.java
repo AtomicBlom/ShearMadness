@@ -24,7 +24,7 @@ class ErrorModelMaker implements IModelMaker {
 
     private final QuadrupedTransformDefinition transforms;
 
-    private static final RendererModel defaultRenderer = new RendererModel(new SheepModel(), 0, 0);
+    private static final RendererModel defaultRenderer = new RendererModel(new SheepWoolModel<>(), 0, 0);
 
     ErrorModelMaker() {
         transforms = new QuadrupedTransformDefinition();

@@ -3,7 +3,7 @@ package com.github.atomicblom.shearmadness.events;
 import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.configuration.BreedingBehaviour;
 import com.github.atomicblom.shearmadness.configuration.Settings;
-import com.github.atomicblom.shearmadness.variations.CommonReference;
+import com.github.atomicblom.shearmadness.api.CommonReference;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;

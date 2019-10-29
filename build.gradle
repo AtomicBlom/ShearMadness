@@ -8,6 +8,7 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
+
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
@@ -63,13 +64,29 @@ minecraft {
 sourceSets {
     main {
         java {
-            srcDirs = [ 'src/main/java', 'src/api/java', 'src/integration/java' ]
+            srcDirs([
+                    'src/main/java',
+                    'src/api/java',
+
+                    //Integrations
+                    //'src/chancecubes/java',
+                    'src/chisel/java',
+                    'src/vanilla/java',
+                    'src/immersiveengineering/java',
+                    'src/silly/java'
+            ])
+
+        }
+        resources {
+            srcDirs([
+                    'src/main/resources',
+                    //Integrations
+                    //'src/chancecubes/resources',
+                    'src/vanilla/resources',
+                    'src/silly/resources'
+            ])
         }
     }
-}
-
-dependencies {
-
 }
 
 dependencies {
@@ -91,13 +108,6 @@ dependencies {
 
     // These dependencies get remapped to your current MCP mappings
     // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    repositories {
-        maven {
-            name = "CurseForge"
-            url = "https://minecraft.curseforge.com/api/maven/"
-        }
-    }
 
     //works at dev, crashes at runtime in IDE (not deobf)
     //compile "chance-cubes:ChanceCubes:1.14.4:4.0.0.298"

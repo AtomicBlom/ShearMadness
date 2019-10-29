@@ -1,7 +1,6 @@
 package com.github.atomicblom.shearmadness.utility;
 
-import com.github.atomicblom.shearmadness.variations.CommonReference;
-import net.minecraft.enchantment.EnchantmentType;
+import com.github.atomicblom.shearmadness.api.CommonReference;
 import net.minecraft.util.ResourceLocation;
 
 public final class Reference {
@@ -66,10 +65,10 @@ public final class Reference {
 
     public static class Textures {
         //Not a Shear Madness texture
-        public static final ResourceLocation SHEARED_SHEEP_TEXTURE = new ResourceLocation("textures/entity/sheep/sheep.png");
-        public static final ResourceLocation SHEEP_WOOL_TEXTURE = new ResourceLocation("textures/entity/sheep/sheep_fur.png");
+        public static final ResourceLocation SHEARED_SHEEP_TEXTURE = new ResourceLocation("minecraft", "textures/entity/sheep/sheep.png");
+        public static final ResourceLocation SHEEP_WOOL_TEXTURE = new ResourceLocation("minecraft", "textures/entity/sheep/sheep_fur.png");
         public static final ResourceLocation BAD_RENDER = resource("textures/bad_render.png");
-        public static final ResourceLocation NOT_A_CHISEL_GUI_BACKGOUND = resource("textures/gui/not_a_chisel_bg.png");
+        public static final ResourceLocation NOT_A_CHISEL_GUI_BACKGROUND = resource("textures/gui/not_a_chisel_bg.png");
 
         private Textures() {}
     }

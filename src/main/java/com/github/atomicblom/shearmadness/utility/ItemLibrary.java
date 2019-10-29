@@ -1,6 +1,6 @@
 package com.github.atomicblom.shearmadness.utility;
 
-import com.github.atomicblom.shearmadness.variations.CommonReference;
+import com.github.atomicblom.shearmadness.api.CommonReference;
 import net.minecraft.item.Item;
 import net.minecraftforge.registries.ObjectHolder;
 

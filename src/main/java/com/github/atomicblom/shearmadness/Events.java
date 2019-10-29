@@ -1,7 +1,6 @@
 package com.github.atomicblom.shearmadness;
 
-import com.github.atomicblom.shearmadness.utility.Reference;
-import com.github.atomicblom.shearmadness.variations.CommonReference;
+import com.github.atomicblom.shearmadness.api.CommonReference;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,6 +13,8 @@ public class Events {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void onAtlasStitch(TextureStitchEvent.Pre event) {
+        if (!"textures".equals(event.getMap().getBasePath())) return;
+
         event.addSprite(new ResourceLocation("shearmadness:bad_render"));
     }
 }
