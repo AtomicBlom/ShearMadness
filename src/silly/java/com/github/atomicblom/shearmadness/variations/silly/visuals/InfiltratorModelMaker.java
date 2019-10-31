@@ -17,21 +17,20 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 public class InfiltratorModelMaker extends DefaultModelMaker
 {
     @Override
     public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity)
     {
-        final QuadrupedModel<SheepEntity> model  = new SheepWoolModel<>();//super.createModel(itemStack, entity);
+        final QuadrupedModel<SheepEntity> model  = super.createModel(new ItemStack(Items.WHITE_WOOL), entity);
 
         final Matrix4f partATransform = new Matrix4f().translate(new Vector3f(-2, -1, -8));
         EntityMesh headMesh = new EntityMesh(model.headModel);
 
         final AtlasTexture blockTextureMap = Minecraft.getInstance().getTextureMap();
         final TextureAtlasSprite chickenSprite = blockTextureMap.getAtlasSprite(Reference.Textures.CHICKEN_NUGGETS.toString());
-
-        model.boxList.clear();
 
         headMesh.boxName = "Head adornments";
         headMesh.addTexturedQuads(partATransform, new Matrix3f(),
