@@ -4,14 +4,15 @@ import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix4f;
 import com.github.atomicblom.shearmadness.api.rendering.vector.Vector3f;
+import net.minecraft.entity.LivingEntity;
 
 public class StairTransformations extends QuadrupedTransformDefinition
 {
 
     @Override
-    public void defineParts()
+    public void defineParts(LivingEntity entity)
     {
-        super.defineParts();
+        super.defineParts(entity);
         final float nintyDegrees = (float) Math.toRadians(90);
 
         Matrix4f matrix = new Matrix4f();

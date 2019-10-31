@@ -5,7 +5,6 @@ import com.github.atomicblom.shearmadness.utility.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.QuadrupedModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
-import net.minecraft.client.renderer.entity.model.SheepModel;
 import net.minecraft.client.renderer.entity.model.SheepWoolModel;
 import net.minecraft.client.renderer.model.PositionTextureVertex;
 import net.minecraft.client.renderer.model.TexturedQuad;
@@ -33,7 +32,7 @@ class ErrorModelMaker implements IModelMaker {
     @Override
     public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity) {
 
-        transforms.defineParts();
+        transforms.defineParts(entity);
         final QuadrupedModel<SheepEntity> quadrupedModel = new SheepWoolModel<>();
 
         quadrupedModel.body = createModelRenderer(transforms.getBodyPartDefinition().get());

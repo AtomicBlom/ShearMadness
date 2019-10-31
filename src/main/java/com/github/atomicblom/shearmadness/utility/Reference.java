@@ -67,7 +67,9 @@ public final class Reference {
         //Not a Shear Madness texture
         public static final ResourceLocation SHEARED_SHEEP_TEXTURE = new ResourceLocation("minecraft", "textures/entity/sheep/sheep.png");
         public static final ResourceLocation SHEEP_WOOL_TEXTURE = new ResourceLocation("minecraft", "textures/entity/sheep/sheep_fur.png");
-        public static final ResourceLocation BAD_RENDER = resource("textures/bad_render.png");
+
+        public static final ResourceLocation BAD_RENDER = resource("bad_render.png");
+
         public static final ResourceLocation NOT_A_CHISEL_GUI_BACKGROUND = resource("textures/gui/not_a_chisel_bg.png");
 
         private Textures() {}

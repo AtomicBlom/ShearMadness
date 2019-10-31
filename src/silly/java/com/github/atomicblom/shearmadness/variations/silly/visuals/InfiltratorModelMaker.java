@@ -6,8 +6,10 @@ import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix3f;
 import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix4f;
 import com.github.atomicblom.shearmadness.api.rendering.vector.Vector3f;
 import com.github.atomicblom.shearmadness.api.CommonReference;
+import com.github.atomicblom.shearmadness.variations.silly.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.QuadrupedModel;
+import net.minecraft.client.renderer.entity.model.SheepWoolModel;
 import net.minecraft.client.renderer.model.PositionTextureVertex;
 import net.minecraft.client.renderer.model.TexturedQuad;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -21,13 +23,15 @@ public class InfiltratorModelMaker extends DefaultModelMaker
     @Override
     public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity)
     {
-        final QuadrupedModel<SheepEntity> model = super.createModel(itemStack, entity);
+        final QuadrupedModel<SheepEntity> model  = new SheepWoolModel<>();//super.createModel(itemStack, entity);
 
         final Matrix4f partATransform = new Matrix4f().translate(new Vector3f(-2, -1, -8));
         EntityMesh headMesh = new EntityMesh(model.headModel);
 
         final AtlasTexture blockTextureMap = Minecraft.getInstance().getTextureMap();
-        final TextureAtlasSprite chickenSprite = blockTextureMap.getAtlasSprite(CommonReference.MOD_ID + ":chicken_nuggets");
+        final TextureAtlasSprite chickenSprite = blockTextureMap.getAtlasSprite(Reference.Textures.CHICKEN_NUGGETS.toString());
+
+        model.boxList.clear();
 
         headMesh.boxName = "Head adornments";
         headMesh.addTexturedQuads(partATransform, new Matrix3f(),
@@ -105,7 +109,7 @@ public class InfiltratorModelMaker extends DefaultModelMaker
                 );
         model.headModel.cubeList.add(headMesh);
 
-        final TextureAtlasSprite chickenWings = blockTextureMap.getAtlasSprite(CommonReference.MOD_ID + ":chicken_winglets");
+        final TextureAtlasSprite chickenWings = blockTextureMap.getAtlasSprite(Reference.Textures.CHICKEN_WINGLETS.toString());
 
         TexturedQuad[] texturedQuads = {new TexturedQuad(
                 new PositionTextureVertex[]{

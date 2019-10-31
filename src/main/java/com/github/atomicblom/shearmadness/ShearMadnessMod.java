@@ -100,9 +100,6 @@ public class ShearMadnessMod
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        // do something that can only be done on the client
-        LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
-
         ScreenManager.registerFactory(ContainerTypeLibrary.not_a_chisel_container_type, NotAChiselScreen::new);
     }
 }

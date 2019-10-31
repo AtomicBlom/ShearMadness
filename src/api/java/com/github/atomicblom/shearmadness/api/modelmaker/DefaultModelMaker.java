@@ -26,7 +26,7 @@ public class DefaultModelMaker implements IModelMaker
     @Override
     public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity)
     {
-        transforms.defineParts();
+        transforms.defineParts(entity);
         final QuadrupedModel<SheepEntity> quadrupedModel = new SheepWoolModel<>();
 
         quadrupedModel.body = defaultRenderer;

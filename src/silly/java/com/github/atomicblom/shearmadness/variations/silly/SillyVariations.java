@@ -4,12 +4,15 @@ import com.github.atomicblom.shearmadness.api.IVariationRegistry;
 import com.github.atomicblom.shearmadness.api.ItemStackHelper;
 import com.github.atomicblom.shearmadness.api.events.IRegisterShearMadnessVariations;
 import com.github.atomicblom.shearmadness.api.CommonReference;
+import com.github.atomicblom.shearmadness.variations.silly.transformations.WeaponTransformations;
 import com.github.atomicblom.shearmadness.variations.silly.visuals.InfiltratorModelMaker;
+import com.github.atomicblom.shearmadness.variations.silly.visuals.TestModelMaker;
 import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.SwordItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -19,7 +22,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CommonReference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SillyVariations
 {
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onProcessIMC(InterModEnqueueEvent event) {
         InterModComms.sendTo(CommonReference.MOD_ID, CommonReference.IMCMethods.REGISTER_VARIATIONS, () -> (IRegisterShearMadnessVariations) SillyVariations::registerVariations);
     }
@@ -34,13 +37,23 @@ public class SillyVariations
                 itemStack -> itemStack.getItem() == Items.FEATHER,
                 new InfiltratorModelMaker()
         );
+
+        registry.registerVariation(
+                itemStack -> itemStack.getItem() == Items.BOOK,
+                new TestModelMaker()
+        );
+
+        registry.registerVariation(
+                itemStack -> itemStack.getItem() instanceof SwordItem,
+                new WeaponTransformations()
+        );
     }
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
         if (!"textures".equals(event.getMap().getBasePath())) return;
-        event.addSprite(new ResourceLocation(CommonReference.MOD_ID, "chicken_nuggets"));
-        event.addSprite(new ResourceLocation(CommonReference.MOD_ID, "chicken_winglets"));
+        event.addSprite(Reference.Textures.CHICKEN_NUGGETS);
+        event.addSprite(Reference.Textures.CHICKEN_WINGLETS);
     }
 }
