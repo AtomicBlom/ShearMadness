@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -28,7 +29,7 @@ public class FlightBehaviour extends BehaviourBase {
     }
 
     @Override
-    public void onBehaviourStarted(BlockPos currentPos) {
+    public void onBehaviourStarted(BlockPos currentPos, Goal goal) {
         destinationYaw = getEntity().rotationYaw;
         framesTillNextTurn = 500;
         destinationMotionY = 0.1;

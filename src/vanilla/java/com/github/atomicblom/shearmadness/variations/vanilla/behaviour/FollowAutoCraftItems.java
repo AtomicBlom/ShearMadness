@@ -6,6 +6,7 @@ import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
 import com.github.atomicblom.shearmadness.networking.SheepChiselDataUpdatedMessage;
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.pathfinding.Path;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -24,16 +27,20 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class FollowAutoCraftItems extends BehaviourBase {
 
     private Logger Logger = LogManager.getLogger("shearmadness");
+    private Marker marker = new MarkerManager.Log4jMarker("SHEARMADNESS_AUTOCRAFT");
 
     private long lastExecutionTime;
     private int eatingItemTimer;
@@ -44,7 +51,12 @@ public class FollowAutoCraftItems extends BehaviourBase {
     private ItemStack[] itemsToCollect = new ItemStack[9];
     private ItemStack[] itemsConsumed = new ItemStack[9];
     private ItemStack[] originalCraftingGrid = new ItemStack[9];
+    private Path path;
 
+    @Override
+    public void onBehaviourStarted(BlockPos currentPos, Goal goal) {
+        goal.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+    }
 
     public FollowAutoCraftItems(SheepEntity entity, Supplier<Boolean> configuration) {
         super(entity, configuration);
@@ -61,12 +73,14 @@ public class FollowAutoCraftItems extends BehaviourBase {
         final SheepEntity entity = getEntity();
         final World worldObj = entity.getEntityWorld();
 
+        PathNavigator navigator = entity.getNavigator();
         if (eatingItemTimer > 0) {
-            entity.getNavigator().clearPath();
+            navigator.clearPath();
+            this.path = null;
             eatingItemTimer = Math.max(0, eatingItemTimer - 1);
 
             if (eatingItemTimer == 4) {
-                Logger.trace("Consuming Item");
+                Logger.debug(marker, "Consuming Item");
                 consumeItem(worldObj);
             }
 
@@ -75,12 +89,13 @@ public class FollowAutoCraftItems extends BehaviourBase {
 
         final BlockPos position = entity.getPosition();
         if (poopingItemTimer > 0) {
-            entity.getNavigator().clearPath();
+            navigator.clearPath();
+            this.path = null;
             poopingItemTimer = Math.max(0, poopingItemTimer - 1);
 
             if (poopingItemTimer == 1) {
                 //calculate recipe and fire item out bum.
-                Logger.trace("Crafting Item");
+                Logger.debug(marker, "Crafting Item");
                 createItem(entity, worldObj);
                 lastExecutionTime = worldObj.getGameTime();
             }
@@ -91,12 +106,20 @@ public class FollowAutoCraftItems extends BehaviourBase {
         if (lastExecutionTime + 20 < worldObj.getGameTime()) {
             lastExecutionTime = worldObj.getGameTime();
             if (findItemToConsume(entity, worldObj, position)) return;
-            Logger.trace("No items found");
+            Logger.debug(marker, "No items found");
+        }
+
+        if (path != null) {
+            if (!path.isSamePath(navigator.getPath()) && !path.isFinished()) {
+                entity.goalSelector.disableFlag(Goal.Flag.MOVE);
+                navigator.setPath(path, 1);
+            }
         }
     }
 
     private boolean findItemToConsume(SheepEntity entity, World worldObj, BlockPos position) {
         return entity.getCapability(Capability.CHISELED_SHEEP).map(capability -> {
+            //entity.goalSelector.disableFlag(Goal.Flag.MOVE);
             final CompoundNBT extraData = capability.getExtraData();
             if (!extraData.contains("AUTO_CRAFT")) {
                 return true;
@@ -113,7 +136,7 @@ public class FollowAutoCraftItems extends BehaviourBase {
                 return true;
             }
 
-            Logger.trace("Checking surroundings for items");
+            Logger.debug(marker, "Checking surroundings for items");
 
             final AxisAlignedBB offset = new AxisAlignedBB(position).expand(16, 16, 16).offset(-8, -8, -8);
             final List<Entity> recipeItems = worldObj.getEntitiesInAABBexcluding(entity, offset, (e) -> {
@@ -139,20 +162,25 @@ public class FollowAutoCraftItems extends BehaviourBase {
 
             for (final Entity recipeItem : recipeItems) {
                 final double distanceSqToEntity = entity.getDistanceSq(recipeItem);
+                PathNavigator navigator = entity.getNavigator();
                 if (distanceSqToEntity < 0.75) {
                     //Eat thing.
-                    Logger.trace("Eating {}", recipeItem);
+                    Logger.debug(marker, "Eating {}", recipeItem);
+
 
                     eatingItemTimer = 40;
                     worldObj.setEntityState(entity, (byte)10);
                     targetedItem = (ItemEntity) recipeItem;
-                    entity.getNavigator().clearPath();
+                    navigator.clearPath();
+                    this.path = null;
                     entity.getLookController().setLookPositionWithEntity(recipeItem, entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
                     return true;
                 }
 
-                if (entity.getNavigator().tryMoveToEntityLiving(recipeItem, 1)) {
-                    Logger.trace("Moving to {}", recipeItem);
+                this.path = navigator.getPathToEntityLiving(recipeItem, 0);
+
+                if (path != null && navigator.setPath(path, 1)) {
+                    Logger.debug(marker, "Moving to {} - path {}", recipeItem, path);
                     return true;
                 }
             }
@@ -195,7 +223,7 @@ public class FollowAutoCraftItems extends BehaviourBase {
                 targetedItem.remove();
             }
 
-            Logger.trace("Add item to consumed");
+            Logger.debug(marker, "Add item to consumed");
             updateItemsConsumed();
 
             checkDigested();
@@ -207,9 +235,9 @@ public class FollowAutoCraftItems extends BehaviourBase {
 
         if (itemsLeft == 0) {
             poopingItemTimer = 44;
-            Logger.trace("Digesting Item");
+            Logger.debug(marker, "Digesting Item");
         } else {
-            Logger.trace("{} items left", itemsLeft);
+            Logger.debug(marker, "{} items left", itemsLeft);
         }
     }
 
@@ -307,7 +335,7 @@ public class FollowAutoCraftItems extends BehaviourBase {
 
         updateItemVariantFromCraftingGrid(originalCraftingGrid);
 
-        Logger.trace("Looking for {} items", itemCount);
+        Logger.debug(marker, "Looking for {} items", itemCount);
 
         final Entity entity = getEntity();
         final World entityWorld = entity.getEntityWorld();
@@ -321,9 +349,9 @@ public class FollowAutoCraftItems extends BehaviourBase {
                 final ItemEntity entityItem = new ItemEntity(entityWorld, entity.posX, entity.posY, entity.posZ, consumedItemStack);
                 entityItem.setDefaultPickupDelay();
                 entityWorld.addEntity(entityItem);
-                Logger.trace("Unable to consume {}", consumedItemStack);
+                Logger.debug(marker, "Unable to consume {}", consumedItemStack);
             } else {
-                Logger.trace("Consumed {}", consumedItemStack);
+                Logger.debug(marker, "Consumed {}", consumedItemStack);
             }
         }
 

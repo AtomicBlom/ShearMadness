@@ -7,6 +7,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.WorkbenchContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -18,13 +20,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ContainerWorkbenchSheep extends WorkbenchContainer
 {
     //FIXME: MCP field_75162_e -> craftingMatrix
+    //FIXME: MCP field_75160_f -> craftingOutput
+    //FIXME: MCP func_217066_a -> updateCraftableRecipe
 
     private final LivingEntity entity;
     private final World world;
+    private final PlayerEntity player;
 
     public ContainerWorkbenchSheep(int windowId, PlayerInventory playerInventory, SheepEntity sheep) {
         super(windowId, playerInventory);
         this.entity = sheep;
+        this.player = playerInventory.player;
         world = sheep.world;
         onContainerOpened();
     }
@@ -87,5 +93,14 @@ public class ContainerWorkbenchSheep extends WorkbenchContainer
         }
 
         super.onContainerClosed(playerIn);
+    }
+
+    public void onCraftMatrixChanged(IInventory inventoryIn) {
+        //Ignore IWorldPosCallable, because there is no block in the world.
+        func_217066_a(this.windowId, this.entity.world, this.player, this.field_75162_e, this.field_75160_f);
+    }
+
+    public CraftingInventory getCraftingMatrix() {
+        return field_75162_e;
     }
 }

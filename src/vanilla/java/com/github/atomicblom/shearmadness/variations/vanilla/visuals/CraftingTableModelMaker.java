@@ -6,6 +6,7 @@ import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix3f;
 import com.github.atomicblom.shearmadness.api.rendering.vector.Vector3f;
+import com.github.atomicblom.shearmadness.variations.vanilla.container.ContainerWorkbenchSheep;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.entity.model.QuadrupedModel;
@@ -21,8 +22,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.world.World;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
@@ -88,11 +92,13 @@ public class CraftingTableModelMaker extends DefaultModelMaker {
             PlayerInventory playerInventory = new PlayerInventory(null);
 
             //FIXME: get a window ID somehow?
-            final WorkbenchContainer container = new WorkbenchContainer(200, playerInventory, IWorldPosCallable.of(entity.getEntityWorld(), entity.getPosition()));
+            final ContainerWorkbenchSheep container = new ContainerWorkbenchSheep(200, playerInventory, (SheepEntity)entity);
             for (int i = 0; i < 9; ++i) {
-                container.field_75162_e.setInventorySlotContents(i, originalCraftingGrid[i]);
+                container.getCraftingMatrix().setInventorySlotContents(i, originalCraftingGrid[i]);
             }
-            Optional<ICraftingRecipe> recipe = entity.getEntityWorld().getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, container.field_75162_e, entity.getEntityWorld());
+            World entityWorld = entity.getEntityWorld();
+            RecipeManager recipeManager = entityWorld.getRecipeManager();
+            Optional<ICraftingRecipe> recipe = recipeManager.getRecipe(IRecipeType.CRAFTING, container.getCraftingMatrix(), entityWorld);
             return recipe.map(IRecipe::getRecipeOutput).orElse(ItemStack.EMPTY);
         }).orElse(ItemStack.EMPTY);
     }

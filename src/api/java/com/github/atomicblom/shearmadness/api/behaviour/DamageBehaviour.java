@@ -1,6 +1,7 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.DamageSource;
@@ -20,7 +21,7 @@ public class DamageBehaviour extends BehaviourBase {
     }
 
     @Override
-    public void onBehaviourStarted(BlockPos currentPos)
+    public void onBehaviourStarted(BlockPos currentPos, Goal goal)
     {
         onSheepMovedBlock(null, currentPos);
     }

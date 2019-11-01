@@ -2,6 +2,7 @@ package com.github.atomicblom.shearmadness.api.behaviour;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,7 +27,7 @@ public class PlaceInvisibleBlockBehaviour extends BehaviourBase {
     }
 
     @Override
-    public void onBehaviourStarted(BlockPos currentPos) {
+    public void onBehaviourStarted(BlockPos currentPos, Goal goal) {
         setBlock(currentPos);
     }
 

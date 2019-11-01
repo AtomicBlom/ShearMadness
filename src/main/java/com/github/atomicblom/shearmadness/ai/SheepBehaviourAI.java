@@ -135,7 +135,7 @@ public class SheepBehaviourAI extends Goal
         for (ActiveBehaviour activeBehaviour : activeBehaviours) {
             if (activeBehaviour.runThisTick) {
                 if (activeBehaviour.isFirstTick) {
-                    activeBehaviour.behaviour.onBehaviourStarted(currentPos);
+                    activeBehaviour.behaviour.onBehaviourStarted(currentPos, this);
                     activeBehaviour.isFirstTick = false;
                 }
 

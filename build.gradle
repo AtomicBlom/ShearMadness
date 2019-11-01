@@ -36,7 +36,7 @@ minecraft {
     runs {
         client {
             //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.markers', 'REGISTRIES,SHEARMADNESS_AUTOCRAFT'
             property 'forge.logging.console.level', 'debug'
             workingDirectory project.file('run').canonicalPath
             source sourceSets.main

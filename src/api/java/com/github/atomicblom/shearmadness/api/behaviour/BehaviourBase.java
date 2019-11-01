@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.math.BlockPos;
 import java.util.function.Supplier;
@@ -25,7 +26,7 @@ public abstract class BehaviourBase {
 
     public void onSheepMovedBlock(BlockPos previousLocation, BlockPos newLocation) {}
 
-    public void onBehaviourStarted(BlockPos currentPos) {}
+    public void onBehaviourStarted(BlockPos currentPos, Goal goal) {}
 
     public void onBehaviourStopped(BlockPos previousPos) {}
 

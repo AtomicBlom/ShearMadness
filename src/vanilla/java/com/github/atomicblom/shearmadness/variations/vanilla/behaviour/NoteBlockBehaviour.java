@@ -4,6 +4,7 @@ import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
@@ -36,7 +37,7 @@ public class NoteBlockBehaviour extends BehaviourBase {
 
 
     @Override
-    public void onBehaviourStarted(BlockPos currentPos) {
+    public void onBehaviourStarted(BlockPos currentPos, Goal goal) {
         currentLocation = currentPos;
     }
 

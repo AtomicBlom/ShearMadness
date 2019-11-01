@@ -170,7 +170,7 @@ public class EntityEventHandler
 				final MobEntity livingEntity = (MobEntity) entity;
 
 				final GoalSelector brain = livingEntity.goalSelector;
-				brain.addGoal(0, new SheepBehaviourAI(livingEntity));
+				brain.addGoal(2, new SheepBehaviourAI(livingEntity));
 			});
 		}
 	}
