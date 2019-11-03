@@ -1,6 +1,8 @@
 package com.github.atomicblom.shearmadness.api;
 
+import com.github.atomicblom.shearmadness.api.ai.ShearMadnessGoal;
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
 
@@ -19,6 +21,11 @@ public class BehaviourRegistry implements IBehaviourRegistry {
     @Override
     public void registerBehaviour(Function<ItemStack, Boolean> handlesVariant, Function<SheepEntity, BehaviourBase> behaviourFactory) {
         behaviours.add(new ShearMadnessBehaviour(handlesVariant, behaviourFactory));
+    }
+
+    @Override
+    public void registerGoal(Function<ItemStack, Boolean> handlesVariant, Function<SheepEntity, ShearMadnessGoal> goalFactory) {
+
     }
 
     public Iterable<BehaviourBase> getApplicableBehaviours(ItemStack itemStack, SheepEntity entity) {
