@@ -73,8 +73,8 @@ public class ContainerWorkbenchSheep extends WorkbenchContainer
     @Override
     public void onContainerClosed(PlayerEntity playerIn)
     {
-        if (!world.isRemote)
-        {
+        //if (!world.isRemote)
+        //{
             entity.getCapability(Capability.CHISELED_SHEEP).ifPresent(capability -> {
                 final CompoundNBT extraData = capability.getExtraData();
                 final CompoundNBT craftMatrixNBT = new CompoundNBT();
@@ -90,7 +90,7 @@ public class ContainerWorkbenchSheep extends WorkbenchContainer
                 extraData.put("AUTO_CRAFT", craftMatrixNBT);
                 craftMatrixNBT.putLong("lastChanged", entity.getEntityWorld().getGameTime());
             });
-        }
+        //}
 
         super.onContainerClosed(playerIn);
     }

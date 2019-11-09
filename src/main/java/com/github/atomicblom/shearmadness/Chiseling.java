@@ -1,18 +1,23 @@
 package com.github.atomicblom.shearmadness;
 
+import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
+import com.github.atomicblom.shearmadness.api.Capability;
+import com.github.atomicblom.shearmadness.api.ai.ShearMadnessGoal;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.goal.PrioritizedGoal;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
-import com.github.atomicblom.shearmadness.api.Capability;
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 
 import javax.annotation.Nonnull;
+import java.util.stream.Collectors;
 
 import static com.github.atomicblom.shearmadness.ShearMadnessMod.CHANNEL;
 
@@ -28,9 +33,19 @@ public final class Chiseling
             final ItemStack chiselItemStack = capability.getChiselItemStack();
             if (updateCapability(activeStack, capability, entityPlayer.isCreative()))
             {
-                activeStack.damageItem(1, entityPlayer, player -> {
-                    player.sendBreakAnimation(hand);
-                });
+                activeStack.damageItem(1, entityPlayer, player -> player.sendBreakAnimation(hand));
+
+                SheepEntity mobEntity = (SheepEntity)sheep;
+                mobEntity.goalSelector.getRunningGoals()
+                        .map(PrioritizedGoal::getGoal)
+                        .filter(ShearMadnessGoal.class::isInstance)
+                        .map(ShearMadnessGoal.class::cast)
+                        .collect(Collectors.toList())
+                        .forEach(mobEntity.goalSelector::removeGoal);
+
+
+                BehaviourRegistry.INSTANCE.getApplicableGoals(capability.getChiselItemStack(), mobEntity)
+                        .forEach(smg -> mobEntity.goalSelector.addGoal(smg.getPriority(), smg));
 
                 if (!sheep.getEntityWorld().isRemote)
                 {
@@ -101,13 +116,9 @@ public final class Chiseling
         final CompoundNBT tagCompound = heldChisel.getTag();
         if (tagCompound != null)
         {
-            final CompoundNBT chiseldata = tagCompound.getCompound("chiseldata");
-            final CompoundNBT chiselTarget = chiseldata.getCompound("target");
-            if (chiselTarget.contains("id"))
-            {
-                return true;
-            }
-
+            final CompoundNBT chiselData = tagCompound.getCompound("chiseldata");
+            final CompoundNBT chiselTarget = chiselData.getCompound("target");
+            return chiselTarget.contains("id");
         }
         return false;
     }

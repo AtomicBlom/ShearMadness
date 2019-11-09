@@ -4,7 +4,9 @@ import com.github.atomicblom.shearmadness.Chiseling;
 import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.Shearing;
 import com.github.atomicblom.shearmadness.ai.SheepBehaviourAI;
+import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
 import com.github.atomicblom.shearmadness.api.Capability;
+import com.github.atomicblom.shearmadness.api.ai.ShearMadnessGoal;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSheepKilledEvent;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSpecialInteractionEvent;
@@ -14,6 +16,7 @@ import com.github.atomicblom.shearmadness.api.CommonReference;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.GoalSelector;
+import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,8 +24,10 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -142,10 +147,8 @@ public class EntityEventHandler
 			{
 				final Collection<ItemEntity> drops = event.getDrops();
 				final ItemStack chiselItemStack = capability.getChiselItemStack();
-				final Item chiselItem = chiselItemStack.getItem();
 
-				//FIXME: prevent vanilla wool from dropping
-				//drops.removeIf(entityItem -> ItemStackHelper.isStackForTag(entityItem.getItem(), Tags.Blocks.));
+				drops.removeIf(entityItem -> ItemTags.WOOL.contains(entityItem.getItem().getItem()));
 
 				drops.add(new ItemEntity(entity.world, entity.posX, entity.posY, entity.posZ, chiselItemStack.copy()));
 
@@ -167,10 +170,14 @@ public class EntityEventHandler
 		if (entity instanceof MobEntity) {
 			final LazyOptional<IChiseledSheepCapability> possibleCapability = entity.getCapability(Capability.CHISELED_SHEEP);
 			possibleCapability.ifPresent(capability -> {
-				final MobEntity livingEntity = (MobEntity) entity;
+				final SheepEntity sheepEntity = (SheepEntity) entity;
 
-				final GoalSelector brain = livingEntity.goalSelector;
-				brain.addGoal(2, new SheepBehaviourAI(livingEntity));
+				final GoalSelector goalSelector = sheepEntity.goalSelector;
+				BehaviourRegistry.INSTANCE.getApplicableGoals(capability.getChiselItemStack(), sheepEntity)
+						.forEach(smg -> goalSelector.addGoal(smg.getPriority(), smg));
+
+				//FIXME: Remove this.
+				goalSelector.addGoal(2, new SheepBehaviourAI(sheepEntity));
 			});
 		}
 	}
@@ -182,14 +189,17 @@ public class EntityEventHandler
 			final LazyOptional<IChiseledSheepCapability> possibleCapability = entity.getCapability(Capability.CHISELED_SHEEP);
 			possibleCapability.ifPresent(capability -> {
 				final MobEntity livingEntity = (MobEntity) entity;
+
+				livingEntity.goalSelector.getRunningGoals()
+						.map(PrioritizedGoal::getGoal)
+						.filter(ShearMadnessGoal.class::isInstance)
+						.map(ShearMadnessGoal.class::cast)
+						.forEach(ShearMadnessGoal::onDeath);
+
+				//FIXME: remove this.
 				livingEntity.goalSelector.getRunningGoals()
 						.filter(taskEntry -> taskEntry.getGoal() instanceof SheepBehaviourAI)
 						.forEach(taskEntry -> ((SheepBehaviourAI) taskEntry.getGoal()).onDeath());
-
-//				livingEntity.goalSelector.goals
-//					.stream()
-//					.filter(taskEntry -> taskEntry.action instanceof SheepBehaviourAI)
-//					.forEach(taskEntry -> ((SheepBehaviourAI) taskEntry.action).onDeath());
 			});
 		}
 	}

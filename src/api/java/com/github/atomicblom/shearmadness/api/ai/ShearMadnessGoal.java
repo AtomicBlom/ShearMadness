@@ -37,4 +37,10 @@ public abstract class ShearMadnessGoal extends Goal {
     public boolean shouldExecute() {
         return configuration.get();
     }
+
+    public abstract int getPriority();
+
+    public void onDeath() {
+
+    }
 }

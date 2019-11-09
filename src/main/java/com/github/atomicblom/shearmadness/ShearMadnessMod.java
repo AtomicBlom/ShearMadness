@@ -37,7 +37,7 @@ public class ShearMadnessMod
 {
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger(CommonReference.MOD_ID);
-    public static SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(Reference.CHANNEL_NAME, () -> "1.0", s -> true, s -> true);
+    public static SimpleChannel CHANNEL;
     public static IEventBus MOD_EVENT_BUS;
 
     public ShearMadnessMod() {
@@ -60,10 +60,7 @@ public class ShearMadnessMod
 
     private void setup(final FMLCommonSetupEvent event)
     {
-        //Capabilities
-        CapabilityManager.INSTANCE.register(IChiseledSheepCapability.class, ChiseledSheepCapabilityStorage.instance, ChiseledSheepCapability::new);
-
-        MinecraftForge.EVENT_BUS.post(new RegisterAdditionalCapabilitiesEvent());
+        CHANNEL = NetworkRegistry.newSimpleChannel(Reference.CHANNEL_NAME, () -> "1.0", s -> true, s -> true);
 
         int packetId = 0;
         CHANNEL.registerMessage(++packetId, CheckSheepChiseledRequestMessage.class,
@@ -85,6 +82,13 @@ public class ShearMadnessMod
                 PlayCustomSoundMessage::toBytes,
                 PlayCustomSoundMessage::new,
                 PlayCustomSoundMessage::handle);
+
+        //Capabilities
+        CapabilityManager.INSTANCE.register(IChiseledSheepCapability.class, ChiseledSheepCapabilityStorage.instance, ChiseledSheepCapability::new);
+
+        MinecraftForge.EVENT_BUS.post(new RegisterAdditionalCapabilitiesEvent());
+
+
     }
 
     private void processIMC(final InterModProcessEvent event) {

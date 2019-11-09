@@ -80,12 +80,20 @@ public class AutoCraftGoal extends ShearMadnessGoal {
     }
 
     @Override
+    public int getPriority() {
+        return 2;
+    }
+
+    @Override
     public void tick() {
         final SheepEntity entity = getEntity();
 
         PathNavigator navigator = entity.getNavigator();
         if (eatingItemTimer > 0) {
             navigator.clearPath();
+            entity.goalSelector.enableFlag(Flag.MOVE);
+            entity.goalSelector.enableFlag(Flag.LOOK);
+
             this.path = null;
             eatingItemTimer = Math.max(0, eatingItemTimer - 1);
 
@@ -184,6 +192,9 @@ public class AutoCraftGoal extends ShearMadnessGoal {
                     navigator.clearPath();
                     this.path = null;
                     entity.getLookController().setLookPositionWithEntity(recipeItem, entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
+
+                    entity.goalSelector.disableFlag(Flag.MOVE);
+                    entity.goalSelector.disableFlag(Flag.LOOK);
                     return true;
                 }
 
@@ -191,6 +202,10 @@ public class AutoCraftGoal extends ShearMadnessGoal {
 
                 if (path != null && navigator.setPath(path, 1)) {
                     Logger.debug(marker, "Moving to {} - path {}", recipeItem, path);
+
+                    entity.goalSelector.disableFlag(Flag.MOVE);
+                    entity.goalSelector.disableFlag(Flag.LOOK);
+
                     return true;
                 }
             }
@@ -247,18 +262,20 @@ public class AutoCraftGoal extends ShearMadnessGoal {
         world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, crafting, world).ifPresent(recipe -> {
             final ItemStack craftedItem = recipe.getRecipeOutput();
             if (!craftedItem.isEmpty()) {
-                ItemEntity entityItem = new ItemEntity(world, entity.posX, entity.posY, entity.posZ, craftedItem);
+                ItemEntity entityItem = new ItemEntity(world, entity.posX, entity.posY, entity.posZ, craftedItem.copy());
 
                 entityItem.rotationYaw = entity.renderYawOffset + 180;
-                entityItem.moveRelative(0,  new Vec3d(0.05f, 0.4f, 1));
+                //entityItem.moveRelative(0,  new Vec3d(0.05f, 0.4f, 1));
+                entityItem.addVelocity(0.05, 0.4f, 1);
                 world.addEntity(entityItem);
 
                 final NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(crafting);
                 for (final ItemStack remainingItem : remainingItems) {
                     if (remainingItem.isEmpty()) continue;
-                    entityItem = new ItemEntity(world, entity.posX, entity.posY, entity.posZ, remainingItem);
+                    entityItem = new ItemEntity(world, entity.posX, entity.posY, entity.posZ, remainingItem.copy());
                     entityItem.rotationYaw = entity.renderYawOffset + 180;
-                    entityItem.moveRelative(0, new Vec3d(0.05f, 0.4f, 1));
+                    //entityItem.moveRelative(0, new Vec3d(0.05f, 0.4f, 1));
+                    entityItem.addVelocity(0.05, 0.4f, 1);
                     world.addEntity(entityItem);
                 }
             }
@@ -272,7 +289,7 @@ public class AutoCraftGoal extends ShearMadnessGoal {
     }
 
     private void updateItemsConsumed() {
-        getEntity().getCapability(Capability.CHISELED_SHEEP).ifPresent(capability -> {
+        this.entity.getCapability(Capability.CHISELED_SHEEP).ifPresent(capability -> {
             final CompoundNBT extraData = capability.getExtraData();
             if (!extraData.contains("AUTO_CRAFT")) {
                 return;
