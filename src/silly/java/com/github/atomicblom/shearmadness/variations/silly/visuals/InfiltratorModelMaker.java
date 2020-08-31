@@ -5,15 +5,16 @@ import com.github.atomicblom.shearmadness.api.rendering.EntityMesh;
 import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix3f;
 import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix4f;
 import com.github.atomicblom.shearmadness.api.rendering.vector.Vector3f;
-import com.github.atomicblom.shearmadness.api.CommonReference;
 import com.github.atomicblom.shearmadness.variations.silly.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.QuadrupedModel;
-import net.minecraft.client.renderer.entity.model.SheepWoolModel;
+import net.minecraft.client.renderer.model.ModelRenderer.PositionTextureVertex;
+import net.minecraft.client.renderer.model.ModelRenderer.TexturedQuad;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
@@ -25,12 +26,11 @@ public class InfiltratorModelMaker extends DefaultModelMaker
         final QuadrupedModel<SheepEntity> model  = super.createModel(new ItemStack(Items.WHITE_WOOL), entity);
 
         final Matrix4f partATransform = new Matrix4f().translate(new Vector3f(-2, -1, -8));
-        EntityMesh headMesh = new EntityMesh(model.headModel);
+        EntityMesh headMesh = new EntityMesh();
 
-        final AtlasTexture blockTextureMap = Minecraft.getInstance().getTextureMap();
-        final TextureAtlasSprite chickenSprite = blockTextureMap.getAtlasSprite(Reference.Textures.CHICKEN_NUGGETS.toString());
+        final AtlasTexture blockTextureMap = Minecraft.getInstance().getTextureManager().getTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+        final TextureAtlasSprite chickenSprite = blockTextureMap.getSprite(Reference.Textures.CHICKEN_NUGGETS);
 
-        headMesh.boxName = "Head adornments";
         headMesh.addTexturedQuads(partATransform, new Matrix3f(),
                 new TexturedQuad(
                         new PositionTextureVertex[]{
@@ -160,14 +160,12 @@ public class InfiltratorModelMaker extends DefaultModelMaker
                 )};
 
         final Matrix4f rightWingTransform = new Matrix4f().translate(new Vector3f(-7.6f, -8, -6));
-        EntityMesh rightWing = new EntityMesh(model.body);
-        rightWing.boxName = "Right Wing";
+        EntityMesh rightWing = new EntityMesh();
         rightWing.addTexturedQuads(rightWingTransform, new Matrix3f(), texturedQuads);
         model.body.cubeList.add(rightWing);
 
         final Matrix4f leftWingTransform = new Matrix4f().translate(new Vector3f(5.6f, -8, -6));
-        EntityMesh leftWing = new EntityMesh(model.body);
-        leftWing.boxName = "Left Wing";
+        EntityMesh leftWing = new EntityMesh();
         leftWing.addTexturedQuads(leftWingTransform, new Matrix3f(), texturedQuads);
         model.body.cubeList.add(leftWing);
 
@@ -215,23 +213,19 @@ public class InfiltratorModelMaker extends DefaultModelMaker
         };
 
         final Matrix4f legTransform = new Matrix4f().scale(new Vector3f(1.01f, 1.01f, 1.01f)).translate(new Vector3f(-2, 4, -2));
-        EntityMesh rightForeLeg = new EntityMesh(model.legFrontRight);
-        rightForeLeg.boxName = "Right Fore Leg";
+        EntityMesh rightForeLeg = new EntityMesh();
         rightForeLeg.addTexturedQuads(legTransform, new Matrix3f(), texturedQuads);
         model.legFrontRight.cubeList.add(rightForeLeg);
 
-        EntityMesh leftForeLeg = new EntityMesh(model.legFrontLeft);
-        leftForeLeg.boxName = "Left Fore Leg";
+        EntityMesh leftForeLeg = new EntityMesh();
         leftForeLeg.addTexturedQuads(legTransform, new Matrix3f(), texturedQuads);
         model.legFrontLeft.cubeList.add(leftForeLeg);
 
-        EntityMesh rightRearLeg = new EntityMesh(model.legBackRight);
-        rightRearLeg.boxName = "Right Rear Leg";
+        EntityMesh rightRearLeg = new EntityMesh();
         rightRearLeg.addTexturedQuads(legTransform, new Matrix3f(), texturedQuads);
         model.legBackRight.cubeList.add(rightRearLeg);
 
-        EntityMesh leftRearLeg = new EntityMesh(model.legBackLeft);
-        leftRearLeg.boxName = "Left Rear Leg";
+        EntityMesh leftRearLeg = new EntityMesh();
         leftRearLeg.addTexturedQuads(legTransform, new Matrix3f(), texturedQuads);
         model.legBackLeft.cubeList.add(leftRearLeg);
 

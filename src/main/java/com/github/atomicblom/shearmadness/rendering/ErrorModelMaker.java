@@ -45,8 +45,8 @@ class ErrorModelMaker implements IModelMaker {
         final AtlasTexture blockTextureMap = Minecraft.getInstance().getTextureMap();
         final TextureAtlasSprite errorModelSprite = blockTextureMap.getAtlasSprite(Reference.Textures.BAD_RENDER.toString());
 
-        final EntityMesh bodyMesh = new EntityMesh(quadrupedModel.body);
-        final EntityMesh headMesh = new EntityMesh(quadrupedModel.headModel);
+        final EntityMesh bodyMesh = new EntityMesh();
+        final EntityMesh headMesh = new EntityMesh();
         quadrupedModel.body.cubeList.add(bodyMesh);
         quadrupedModel.headModel.cubeList.add(headMesh);
 

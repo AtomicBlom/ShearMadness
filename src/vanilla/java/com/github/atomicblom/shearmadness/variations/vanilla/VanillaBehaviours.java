@@ -10,7 +10,6 @@ import com.github.atomicblom.shearmadness.api.events.ShearMadnessSheepKilledEven
 import com.github.atomicblom.shearmadness.utility.BlockLibrary;
 import com.github.atomicblom.shearmadness.api.CommonReference;
 import com.github.atomicblom.shearmadness.variations.IntegrationSettings;
-import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.AutoCraftGoal;
 import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.FollowAutoCraftItems;
 import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.NoteBlockBehaviour;
 import net.minecraft.block.Blocks;
@@ -69,11 +68,6 @@ public class VanillaBehaviours
         registry.registerBehaviour(
                 itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.CRAFTING_TABLE),
                 sheep -> new FollowAutoCraftItems(sheep, IntegrationSettings.Vanilla::allowAutoCrafting)
-        );
-
-        registry.registerGoal(
-                itemStack -> ItemStackHelper.isStackForBlock(itemStack, Blocks.CRAFTING_TABLE),
-                sheep -> new AutoCraftGoal(sheep, IntegrationSettings.Vanilla::allowAutoCrafting)
         );
     }
 

@@ -7,25 +7,22 @@ import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefini
 import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix3f;
 import com.github.atomicblom.shearmadness.api.rendering.vector.Vector3f;
 import com.github.atomicblom.shearmadness.variations.vanilla.container.ContainerWorkbenchSheep;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.entity.model.QuadrupedModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
-import net.minecraft.client.renderer.entity.model.SheepModel;
 import net.minecraft.client.renderer.entity.model.SheepWoolModel;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.WorkbenchContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.world.World;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -103,31 +100,30 @@ public class CraftingTableModelMaker extends DefaultModelMaker {
         }).orElse(ItemStack.EMPTY);
     }
 
-    //FIXME: could be SheepWoolModel
     private static class CraftingItemIdentifier extends SheepWoolModel<SheepEntity> {
-        public RendererModel itemIndicator;
+        public ModelRenderer itemIndicator;
 
         @Override
-        public void setRotationAngles(SheepEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
-            super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
+        public void setRotationAngles(SheepEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+            super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
             this.itemIndicator.rotateAngleY = ageInTicks * 0.1f;
         }
 
         @Override
-        public void render(SheepEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-            super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+            super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             if (this.isChild)
             {
                 float f = 2.0F;
-                GlStateManager.pushMatrix();
-                GlStateManager.translatef(0.0F, this.childYOffset * scale, this.childZOffset * scale);
-                itemIndicator.render(scale);
-                GlStateManager.popMatrix();
+                matrixStackIn.push();
+                matrixStackIn.translate(0.0F, this.childHeadOffsetY * this.childHeadScale, this.childHeadOffsetZ * childHeadScale);
+                itemIndicator.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                matrixStackIn.pop();
             }
             else
             {
-                itemIndicator.render(scale);
+                itemIndicator.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
         }
     }

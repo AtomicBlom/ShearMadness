@@ -7,7 +7,6 @@ import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix3f;
 import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix4f;
 import com.github.atomicblom.shearmadness.api.rendering.vector.Vector3f;
 import net.minecraft.client.renderer.entity.model.QuadrupedModel;
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.model.SheepWoolModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -30,7 +29,7 @@ public class ImmersiveEngineeringPostModelMaker extends DefaultModelMaker
         quadruped.body = new ModelRenderer(new SheepWoolModel<>(), 0, 0);
         quadruped.headModel = createModelRenderer(getTransforms().getHeadPartDefinition().get());
         
-        final EntityMesh mesh = new EntityMesh(quadruped.headModel);
+        final EntityMesh mesh = new EntityMesh();
         quadruped.headModel.cubeList.add(mesh);
 
         final Matrix4f antenna1Matrix = new Matrix4f();

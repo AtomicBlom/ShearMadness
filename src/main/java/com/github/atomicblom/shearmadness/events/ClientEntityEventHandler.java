@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 @Mod.EventBusSubscriber(modid = CommonReference.MOD_ID, value = Dist.CLIENT)
 public class ClientEntityEventHandler {
 
-    private static ConcurrentLinkedDeque<CheckSheepChiseledRequestMessage> pendingChecks = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<CheckSheepChiseledRequestMessage> pendingChecks = new ConcurrentLinkedDeque<>();
 
     @SubscribeEvent
     public static void onPlayerJoinedWorldEvent(ClientPlayerNetworkEvent.LoggedInEvent event) {
@@ -30,7 +30,7 @@ public class ClientEntityEventHandler {
 
     @SubscribeEvent
     public static void onEntityJoinWorldEvent(EntityJoinWorldEvent event) {
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> {
             final Entity entity = event.getEntity();
             if (entity instanceof SheepEntity) {
                 CheckSheepChiseledRequestMessage message = new CheckSheepChiseledRequestMessage((SheepEntity) entity);

@@ -22,7 +22,7 @@ import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
@@ -177,7 +177,7 @@ public class FollowAutoCraftItems extends BehaviourBase {
                     return true;
                 }
 
-                this.path = navigator.getPathToEntityLiving(recipeItem, 0);
+                this.path = navigator.getPathToEntity(recipeItem, 0);
 
                 if (path != null && navigator.setPath(path, 1)) {
                     Logger.debug(marker, "Moving to {} - path {}", recipeItem, path);
@@ -196,12 +196,12 @@ public class FollowAutoCraftItems extends BehaviourBase {
 
         for (int i = 0; i < 9; ++i) {
             if (!itemsConsumed[i].isEmpty()) {
-                final ItemEntity entityItem = new ItemEntity(entityWorld, entity.posX, entity.posY, entity.posZ, itemsConsumed[i]);
+                final ItemEntity entityItem = new ItemEntity(entityWorld, entity.getPosX(), entity.getPosY(), entity.getPosZ(), itemsConsumed[i]);
                 entityItem.setDefaultPickupDelay();
                 entityWorld.addEntity(entityItem);
             }
             if (!originalCraftingGrid[i].isEmpty()) {
-                final ItemEntity entityItem = new ItemEntity(entityWorld, entity.posX, entity.posY, entity.posZ, originalCraftingGrid[i]);
+                final ItemEntity entityItem = new ItemEntity(entityWorld, entity.getPosX(), entity.getPosY(), entity.getPosZ(), originalCraftingGrid[i]);
                 entityItem.setDefaultPickupDelay();
                 entityWorld.addEntity(entityItem);
             }
@@ -261,18 +261,18 @@ public class FollowAutoCraftItems extends BehaviourBase {
         worldObj.getRecipeManager().getRecipe(IRecipeType.CRAFTING, crafting, worldObj).ifPresent(recipe -> {
             final ItemStack craftedItem = recipe.getRecipeOutput();
             if (!craftedItem.isEmpty()) {
-                ItemEntity entityItem = new ItemEntity(worldObj, entity.posX, entity.posY, entity.posZ, craftedItem);
+                ItemEntity entityItem = new ItemEntity(worldObj, entity.getPosX(), entity.getPosY(), entity.getPosZ(), craftedItem);
 
                 entityItem.rotationYaw = entity.renderYawOffset + 180;
-                entityItem.moveRelative(0,  new Vec3d(0.05f, 0.4f, 1));
+                entityItem.moveRelative(0,  new Vector3d(0.05f, 0.4f, 1));
                 worldObj.addEntity(entityItem);
 
                 final NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(crafting);
                 for (final ItemStack remainingItem : remainingItems) {
                     if (remainingItem.isEmpty()) continue;
-                    entityItem = new ItemEntity(worldObj, entity.posX, entity.posY, entity.posZ, remainingItem);
+                    entityItem = new ItemEntity(worldObj, entity.getPosX(), entity.getPosY(), entity.getPosZ(), remainingItem);
                     entityItem.rotationYaw = entity.renderYawOffset + 180;
-                    entityItem.moveRelative(0, new Vec3d(0.05f, 0.4f, 1));
+                    entityItem.moveRelative(0, new Vector3d(0.05f, 0.4f, 1));
                     worldObj.addEntity(entityItem);
                 }
             }
@@ -346,7 +346,7 @@ public class FollowAutoCraftItems extends BehaviourBase {
         for (final String key : consumed.keySet()) {
             final ItemStack consumedItemStack = ItemStack.read(consumed.getCompound(key));
             if (!consumeItem(consumedItemStack)) {
-                final ItemEntity entityItem = new ItemEntity(entityWorld, entity.posX, entity.posY, entity.posZ, consumedItemStack);
+                final ItemEntity entityItem = new ItemEntity(entityWorld, entity.getPosX(), entity.getPosY(), entity.getPosZ(), consumedItemStack);
                 entityItem.setDefaultPickupDelay();
                 entityWorld.addEntity(entityItem);
                 Logger.debug(marker, "Unable to consume {}", consumedItemStack);

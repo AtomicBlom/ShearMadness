@@ -56,7 +56,7 @@ public interface IModelMaker
                 partDefinition.getRotationPoint().z
         );
 
-        final EntityMesh box = new EntityMesh(renderer);
+        final EntityMesh box = new EntityMesh();
         addBlockModelToEntityMesh(box, partDefinition, blockState, model);
 
         renderer.cubeList.add(box);

@@ -3,7 +3,6 @@ package com.github.atomicblom.shearmadness.api.rendering;
 import com.google.common.collect.Lists;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.ModelRenderer.ModelBox;
 import net.minecraft.client.renderer.model.ModelRenderer.PositionTextureVertex;
 import net.minecraft.client.renderer.model.ModelRenderer.TexturedQuad;
@@ -35,9 +34,9 @@ public class EntityMesh extends ModelBox
     private TexturedQuad[] quadList = null;
     private boolean errored;
 
-    public EntityMesh(ModelRenderer renderer)
+    public EntityMesh()
     {
-        super(renderer, 0, 0, 0, 0, 0, 0, 0, 0, 0, false);
+        super(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0);
     }
 
     /**

@@ -19,10 +19,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class ContainerWorkbenchSheep extends WorkbenchContainer
 {
-    //FIXME: MCP field_75162_e -> craftingMatrix
-    //FIXME: MCP field_75160_f -> craftingOutput
-    //FIXME: MCP func_217066_a -> updateCraftableRecipe
-
     private final LivingEntity entity;
     private final World world;
     private final PlayerEntity player;
@@ -57,12 +53,12 @@ public class ContainerWorkbenchSheep extends WorkbenchContainer
 
                     if (craftMatrixNBT.contains(key)) {
                         final ItemStack itemstack = ItemStack.read(craftMatrixNBT.getCompound(key));
-                        field_75162_e.setInventorySlotContents(i, itemstack);
+                        craftMatrix.setInventorySlotContents(i, itemstack);
                     }
                 }
 
                 detectAndSendChanges();
-                onCraftMatrixChanged(field_75162_e);
+                onCraftMatrixChanged(craftMatrix);
             });
         }
     }
@@ -80,7 +76,7 @@ public class ContainerWorkbenchSheep extends WorkbenchContainer
                 final CompoundNBT craftMatrixNBT = new CompoundNBT();
 
                 for (int i = 0; i < 9; ++i) {
-                    final ItemStack itemstack = field_75162_e.removeStackFromSlot(i);
+                    final ItemStack itemstack = craftMatrix.removeStackFromSlot(i);
 
                     if (!itemstack.isEmpty()) {
                         craftMatrixNBT.put(((Integer) i).toString(), itemstack.serializeNBT());
@@ -97,10 +93,10 @@ public class ContainerWorkbenchSheep extends WorkbenchContainer
 
     public void onCraftMatrixChanged(IInventory inventoryIn) {
         //Ignore IWorldPosCallable, because there is no block in the world.
-        func_217066_a(this.windowId, this.entity.world, this.player, this.field_75162_e, this.field_75160_f);
+        updateCraftingResult(this.windowId, this.entity.world, this.player, this.craftMatrix, this.craftResult);
     }
 
     public CraftingInventory getCraftingMatrix() {
-        return field_75162_e;
+        return craftMatrix;
     }
 }

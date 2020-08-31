@@ -65,7 +65,7 @@ public class ContainerEnchantmentSheep extends EnchantmentContainer
 
             if (!itemstack.isEmpty() && itemstack.isEnchantable())
             {
-                field_217006_g.consume((world, position) ->
+                worldPosCallable.consume((world, position) ->
                 {
                     float power = 0;
 
@@ -127,7 +127,7 @@ public class ContainerEnchantmentSheep extends EnchantmentContainer
                         if (enchantLevels[j1] > 0)
                         {
                             final List<EnchantmentData> list = getEnchantmentList(itemstack, j1, enchantLevels[j1]);
-                            if (list != null && !list.isEmpty())
+                            if (!list.isEmpty())
                             {
                                 final EnchantmentData enchantmentdata = list.get(rand.nextInt(list.size()));
                                 enchantClue[j1] = Registry.ENCHANTMENT.getId(enchantmentdata.enchantment);

@@ -31,7 +31,8 @@
  */
 package com.github.atomicblom.shearmadness.api.rendering.vector;
 
-import javax.vecmath.Vector2f;
+import net.minecraft.util.math.vector.Vector2f;
+
 import java.io.Serializable;
 import java.nio.FloatBuffer;
 

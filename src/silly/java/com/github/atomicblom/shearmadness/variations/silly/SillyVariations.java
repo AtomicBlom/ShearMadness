@@ -7,6 +7,7 @@ import com.github.atomicblom.shearmadness.api.CommonReference;
 import com.github.atomicblom.shearmadness.variations.silly.transformations.WeaponTransformations;
 import com.github.atomicblom.shearmadness.variations.silly.visuals.InfiltratorModelMaker;
 import com.github.atomicblom.shearmadness.variations.silly.visuals.TestModelMaker;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.Items;
 import net.minecraft.item.SwordItem;
 import net.minecraftforge.api.distmarker.Dist;
@@ -52,7 +53,7 @@ public class SillyVariations
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
-        if (!"textures".equals(event.getMap().getBasePath())) return;
+        if (!PlayerContainer.LOCATION_BLOCKS_TEXTURE.equals(event.getMap().getTextureLocation())) return;
         event.addSprite(Reference.Textures.CHICKEN_NUGGETS);
         event.addSprite(Reference.Textures.CHICKEN_WINGLETS);
     }

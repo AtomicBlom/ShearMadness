@@ -1,7 +1,6 @@
 package com.github.atomicblom.shearmadness.api;
 
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
-import com.github.atomicblom.shearmadness.api.ai.ShearMadnessGoal;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
 
@@ -15,6 +14,4 @@ public interface IBehaviourRegistry {
      * @param behaviourFactory the factory to create a behaviour for the sheep.
      */
     void registerBehaviour(Function<ItemStack, Boolean> handlesVariant, Function<SheepEntity, BehaviourBase> behaviourFactory);
-
-    void registerGoal(Function<ItemStack, Boolean> handlesVariant, Function<SheepEntity, ShearMadnessGoal> goalFactory);
 }

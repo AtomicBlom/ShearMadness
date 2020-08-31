@@ -14,7 +14,7 @@ public class DefaultModelMaker implements IModelMaker
 {
     private final QuadrupedTransformDefinition transforms;
 
-    public static ModelRenderer defaultRenderer = new ModelRenderer(new SheepWoolModel<>(), "default");
+    public static ModelRenderer defaultRenderer = new ModelRenderer(new SheepWoolModel<>());
 
     public DefaultModelMaker(QuadrupedTransformDefinition transforms) {
         this.transforms = transforms;

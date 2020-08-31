@@ -10,13 +10,18 @@ import com.github.atomicblom.shearmadness.configuration.Settings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.QuadrupedModel;
 import net.minecraft.client.renderer.entity.model.SheepModel;
 import net.minecraft.client.renderer.entity.model.SheepWoolModel;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -51,9 +56,24 @@ public class LayerSheepChiselWool extends LayerRenderer<SheepEntity, SheepModel<
     }
 
     @Override
-    public void render(SheepEntity sheep, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (!sheep.getSheared() && !sheep.isInvisible()) {
+    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, SheepEntity sheep, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (sheep.getSheared()) return;
+        Minecraft minecraft = Minecraft.getInstance();
+
+        boolean flag = sheepRenderer.isVisible(sheep);
+        boolean flag1 = !flag && !sheep.isInvisibleToPlayer(minecraft.player);
+        boolean flag2 = minecraft.func_238206_b_(sheep);
+        RenderType rendertype = sheepRenderer.func_230496_a_(sheep, flag, flag1, flag2);
+        if (rendertype == null) rendertype = RenderType.func_239268_f_(SHEEP_WOOL_TEXTURE);
+
+        if (!sheep.isInvisible()) {
             final LazyOptional<IChiseledSheepCapability> possibleCapability = sheep.getCapability(Capability.CHISELED_SHEEP);
+
+            final float[] afloat = SheepEntity.getDyeRgb(sheep.getFleeceColor());
+            float red = afloat[0];
+            float green = afloat[1];
+            float blue = afloat[2];
+            float alpha = 1;
 
             IChiseledSheepCapability capability = possibleCapability.orElse(new ChiseledSheepCapability());
             if (capability.isChiseled()) {
@@ -78,7 +98,7 @@ public class LayerSheepChiselWool extends LayerRenderer<SheepEntity, SheepModel<
                             return errorModelMaker.createModel(null, sheep);
                         }
                     });
-                    Minecraft.getInstance().getTextureMap().bindTexture();
+                    sheepRenderer.getRenderManager().textureManager.bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 
                     final Item item = itemStack.getItem();
                     if (item instanceof BlockItem) {
@@ -89,13 +109,16 @@ public class LayerSheepChiselWool extends LayerRenderer<SheepEntity, SheepModel<
                                         sheep.getEntityWorld(),
                                         sheep.getPosition(),
                                         0);
-                        GlStateManager.color3f(
-                                (colorMultiplier >> 16 & 255) / 255.0F, //Red
-                                (colorMultiplier >> 8 & 255) / 255.0F, //Green
-                                (colorMultiplier & 255) / 255.0F); //Blue
+                        red = (colorMultiplier >> 16 & 255) / 255.0F;
+                        green = (colorMultiplier >> 8 & 255) / 255.0F;
+                        blue = (colorMultiplier & 255) / 255.0F; //Blue
                     }
 
-                    renderModel(sheep, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+                    this.getEntityModel().copyModelAttributesTo(this.sheepModel);
+                    sheepModel.setLivingAnimations(sheep, limbSwing, limbSwingAmount, partialTicks);
+
+                    IVertexBuilder vertexBuilder = bufferIn.getBuffer(rendertype);
+                    sheepModel.render(matrixStackIn, vertexBuilder, packedLightIn, OverlayTexture.NO_OVERLAY, red, green, blue, alpha);
                 } catch (final Exception exception) {
                     badModels.add(itemIdentifier);
                     modelCache.put(itemIdentifier, errorModelMaker.createModel(null, sheep));
@@ -103,24 +126,13 @@ public class LayerSheepChiselWool extends LayerRenderer<SheepEntity, SheepModel<
                 }
             } else {
                 sheepModel = defaultBody;
-                sheepRenderer.bindTexture(SHEEP_WOOL_TEXTURE);
+                sheepRenderer.getRenderManager().textureManager.bindTexture(SHEEP_WOOL_TEXTURE);
 
-                final float[] afloat = SheepEntity.getDyeRgb(sheep.getFleeceColor());
-                GlStateManager.color3f(afloat[0], afloat[1], afloat[2]);
-
-                renderModel(sheep, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+                this.getEntityModel().copyModelAttributesTo(this.sheepModel);
+                sheepModel.setLivingAnimations(sheep, limbSwing, limbSwingAmount, partialTicks);
+                IVertexBuilder vertexBuilder = bufferIn.getBuffer(rendertype);
+                sheepModel.render(matrixStackIn, vertexBuilder, packedLightIn, OverlayTexture.NO_OVERLAY, red, green, blue, alpha);
             }
         }
-    }
-
-    public void renderModel(SheepEntity sheep, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.getEntityModel().setModelAttributes(this.sheepModel);
-        sheepModel.setLivingAnimations(sheep, limbSwing, limbSwingAmount, partialTicks);
-        sheepModel.render(sheep, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-    }
-
-    @Override
-    public boolean shouldCombineTextures() {
-        return true;
     }
 }
