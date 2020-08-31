@@ -1,40 +1,50 @@
 package com.github.atomicblom.shearmadness.events;
 
 import com.github.atomicblom.shearmadness.Chiseling;
+import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.Shearing;
 import com.github.atomicblom.shearmadness.ai.SheepBehaviourAI;
+import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
 import com.github.atomicblom.shearmadness.api.Capability;
-import com.github.atomicblom.shearmadness.api.ItemStackHelper;
+import com.github.atomicblom.shearmadness.api.ai.ShearMadnessGoal;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSheepKilledEvent;
 import com.github.atomicblom.shearmadness.api.events.ShearMadnessSpecialInteractionEvent;
 import com.github.atomicblom.shearmadness.utility.ChiselLibrary;
+import com.github.atomicblom.shearmadness.utility.ItemLibrary;
+import com.github.atomicblom.shearmadness.api.CommonReference;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityAITasks;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.goal.GoalSelector;
+import net.minecraft.entity.ai.goal.PrioritizedGoal;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.item.ShearsItem;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.Hand;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import java.util.List;
 
-@Mod.EventBusSubscriber
+import java.util.Collection;
+
+import static net.minecraft.world.biome.Biome.LOGGER;
+
+@Mod.EventBusSubscriber(modid = CommonReference.MOD_ID)
 public class EntityEventHandler
 {
-	@SuppressWarnings({"ConstantConditions", "MethodWithMoreThanThreeNegations"})
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onPlayerInteractionWithEntity(PlayerInteractEvent.EntityInteract event)
 	{
@@ -46,32 +56,38 @@ public class EntityEventHandler
 			checkSpecialSheepInteraction(event);
 			return;
 		}
-		if (!(itemStack.getItem() instanceof ItemShears)) return;
+		if (!(itemStack.getItem() instanceof ShearsItem)) return;
 
 		final SheepEntity sheep = (SheepEntity) event.getTarget();
 		if (!sheep.isShearable(itemStack, event.getWorld(), event.getPos())) return;
 
-		final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
-		if (capability == null) return;
-		if (!capability.isChiseled()) return;
+		final LazyOptional<IChiseledSheepCapability> possibleCapability = sheep.getCapability(Capability.CHISELED_SHEEP);
+		possibleCapability.ifPresent(capability -> {
+			if (!capability.isChiseled()) return;
 
-		//Ok, we have a chiseled sheep, cancel vanilla.
-		event.setCanceled(true);
+			//Ok, we have a chiseled sheep, cancel vanilla.
+			event.setCanceled(true);
 
-		Shearing.shearSheep(itemStack, sheep, capability);
+			Shearing.shearSheep(itemStack, sheep, capability, event.getHand());
+		});
 	}
 
 	private static void checkSpecialSheepInteraction(PlayerInteractEvent.EntityInteract event)
 	{
 		final SheepEntity sheep = (SheepEntity) event.getTarget();
-		final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
-		if (capability == null) return;
-		if (!capability.isChiseled()) return;
-		if (event.getHand() != EnumHand.MAIN_HAND) return;
+		final LazyOptional<IChiseledSheepCapability> possibleCapability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
+		possibleCapability.ifPresent(capability -> {
+			if (!capability.isChiseled()) return;
+			if (event.getHand() != Hand.MAIN_HAND) return;
 
-		final EntityPlayer entityPlayer = event.getEntityPlayer();
+			if (!(event.getPlayer() instanceof ServerPlayerEntity)) {
+				LOGGER.error("Expected player to be an instance of ServerPlayerEntity");
+				return;
+			}
+			final ServerPlayerEntity entityPlayer = (ServerPlayerEntity)event.getPlayer();
 
-		MinecraftForge.EVENT_BUS.post(new ShearMadnessSpecialInteractionEvent(event.getWorld(), entityPlayer, sheep, capability));
+			ShearMadnessMod.MOD_EVENT_BUS.post(new ShearMadnessSpecialInteractionEvent(event.getWorld(), entityPlayer, sheep, capability));
+		});
 	}
 
 	@SuppressWarnings("BooleanVariableAlwaysNegated")
@@ -82,18 +98,20 @@ public class EntityEventHandler
 		final Entity sheep = event.getTarget();
 		if (sheep == null) return;
 
-		final EntityPlayer entityPlayer = event.getEntityPlayer();
+		final PlayerEntity entityPlayer = event.getPlayer();
 		ItemStack activeStack = entityPlayer.inventory.getCurrentItem();
+		Hand hand = Hand.MAIN_HAND;
 		boolean attackedWithChisel = false;
-		if (ChiselLibrary.isChisel(activeStack.getItem()))
+		if (isChisel(activeStack.getItem()))
 		{
 			attackedWithChisel = true;
 		} else
 		{
 			activeStack = entityPlayer.inventory.offHandInventory.get(0);
-			if (ChiselLibrary.isChisel(activeStack.getItem()))
+			if (isChisel(activeStack.getItem()))
 			{
 				attackedWithChisel = true;
+				hand = Hand.OFF_HAND;
 			}
 		}
 		if (!attackedWithChisel)
@@ -101,31 +119,38 @@ public class EntityEventHandler
 			return;
 		}
 
-		if (!sheep.hasCapability(Capability.CHISELED_SHEEP, null)) {
-			return;
-		}
+		final LazyOptional<IChiseledSheepCapability> possibleCapability = sheep.getCapability(Capability.CHISELED_SHEEP);
+		ItemStack finalActiveStack = activeStack;
+		Hand finalHand = hand;
+		possibleCapability.ifPresent(capability -> {
+			event.setCanceled(true);
 
-		event.setCanceled(true);
+			Chiseling.chiselSheep(sheep, entityPlayer, finalActiveStack, finalHand);
+		});
+	}
 
-		Chiseling.chiselSheep(sheep, entityPlayer, activeStack);
+	public static boolean isChisel(Item item)
+	{
+		return item == ChiselLibrary.chisel_iron ||
+				item == ChiselLibrary.chisel_diamond ||
+				item == ChiselLibrary.chisel_hitech ||
+				item == ItemLibrary.not_a_chisel;
 	}
 
 	@SubscribeEvent
 	public static void onLivingDrop(LivingDropsEvent event) {
 
 		final Entity entity = event.getEntity();
-		if (entity.hasCapability(Capability.CHISELED_SHEEP, null)) {
-			final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
-			assert capability != null;
+		final LazyOptional<IChiseledSheepCapability> possibleCapability = entity.getCapability(Capability.CHISELED_SHEEP);
+		possibleCapability.ifPresent(capability -> {
 			if (capability.isChiseled())
 			{
-				final List<EntityItem> drops = event.getDrops();
+				final Collection<ItemEntity> drops = event.getDrops();
 				final ItemStack chiselItemStack = capability.getChiselItemStack();
-				final Item chiselItem = chiselItemStack.getItem();
 
-				drops.removeIf(entityItem -> ItemStackHelper.isStackForBlock(entityItem.getItem(), Blocks.WOOL));
+				drops.removeIf(entityItem -> ItemTags.WOOL.contains(entityItem.getItem().getItem()));
 
-				drops.add(new EntityItem(entity.world, entity.posX, entity.posY, entity.posZ, chiselItemStack.copy()));
+				drops.add(new ItemEntity(entity.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), chiselItemStack.copy()));
 
 				MinecraftForge.EVENT_BUS.post(new ShearMadnessSheepKilledEvent(
 						drops,
@@ -135,30 +160,47 @@ public class EntityEventHandler
 						entity
 				));
 			}
-		}
+		});
 	}
 
 	@SubscribeEvent
 	public static void onCommonEntityJoinWorldEvent(EntityJoinWorldEvent event)
 	{
 		final Entity entity = event.getEntity();
-		if (entity instanceof EntityLiving && entity.hasCapability(Capability.CHISELED_SHEEP, null))
-		{
-			final EntityLiving livingEntity = (EntityLiving) event.getEntity();
-			final EntityAITasks tasks = livingEntity.tasks;
-			tasks.addTask(0, new SheepBehaviourAI(livingEntity));
+		if (entity instanceof MobEntity) {
+			final LazyOptional<IChiseledSheepCapability> possibleCapability = entity.getCapability(Capability.CHISELED_SHEEP);
+			possibleCapability.ifPresent(capability -> {
+				final SheepEntity sheepEntity = (SheepEntity) entity;
+
+				final GoalSelector goalSelector = sheepEntity.goalSelector;
+				BehaviourRegistry.INSTANCE.getApplicableGoals(capability.getChiselItemStack(), sheepEntity)
+						.forEach(smg -> goalSelector.addGoal(smg.getPriority(), smg));
+
+				//FIXME: Remove this.
+				goalSelector.addGoal(2, new SheepBehaviourAI(sheepEntity));
+			});
 		}
 	}
 
 	@SubscribeEvent
 	public static void onEntityLivingDeathEvent(LivingDeathEvent event) {
 		final Entity entity = event.getEntity();
-		if (entity instanceof EntityLiving && entity.hasCapability(Capability.CHISELED_SHEEP, null)) {
-			final EntityLiving livingEntity = (EntityLiving) entity;
-			livingEntity.tasks.taskEntries
-					.stream()
-					.filter(taskEntry -> taskEntry.action instanceof SheepBehaviourAI)
-					.forEach(taskEntry -> ((SheepBehaviourAI) taskEntry.action).onDeath());
+		if (entity instanceof MobEntity) {
+			final LazyOptional<IChiseledSheepCapability> possibleCapability = entity.getCapability(Capability.CHISELED_SHEEP);
+			possibleCapability.ifPresent(capability -> {
+				final MobEntity livingEntity = (MobEntity) entity;
+
+				livingEntity.goalSelector.getRunningGoals()
+						.map(PrioritizedGoal::getGoal)
+						.filter(ShearMadnessGoal.class::isInstance)
+						.map(ShearMadnessGoal.class::cast)
+						.forEach(ShearMadnessGoal::onDeath);
+
+				//FIXME: remove this.
+				livingEntity.goalSelector.getRunningGoals()
+						.filter(taskEntry -> taskEntry.getGoal() instanceof SheepBehaviourAI)
+						.forEach(taskEntry -> ((SheepBehaviourAI) taskEntry.getGoal()).onDeath());
+			});
 		}
 	}
 }

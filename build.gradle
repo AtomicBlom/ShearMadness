@@ -39,14 +39,45 @@ archivesBaseName = "${project.mod_id}-${project.minecraft_version}"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 sourceSets {
-    main {
-        java {
-            srcDirs = [ 'src/main/java', 'src/api/java', 'src/integration/java' ]
-        }
-    }
     api {
         java {
-            srcDirs = [ 'src/api/java' ]
+            srcDirs([
+                    'src/api/java',
+            ])
+        }
+
+        resources {
+            srcDirs([
+                    'src/api/resources',
+            ])
+        }
+    }
+    main {
+        api {
+
+        }
+        java {
+            srcDirs([
+                    'src/main/java',
+                    'src/api/java',
+
+                    //Integrations
+                    //'src/chancecubes/java',
+                    'src/chisel/java',
+                    'src/vanilla/java',
+                    'src/immersiveengineering/java',
+                    'src/silly/java'
+            ])
+
+        }
+        resources {
+            srcDirs([
+                    'src/main/resources',
+                    //Integrations
+                    //'src/chancecubes/resources',
+                    'src/vanilla/resources',
+                    'src/silly/resources'
+            ])
         }
     }
 }

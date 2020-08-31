@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -8,7 +9,7 @@ import net.minecraft.world.Explosion;
 import java.util.function.Supplier;
 
 @SuppressWarnings("ClassHasNoToStringMethod")
-public class ExplosiveBehaviour extends BehaviourBase<ExplosiveBehaviour> {
+public class ExplosiveBehaviour extends BehaviourBase {
 
     private Long primedTime = null;
     private BlockPos aboveCurrentPosition = null;
@@ -18,7 +19,7 @@ public class ExplosiveBehaviour extends BehaviourBase<ExplosiveBehaviour> {
     }
 
     @Override
-    public void onBehaviourStarted(BlockPos currentPos)
+    public void onBehaviourStarted(BlockPos currentPos, Goal goal)
     {
         onSheepMovedBlock(null, currentPos);
     }

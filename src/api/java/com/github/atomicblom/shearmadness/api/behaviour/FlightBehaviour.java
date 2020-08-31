@@ -1,5 +1,6 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -9,7 +10,7 @@ import net.minecraft.world.gen.Heightmap;
 import java.util.Random;
 
 @SuppressWarnings("ClassHasNoToStringMethod")
-public class FlightBehaviour extends BehaviourBase<FlightBehaviour> {
+public class FlightBehaviour extends BehaviourBase {
 
     private final Random random;
     private final float floatHeight;
@@ -28,7 +29,7 @@ public class FlightBehaviour extends BehaviourBase<FlightBehaviour> {
     }
 
     @Override
-    public void onBehaviourStarted(BlockPos currentPos) {
+    public void onBehaviourStarted(BlockPos currentPos, Goal goal) {
         destinationYaw = getEntity().rotationYaw;
         framesTillNextTurn = 500;
         destinationMotionY = 0.1;
@@ -48,7 +49,7 @@ public class FlightBehaviour extends BehaviourBase<FlightBehaviour> {
     @Override
     public void updateTask() {
         final SheepEntity entity = getEntity();
-        final BlockPos height = entity.world.getHeight(Heightmap.Type.MOTION_BLOCKING, sheepLocation);
+        final BlockPos height = entity.world.getHeight(Heightmap.Type.MOTION_BLOCKING,  sheepLocation);
         final double actualHeight = entity.getPosY() - height.getY();
 
 
@@ -58,6 +59,7 @@ public class FlightBehaviour extends BehaviourBase<FlightBehaviour> {
 
         Vector3d motion = entity.getMotion();
         double motionX = motion.x, motionY = motion.y, motionZ = motion.z;
+
         if (actualHeight < floatHeight) {
             motionY = currentMotionY;
         }

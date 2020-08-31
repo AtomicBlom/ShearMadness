@@ -2,6 +2,7 @@ package com.github.atomicblom.shearmadness.api.behaviour;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -9,7 +10,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 @SuppressWarnings("ClassHasNoToStringMethod")
-public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBlockBehaviour> {
+public class PlaceInvisibleBlockBehaviour extends BehaviourBase {
 
     private final World world;
     private final BlockState blockState;
@@ -26,7 +27,7 @@ public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBl
     }
 
     @Override
-    public void onBehaviourStarted(BlockPos currentPos) {
+    public void onBehaviourStarted(BlockPos currentPos, Goal goal) {
         setBlock(currentPos);
     }
 
@@ -64,7 +65,10 @@ public class PlaceInvisibleBlockBehaviour extends BehaviourBase<PlaceInvisibleBl
     }
 
     @Override
-    public boolean isEquivalentTo(PlaceInvisibleBlockBehaviour other) {
-        return super.isEquivalentTo(other) && Objects.equals(blockState, other.blockState);
+    public boolean isEquivalentTo(BehaviourBase other) {
+
+        if (!super.isEquivalentTo(other)) return false;
+        PlaceInvisibleBlockBehaviour otherBehaviour = (PlaceInvisibleBlockBehaviour)other;
+        return Objects.equals(blockState, otherBehaviour.blockState);
     }
 }

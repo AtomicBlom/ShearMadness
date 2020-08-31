@@ -1,13 +1,12 @@
 package com.github.atomicblom.shearmadness.capability;
 
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;

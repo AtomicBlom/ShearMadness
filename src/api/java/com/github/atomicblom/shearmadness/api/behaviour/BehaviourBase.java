@@ -1,11 +1,12 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.math.BlockPos;
 import java.util.function.Supplier;
 
-@SuppressWarnings({"NoopMethodInAbstractClass", "ClassHasNoToStringMethod", "WeakerAccess"})
-public abstract class BehaviourBase<T extends BehaviourBase> {
+@SuppressWarnings({"NoopMethodInAbstractClass", "ClassHasNoToStringMethod"})
+public abstract class BehaviourBase {
     private final SheepEntity entity;
     private final Supplier<Boolean> configuration;
 
@@ -25,14 +26,15 @@ public abstract class BehaviourBase<T extends BehaviourBase> {
 
     public void onSheepMovedBlock(BlockPos previousLocation, BlockPos newLocation) {}
 
-    public void onBehaviourStarted(BlockPos currentPos) {}
+    public void onBehaviourStarted(BlockPos currentPos, Goal goal) {}
 
     public void onBehaviourStopped(BlockPos previousPos) {}
 
     public void updateTask() {}
 
-    public boolean isEquivalentTo(T other) {
-        return entity.getUniqueID().equals(other.getEntity().getUniqueID());
+    public boolean isEquivalentTo(BehaviourBase other) {
+        return entity.getUniqueID().equals(other.getEntity().getUniqueID()) &&
+                this.getClass().equals(other.getClass());
     }
 
     public SheepEntity getEntity()

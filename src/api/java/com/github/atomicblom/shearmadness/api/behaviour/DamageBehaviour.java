@@ -1,6 +1,7 @@
 package com.github.atomicblom.shearmadness.api.behaviour;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.DamageSource;
@@ -10,7 +11,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 @SuppressWarnings("ClassHasNoToStringMethod")
-public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
+public class DamageBehaviour extends BehaviourBase {
     private final DamageSource damageSource;
     private AxisAlignedBB searchBox = null;
 
@@ -20,7 +21,7 @@ public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
     }
 
     @Override
-    public void onBehaviourStarted(BlockPos currentPos)
+    public void onBehaviourStarted(BlockPos currentPos, Goal goal)
     {
         onSheepMovedBlock(null, currentPos);
     }
@@ -52,8 +53,10 @@ public class DamageBehaviour extends BehaviourBase<DamageBehaviour> {
     }
 
     @Override
-    public boolean isEquivalentTo(DamageBehaviour other) {
-        return super.isEquivalentTo(other) && Objects.equals(damageSource, other.damageSource);
+    public boolean isEquivalentTo(BehaviourBase other) {
+        if (!super.isEquivalentTo(other)) return false;
+        DamageBehaviour otherBehaviour = (DamageBehaviour)other;
+        return Objects.equals(damageSource, otherBehaviour.damageSource);
     }
 
     public DamageSource getDamageSource() {

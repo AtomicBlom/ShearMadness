@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
@@ -26,6 +27,20 @@ public final class ItemStackHelper
         }
         return false;
     }
+
+    public static boolean isStackForTag(@Nonnull ItemStack itemStack, Tags block)
+    {
+        if (itemStack.isEmpty()) return false;
+        final Item item = itemStack.getItem();
+        if (item instanceof BlockItem) {
+            if (Objects.equals(((BlockItem) item).getBlock(), block)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     public static boolean isStackForBlockSubclassOf(@Nonnull ItemStack itemStack, Class<? extends Block> blockClass)
     {

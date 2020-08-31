@@ -2,6 +2,7 @@ package com.github.atomicblom.shearmadness.api.rendering;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import com.github.atomicblom.shearmadness.api.rendering.vector.*;
 
 /**
  * Defines a set of transforms for a part of the quadruped.

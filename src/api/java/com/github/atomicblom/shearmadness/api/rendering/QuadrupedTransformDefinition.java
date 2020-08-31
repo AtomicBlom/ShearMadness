@@ -1,7 +1,13 @@
 package com.github.atomicblom.shearmadness.api.rendering;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix3f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix4f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Vector3f;
+
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -19,7 +25,7 @@ public class QuadrupedTransformDefinition
         leg2PartDefinition = Optional.empty();
         leg3PartDefinition = Optional.empty();
         leg4PartDefinition = Optional.empty();
-        defineParts();
+        defineParts(null);
     }
 
     protected static final float NintyDegrees = 3.141592653589793f;
@@ -31,7 +37,7 @@ public class QuadrupedTransformDefinition
     protected Optional<PartDefinition> leg3PartDefinition = Optional.empty();
     protected Optional<PartDefinition> leg4PartDefinition = Optional.empty();
 
-    public void defineParts()
+    public void defineParts(@Nullable LivingEntity entity)
     {
         final Matrix4f rotate = new Matrix4f().rotate((float) Math.toRadians(-90), new Vector3f(1, 0, 0));
         bodyPartDefinition = Optional.of(new PartDefinition(
@@ -110,22 +116,22 @@ public class QuadrupedTransformDefinition
         return headPartDefinition;
     }
 
-    public Optional<PartDefinition> getLeg1PartDefinition()
+    public Optional<PartDefinition> getLegFrontRightPartDefinition()
     {
         return leg1PartDefinition;
     }
 
-    public Optional<PartDefinition> getLeg2PartDefinition()
+    public Optional<PartDefinition> getLegFrontLeftPartDefinition()
     {
         return leg2PartDefinition;
     }
 
-    public Optional<PartDefinition> getLeg3PartDefinition()
+    public Optional<PartDefinition> getLegBackRightPartDefinition()
     {
         return leg3PartDefinition;
     }
 
-    public Optional<PartDefinition> getLeg4PartDefinition()
+    public Optional<PartDefinition> getLegBackLeftPartDefinition()
     {
         return leg4PartDefinition;
     }

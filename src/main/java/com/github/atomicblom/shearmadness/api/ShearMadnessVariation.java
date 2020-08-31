@@ -2,12 +2,12 @@ package com.github.atomicblom.shearmadness.api;
 
 import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.function.Function;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 class ShearMadnessVariation {
 
     private final Function<ItemStack, Boolean> handlesVariant;

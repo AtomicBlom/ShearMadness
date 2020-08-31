@@ -1,7 +1,9 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "model": "shearmadness:block/invisible_bookshelf"
+  },
   "variants": {
-    "normal": [
-      { "model": "shearmadness:invisible_bookshelf" }
-    ]
+    "": [{}]
   }
 }

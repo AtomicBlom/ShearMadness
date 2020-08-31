@@ -2,15 +2,17 @@ package com.github.atomicblom.shearmadness.api.transformation;
 
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix3f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Matrix4f;
+import com.github.atomicblom.shearmadness.api.rendering.vector.Vector3f;
+import net.minecraft.entity.LivingEntity;
+
 import java.util.Optional;
 
 public class RailTransformations extends QuadrupedTransformDefinition
 {
     @Override
-    public void defineParts()
+    public void defineParts(LivingEntity entity)
     {
         final Matrix4f trackRotation = new Matrix4f().rotate((float)Math.toRadians(30), new Vector3f(0, 0, 1));
         bodyPartDefinition = Optional.of(new PartDefinition(

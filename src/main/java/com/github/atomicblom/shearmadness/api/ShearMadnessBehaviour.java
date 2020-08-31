@@ -8,9 +8,9 @@ import java.util.function.Function;
 
 class ShearMadnessBehaviour {
     private final Function<ItemStack, Boolean> handlesVariant;
-    private final Function<SheepEntity, BehaviourBase<?>> behaviourFactory;
+    private final Function<SheepEntity, BehaviourBase> behaviourFactory;
 
-    ShearMadnessBehaviour(Function<ItemStack, Boolean> handlesVariant, Function<SheepEntity, BehaviourBase<?>> behaviourFactory)
+    ShearMadnessBehaviour(Function<ItemStack, Boolean> handlesVariant, Function<SheepEntity, BehaviourBase> behaviourFactory)
     {
 
         this.handlesVariant = handlesVariant;
@@ -22,7 +22,7 @@ class ShearMadnessBehaviour {
         return handlesVariant.apply(itemStack);
     }
 
-    BehaviourBase<?> createBehaviourBase(SheepEntity entity)
+    BehaviourBase createBehaviourBase(SheepEntity entity)
     {
         return behaviourFactory.apply(entity);
     }

@@ -1,10 +1,10 @@
 package com.github.atomicblom.shearmadness.api;
 
 import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
-import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
 
 import java.util.function.Function;
 

@@ -1,40 +1,32 @@
 package com.github.atomicblom.shearmadness.networking;
 
+import com.github.atomicblom.shearmadness.ShearMadnessMod;
+import com.github.atomicblom.shearmadness.api.Capability;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 
-public class CheckSheepChiseledRequestMessage implements IMessage
-{
-    private String sheepUUID = null;
+import java.util.UUID;
+import java.util.function.Supplier;
 
-    @SuppressWarnings("unused")
-    public CheckSheepChiseledRequestMessage() {}
+public class CheckSheepChiseledRequestMessage {
+    private String sheepUUID;
 
-    public CheckSheepChiseledRequestMessage(Entity sheep)
-    {
+    public CheckSheepChiseledRequestMessage(PacketBuffer buf) {
+        sheepUUID = buf.readString();
+    }
+
+    public CheckSheepChiseledRequestMessage(SheepEntity sheep) {
         sheepUUID = sheep.getCachedUniqueIdString();
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
+    public void toBytes(PacketBuffer buf)
     {
-        sheepUUID = ByteBufUtils.readUTF8String(buf);
-
-    }
-
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        ByteBufUtils.writeUTF8String(buf, sheepUUID);
-    }
-
-    String getSheepUUID()
-    {
-        return sheepUUID;
+        buf.writeString(sheepUUID);
     }
 
     @Override
@@ -43,5 +35,22 @@ public class CheckSheepChiseledRequestMessage implements IMessage
         return MoreObjects.toStringHelper(this)
                 .add("sheepUUID", sheepUUID)
                 .toString();
+    }
+
+    public void handle(Supplier<NetworkEvent.Context> ctx)
+    {
+        ctx.get().enqueueWork(() -> {
+            ServerWorld worldObj = ctx.get().getSender().getServerWorld();
+            final Entity entity = worldObj.getEntityByUuid(UUID.fromString(sheepUUID));
+            if (entity == null) return;
+
+            entity.getCapability(Capability.CHISELED_SHEEP).ifPresent(capability -> {
+                if (capability.isChiseled())
+                {
+                    ShearMadnessMod.LOGGER.info("Notifying sheep chiseled - entity {}", entity.toString());
+                    ShearMadnessMod.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new SheepChiseledMessage(entity));
+                }
+            });
+        });
     }
 }

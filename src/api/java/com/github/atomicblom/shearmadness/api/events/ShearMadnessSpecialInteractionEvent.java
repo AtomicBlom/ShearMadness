@@ -1,20 +1,21 @@
 package com.github.atomicblom.shearmadness.api.events;
 
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.eventbus.api.Event;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 
 public class ShearMadnessSpecialInteractionEvent extends Event {
 
     private final World world;
-    private final PlayerEntity player;
+    private final ServerPlayerEntity player;
     private final SheepEntity sheep;
     private final IChiseledSheepCapability capability;
     private final ItemStack itemStack;
 
-    public ShearMadnessSpecialInteractionEvent(World world, PlayerEntity player, SheepEntity sheep, IChiseledSheepCapability capability) {
+    public ShearMadnessSpecialInteractionEvent(World world, ServerPlayerEntity player, SheepEntity sheep, IChiseledSheepCapability capability) {
         this.world = world;
         this.player = player;
         this.sheep = sheep;
@@ -38,7 +39,7 @@ public class ShearMadnessSpecialInteractionEvent extends Event {
         return itemStack;
     }
 
-    public PlayerEntity getPlayer() {
+    public ServerPlayerEntity getPlayer() {
         return player;
     }
 }

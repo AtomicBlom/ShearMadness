@@ -1,81 +1,33 @@
 package com.github.atomicblom.shearmadness.block;
 
 import com.github.atomicblom.shearmadness.configuration.Settings;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
+import net.minecraft.item.BlockItemUseContext;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-public abstract class InvisibleBlock extends Block
-{
-    InvisibleBlock()
+public abstract class InvisibleBlock extends Block {
+    protected InvisibleBlock(Properties properties)
     {
-        super(Material.AIR);
-    }
-
-    @Override
-    public boolean isCollidable()
-    {
-        return false;
-    }
-
-    @Nullable
-    @Override
-    @Deprecated
-    public AxisAlignedBB getCollisionBoundingBox(BlockState blockState, IBlockAccess worldIn, BlockPos pos)
-    {
-        return Block.NULL_AABB;
+        super(
+                properties
+                        .doesNotBlockMovement()
+                        .noDrops()
+                );
     }
 
     @Override
     @Deprecated
-    public void addCollisionBoxToList(BlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_) {
-        super.addCollisionBoxToList(state, worldIn, pos, entityBox, collidingBoxes, entityIn, p_185477_7_);
-    }
-
-    @Override
-    public boolean isReplaceable(IBlockAccess worldIn, BlockPos pos)
-    {
+    public boolean isReplaceable(BlockState blockState, BlockItemUseContext itemUseContext) {
         return true;
     }
 
     @Override
-    public int getLightOpacity(BlockState state, IBlockAccess world, BlockPos pos)
-    {
-        return 0;
-    }
-
-    @Override
     @Deprecated
-    public EnumBlockRenderType getRenderType(BlockState state)
+    public BlockRenderType getRenderType(BlockState state)
     {
         return Settings.debugInvisibleBlocks() ?
-                EnumBlockRenderType.MODEL :
-                EnumBlockRenderType.INVISIBLE;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullBlock(BlockState state)
-    {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state)
-    {
-        return false;
+                BlockRenderType.MODEL :
+                BlockRenderType.INVISIBLE;
     }
 }

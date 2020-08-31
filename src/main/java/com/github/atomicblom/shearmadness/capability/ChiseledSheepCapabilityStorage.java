@@ -1,51 +1,50 @@
 package com.github.atomicblom.shearmadness.capability;
 
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 
-public class ChiseledSheepCapabilityStorage implements IStorage<IChiseledSheepCapability>
+public class ChiseledSheepCapabilityStorage implements Capability.IStorage<IChiseledSheepCapability>
 {
-    public static final IStorage<IChiseledSheepCapability> instance = new ChiseledSheepCapabilityStorage();
+    public static final Capability.IStorage<IChiseledSheepCapability> instance = new ChiseledSheepCapabilityStorage();
 
     @Override
-    public NBTBase writeNBT(Capability<IChiseledSheepCapability> capability, IChiseledSheepCapability instance, EnumFacing side)
+    public INBT writeNBT(Capability<IChiseledSheepCapability> capability, IChiseledSheepCapability instance, Direction side)
     {
         final CompoundNBT compound = new CompoundNBT();
-        compound.setBoolean("isChiseled", instance.isChiseled());
+        compound.putBoolean("isChiseled", instance.isChiseled());
         if (instance.isChiseled())
         {
             final CompoundNBT targetTag = new CompoundNBT();
-            instance.getChiselItemStack().writeToNBT(targetTag);
-            compound.setTag("chiselDefinition", targetTag);
+            instance.getChiselItemStack().write(targetTag);
+            compound.put("chiselDefinition", targetTag);
         }
 
         final CompoundNBT extraData = instance.getExtraData();
-        compound.setTag("extraData", extraData);
-        compound.setInteger("itemVariantId", instance.getItemVariantIdentifier());
+        compound.put("extraData", extraData);
+        compound.putInt("itemVariantId", instance.getItemVariantIdentifier());
         return compound;
     }
 
     @Override
-    public void readNBT(Capability<IChiseledSheepCapability> capability, IChiseledSheepCapability instance, EnumFacing side, NBTBase nbt)
+    public void readNBT(Capability<IChiseledSheepCapability> capability, IChiseledSheepCapability instance, Direction side, INBT nbt)
     {
         final CompoundNBT compound = (CompoundNBT) nbt;
 
         final boolean isChiseled = compound.getBoolean("isChiseled");
         if (isChiseled)
         {
-            final ItemStack stack = new ItemStack(compound.getCompoundTag("chiselDefinition"));
+            final ItemStack stack = ItemStack.read(compound.getCompound("chiselDefinition"));
             instance.chisel(stack);
         }
 
-        instance.setItemVariantIdentifier(compound.getInteger("itemVariantId"));
+        instance.setItemVariantIdentifier(compound.getInt("itemVariantId"));
 
         if (instance instanceof IWriteExtraData) {
-            ((IWriteExtraData) instance).setExtraData(compound.getCompoundTag("extraData"));
+            ((IWriteExtraData) instance).setExtraData(compound.getCompound("extraData"));
         }
     }
 }

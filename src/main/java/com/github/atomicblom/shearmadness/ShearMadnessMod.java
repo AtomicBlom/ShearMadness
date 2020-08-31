@@ -3,114 +3,107 @@ package com.github.atomicblom.shearmadness;
 import com.github.atomicblom.shearmadness.api.BehaviourRegistry;
 import com.github.atomicblom.shearmadness.api.VariationRegistry;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
+import com.github.atomicblom.shearmadness.api.events.IRegisterShearMadnessBehaviours;
+import com.github.atomicblom.shearmadness.api.events.IRegisterShearMadnessVariations;
 import com.github.atomicblom.shearmadness.api.events.RegisterAdditionalCapabilitiesEvent;
-import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessBehaviourEvent;
-import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessCommandEvent;
-import com.github.atomicblom.shearmadness.api.events.RegisterShearMadnessVariationEvent;
 import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapabilityStorage;
+import com.github.atomicblom.shearmadness.client.gui.NotAChiselScreen;
 import com.github.atomicblom.shearmadness.configuration.ConfigurationHandler;
-import com.github.atomicblom.shearmadness.configuration.Settings;
 import com.github.atomicblom.shearmadness.networking.*;
-import com.github.atomicblom.shearmadness.rendering.RenderChiselSheep;
-import com.github.atomicblom.shearmadness.utility.BlockLibrary;
-import com.github.atomicblom.shearmadness.utility.Logger;
+import com.github.atomicblom.shearmadness.utility.ContainerTypeLibrary;
 import com.github.atomicblom.shearmadness.utility.Reference;
-import com.github.atomicblom.shearmadness.utility.ShearMadnessCommand;
-import com.github.atomicblom.shearmadness.variations.CommonReference;
-import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelSheep2;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.command.CommandBase;
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.item.Item;
+import com.github.atomicblom.shearmadness.api.CommonReference;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
-import java.util.List;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-@SuppressWarnings("MethodMayBeStatic")
-@Mod(modid = CommonReference.MOD_ID, version = CommonReference.VERSION, guiFactory = Reference.MOD_GUI_FACTORY, dependencies = "required-after:chisel@[MC1.12-0.0.14.0,)", acceptedMinecraftVersions = "[1.12, 1.13)")
+// The value here should match an entry in the META-INF/mods.toml file
+@Mod(CommonReference.MOD_ID)
 public class ShearMadnessMod
 {
-    public static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(CommonReference.MOD_ID);
+    // Directly reference a log4j logger.
+    public static final Logger LOGGER = LogManager.getLogger(CommonReference.MOD_ID);
+    public static SimpleChannel CHANNEL;
+    public static IEventBus MOD_EVENT_BUS;
 
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
+    public ShearMadnessMod() {
+        // Register the setup method for modloading
+        MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
+        MOD_EVENT_BUS.addListener(this::setup);
+        // Register the doClientStuff method for modloading
+        MOD_EVENT_BUS.addListener(this::doClientStuff);
+        MOD_EVENT_BUS.addListener(this::processIMC);
+
+        ConfigurationHandler.build();
+
+        ModLoadingContext modLoadingContext = ModLoadingContext.get();
+        modLoadingContext.registerConfig(ModConfig.Type.COMMON, ConfigurationHandler.COMMON_CONFIG);
+        modLoadingContext.registerConfig(ModConfig.Type.CLIENT, ConfigurationHandler.CLIENT_CONFIG);
+
+        ConfigurationHandler.loadConfig(ConfigurationHandler.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("shearmadness-client.toml"));
+        ConfigurationHandler.loadConfig(ConfigurationHandler.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("shearmadness-common.toml"));
+    }
+
+    private void setup(final FMLCommonSetupEvent event)
     {
-        ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+        CHANNEL = NetworkRegistry.newSimpleChannel(Reference.CHANNEL_NAME, () -> "1.0", s -> true, s -> true);
 
-        if (!Settings.isReleaseBuild()) {
-            Logger.info("You are not running a release build of Shear Madness. This message is purely for informational purposes.");
-        }
+        int packetId = 0;
+        CHANNEL.registerMessage(++packetId, CheckSheepChiseledRequestMessage.class,
+                CheckSheepChiseledRequestMessage::toBytes,
+                CheckSheepChiseledRequestMessage::new,
+                CheckSheepChiseledRequestMessage::handle);
 
-        //Networking
-        CHANNEL.registerMessage(CheckSheepChiseledRequestMessageHandler.class, CheckSheepChiseledRequestMessage.class, 0, Side.SERVER);
-        CHANNEL.registerMessage(SheepChiseledMessageHandler.class, SheepChiseledMessage.class, 1, Side.CLIENT);
-        CHANNEL.registerMessage(SpawnCustomParticleMessageHandler.class, SpawnCustomParticleMessage.class, 2, Side.CLIENT);
-        CHANNEL.registerMessage(PlayCustomSoundMessageHandler.class, PlayCustomSoundMessage.class, 3, Side.CLIENT);
-        CHANNEL.registerMessage(SheepChiselDataUpdatedMessageHandler.class, SheepChiselDataUpdatedMessage.class, 4, Side.CLIENT);
+        CHANNEL.registerMessage(++packetId, SheepChiseledMessage.class,
+                SheepChiseledMessage::toBytes,
+                SheepChiseledMessage::new,
+                SheepChiseledMessage::handle);
+
+        CHANNEL.registerMessage(++packetId, SheepChiselDataUpdatedMessage.class,
+                SheepChiselDataUpdatedMessage::toBytes,
+                SheepChiselDataUpdatedMessage::new,
+                SheepChiselDataUpdatedMessage::handle);
+
+        CHANNEL.registerMessage(++packetId, PlayCustomSoundMessage.class,
+                PlayCustomSoundMessage::toBytes,
+                PlayCustomSoundMessage::new,
+                PlayCustomSoundMessage::handle);
 
         //Capabilities
         CapabilityManager.INSTANCE.register(IChiseledSheepCapability.class, ChiseledSheepCapabilityStorage.instance, ChiseledSheepCapability::new);
 
         MinecraftForge.EVENT_BUS.post(new RegisterAdditionalCapabilitiesEvent());
-    }
 
-    @EventHandler
-    public void init(FMLInitializationEvent event)
-    {
-        MinecraftForge.EVENT_BUS.post(new RegisterShearMadnessBehaviourEvent(BehaviourRegistry.INSTANCE));
 
     }
 
-    @EventHandler
-    public void onMissingBlockMapping(RegistryEvent.MissingMappings<Block> event) {
-        Logger.info("Repairing missing mappings");
-        for (RegistryEvent.MissingMappings.Mapping<Block> missingMapping : event.getMappings()) {
-            String resourcePath = missingMapping.key.getResourcePath().toLowerCase();
+    private void processIMC(final InterModProcessEvent event) {
+        event.getIMCStream(CommonReference.IMCMethods.REGISTER_VARIATIONS::equals).forEach(imcMessage -> {
+            IRegisterShearMadnessVariations messageSupplier = imcMessage.<IRegisterShearMadnessVariations>getMessageSupplier().get();
+            messageSupplier.registerVariations(VariationRegistry.INSTANCE);
+        });
 
-            if ("invisibleredstone".equals(resourcePath)) {
-                missingMapping.remap(BlockLibrary.invisible_redstone);
-            } else if ("invisibleglowstone".equals(resourcePath)) {
-                missingMapping.remap(BlockLibrary.invisible_glowstone);
-            } else if ("invisiblebookshelf".equals(resourcePath)) {
-                missingMapping.remap(BlockLibrary.invisible_bookshelf);
-            }
-        }
+        event.getIMCStream(CommonReference.IMCMethods.REGISTER_BEHAVIOURS::equals).forEach(imcMessage -> {
+            IRegisterShearMadnessBehaviours messageSupplier = imcMessage.<IRegisterShearMadnessBehaviours>getMessageSupplier().get();
+            messageSupplier.registerBehaviours(BehaviourRegistry.INSTANCE);
+        });
     }
 
-    @EventHandler
-    public void onMissingItemMapping(RegistryEvent.MissingMappings<Item> event) {
-        Logger.info("Repairing missing mappings");
-        for (RegistryEvent.MissingMappings.Mapping<Item> missingMapping : event.getMappings()) {
-            String resourcePath = missingMapping.key.getResourcePath().toLowerCase();
-            if ("invisibleredstone".equals(resourcePath)) {
-                missingMapping.remap(Item.getItemFromBlock(BlockLibrary.invisible_redstone));
-            } else if ("invisibleglowstone".equals(resourcePath)) {
-                missingMapping.remap(Item.getItemFromBlock(BlockLibrary.invisible_glowstone));
-            } else if ("invisiblebookshelf".equals(resourcePath)) {
-                missingMapping.remap(Item.getItemFromBlock(BlockLibrary.invisible_bookshelf));
-            }
-        }
-    }
-
-    @EventHandler
-    public void onServerStarting(FMLServerStartingEvent event) {
-        List<CommandBase> childCommands = Lists.newArrayList();
-
-        MinecraftForge.EVENT_BUS.post(new RegisterShearMadnessCommandEvent(childCommands));
-
-        event.registerServerCommand(new ShearMadnessCommand(childCommands));
+    private void doClientStuff(final FMLClientSetupEvent event) {
+        ScreenManager.registerFactory(ContainerTypeLibrary.not_a_chisel_container_type, NotAChiselScreen::new);
     }
 }

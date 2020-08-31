@@ -1,73 +1,65 @@
 package com.github.atomicblom.shearmadness.rendering;
 
+import com.github.atomicblom.shearmadness.ShearMadnessMod;
 import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.VariationRegistry;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
-import com.github.atomicblom.shearmadness.capability.CapabilityProvider;
+import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.configuration.Settings;
-import com.github.atomicblom.shearmadness.utility.Logger;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Sets;
-import mcp.MethodsReturnNonnullByDefault;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelQuadruped;
-import net.minecraft.client.model.ModelSheep1;
-import net.minecraft.client.model.ModelSheep2;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.entity.model.QuadrupedModel;
+import net.minecraft.client.renderer.entity.model.SheepModel;
+import net.minecraft.client.renderer.entity.model.SheepWoolModel;
 import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.logging.log4j.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashSet;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-@SuppressWarnings("StaticNonFinalField")
-@SideOnly(Side.CLIENT)
-@ParametersAreNonnullByDefault
-public class LayerSheepChiselWool implements LayerRenderer<SheepEntity>
-{
-    private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/sheep/sheep_fur.png");
+import static com.github.atomicblom.shearmadness.utility.Reference.Textures.SHEEP_WOOL_TEXTURE;
 
+@OnlyIn(Dist.CLIENT)
+@ParametersAreNonnullByDefault
+public class LayerSheepChiselWool extends LayerRenderer<SheepEntity, SheepModel<SheepEntity>> {
     private final RenderChiselSheep sheepRenderer;
-    private final Cache<Integer, ModelQuadruped> modelCache = CacheBuilder.newBuilder()
+    private final Cache<Integer, QuadrupedModel<SheepEntity>> modelCache = CacheBuilder.newBuilder()
             .expireAfterAccess(5, TimeUnit.MINUTES)
             .build();
     private final HashSet<Integer> badModels = Sets.newHashSet();
 
-    private final ModelQuadruped defaultBody;
+    private final QuadrupedModel<SheepEntity> defaultBody;
     private final IModelMaker errorModelMaker = new ErrorModelMaker();
-    private ModelQuadruped sheepModel;
-    public LayerSheepChiselWool(RenderChiselSheep sheepRendererIn)
-    {
-        sheepRenderer = sheepRendererIn;
-        defaultBody = new ModelSheep1();
+    private QuadrupedModel<SheepEntity> sheepModel;
+
+    public LayerSheepChiselWool(RenderChiselSheep renderChiselSheep) {
+        super(renderChiselSheep);
+        sheepRenderer = renderChiselSheep;
+        defaultBody = new SheepWoolModel<>();
         sheepModel = defaultBody;
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
-    public void doRenderLayer(SheepEntity sheep, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
-    {
-        if (!sheep.getSheared() && !sheep.isInvisible())
-        {
-            final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
-            if (capability.isChiseled())
-            {
+    public void render(SheepEntity sheep, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        if (!sheep.getSheared() && !sheep.isInvisible()) {
+            final LazyOptional<IChiseledSheepCapability> possibleCapability = sheep.getCapability(Capability.CHISELED_SHEEP);
+
+            IChiseledSheepCapability capability = possibleCapability.orElse(new ChiseledSheepCapability());
+            if (capability.isChiseled()) {
                 final int itemIdentifier = capability.getItemIdentifier();
                 final ItemStack itemStack = capability.getChiselItemStack();
-                try
-                {
+                try {
                     if (Settings.debugModels()) {
                         modelCache.invalidate(itemIdentifier);
                     }
@@ -82,17 +74,22 @@ public class LayerSheepChiselWool implements LayerRenderer<SheepEntity>
                             final IModelMaker variationModelMaker = VariationRegistry.INSTANCE.getVariationModelMaker(itemStack);
                             return variationModelMaker.createModel(itemStack, sheep);
                         } catch (Exception e) {
-                            Logger.log(Level.INFO, e, "Error creating chiseled sheep model, item stack was %s", itemStack);
+                            ShearMadnessMod.LOGGER.error("Error creating chiseled sheep model, item stack was {} - {}", itemStack, e);
                             return errorModelMaker.createModel(null, sheep);
                         }
                     });
-                    sheepRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                    Minecraft.getInstance().getTextureMap().bindTexture();
 
                     final Item item = itemStack.getItem();
-                    if (item instanceof ItemBlock)
-                    {
-                        final int colorMultiplier = Minecraft.getMinecraft().getBlockColors().colorMultiplier(((ItemBlock) item).getBlock().getDefaultState(), sheep.getEntityWorld(), sheep.getPosition(), 0);
-                        GlStateManager.color(
+                    if (item instanceof BlockItem) {
+                        final int colorMultiplier = Minecraft.getInstance()
+                                .getBlockColors()
+                                .getColor(
+                                        ((BlockItem) item).getBlock().getDefaultState(),
+                                        sheep.getEntityWorld(),
+                                        sheep.getPosition(),
+                                        0);
+                        GlStateManager.color3f(
                                 (colorMultiplier >> 16 & 255) / 255.0F, //Red
                                 (colorMultiplier >> 8 & 255) / 255.0F, //Green
                                 (colorMultiplier & 255) / 255.0F); //Blue
@@ -102,15 +99,14 @@ public class LayerSheepChiselWool implements LayerRenderer<SheepEntity>
                 } catch (final Exception exception) {
                     badModels.add(itemIdentifier);
                     modelCache.put(itemIdentifier, errorModelMaker.createModel(null, sheep));
-                    Logger.warning("Error rendering chiselled sheep with item %s - %s", itemStack, exception);
+                    ShearMadnessMod.LOGGER.warn("Error rendering chiselled sheep with item {} - {}", itemStack, exception);
                 }
-            } else
-            {
+            } else {
                 sheepModel = defaultBody;
-                sheepRenderer.bindTexture(TEXTURE);
+                sheepRenderer.bindTexture(SHEEP_WOOL_TEXTURE);
 
                 final float[] afloat = SheepEntity.getDyeRgb(sheep.getFleeceColor());
-                GlStateManager.color(afloat[0], afloat[1], afloat[2]);
+                GlStateManager.color3f(afloat[0], afloat[1], afloat[2]);
 
                 renderModel(sheep, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
             }
@@ -118,17 +114,13 @@ public class LayerSheepChiselWool implements LayerRenderer<SheepEntity>
     }
 
     public void renderModel(SheepEntity sheep, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        sheepModel.setModelAttributes(sheepRenderer.getMainModel());
+        this.getEntityModel().setModelAttributes(this.sheepModel);
         sheepModel.setLivingAnimations(sheep, limbSwing, limbSwingAmount, partialTicks);
         sheepModel.render(sheep, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
     }
 
     @Override
-    public boolean shouldCombineTextures()
-    {
+    public boolean shouldCombineTextures() {
         return true;
     }
-
-
 }
-

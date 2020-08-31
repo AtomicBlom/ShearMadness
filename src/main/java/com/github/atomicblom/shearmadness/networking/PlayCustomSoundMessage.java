@@ -1,15 +1,17 @@
 package com.github.atomicblom.shearmadness.networking;
 
-import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 
-public class PlayCustomSoundMessage implements IMessage
+import java.util.function.Supplier;
+
+public class PlayCustomSoundMessage
 {
     private double posX;
     private double posY;
@@ -20,8 +22,18 @@ public class PlayCustomSoundMessage implements IMessage
     private float pitch;
     private boolean distanceDelay;
 
-    public PlayCustomSoundMessage()
+    public PlayCustomSoundMessage(PacketBuffer buf)
     {
+        this.posX = buf.readDouble();
+        this.posY = buf.readDouble();
+        this.posZ = buf.readDouble();
+
+        this.category = SoundCategory.values()[buf.readInt()];
+        this.soundIn = new ResourceLocation(buf.readString(255));
+
+        this.volume = buf.readFloat();
+        this.pitch = buf.readFloat();
+        this.distanceDelay = buf.readBoolean();
     }
 
     public PlayCustomSoundMessage(double posX, double posY, double posZ, SoundEvent soundIn, SoundCategory category, float volume, float pitch, boolean distanceDelay) {
@@ -36,29 +48,8 @@ public class PlayCustomSoundMessage implements IMessage
         this.distanceDelay = distanceDelay;
     }
 
-    /**
-     * Reads the raw packet data from the data stream.
-     */
-    @Override
-    public void fromBytes(ByteBuf byteBuf) {
-        PacketBuffer buf = new PacketBuffer(byteBuf);
-
-        this.posX = buf.readDouble();
-        this.posY = buf.readDouble();
-        this.posZ = buf.readDouble();
-
-        this.category = SoundCategory.values()[buf.readInt()];
-        this.soundIn = new ResourceLocation(buf.readString(255));
-
-        this.volume = buf.readFloat();
-        this.pitch = buf.readFloat();
-        this.distanceDelay = buf.readBoolean();
-    }
-
-    @Override
-    public void toBytes(ByteBuf byteBuf) {
-        PacketBuffer buf = new PacketBuffer(byteBuf);
-
+    public void toBytes(PacketBuffer buf)
+    {
         buf.writeDouble(this.posX);
         buf.writeDouble(this.posY);
         buf.writeDouble(this.posZ);
@@ -71,43 +62,18 @@ public class PlayCustomSoundMessage implements IMessage
         buf.writeBoolean(this.distanceDelay);
     }
 
-    @SideOnly(Side.CLIENT)
-    public double getPosX() {
-        return posX;
-    }
+    public void handle(Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            final IForgeRegistry<SoundEvent> registry = GameRegistry.findRegistry(SoundEvent.class);
 
-    @SideOnly(Side.CLIENT)
-    public double getPosY() {
-        return posY;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public double getPosZ() {
-        return posZ;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public ResourceLocation getSoundEvent() {
-        return soundIn;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public SoundCategory getCategory() {
-        return category;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public float getVolume() {
-        return volume;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public float getPitch() {
-        return pitch;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public boolean shouldDistanceDelay() {
-        return distanceDelay;
+            Minecraft.getInstance().player.world.playSound(
+                    this.posX, this.posY, this.posZ,
+                    registry.getValue(this.soundIn),
+                    this.category,
+                    this.volume,
+                    this.pitch,
+                    this.distanceDelay
+            );
+        });
     }
 }

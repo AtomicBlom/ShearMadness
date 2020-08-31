@@ -1,20 +1,23 @@
 package com.github.atomicblom.shearmadness.capability;
 
-import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
 
+import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.github.atomicblom.shearmadness.api.Capability.CHISELED_SHEEP;
 
-@SuppressWarnings({"ObjectEquality", "ConstantConditions", "ClassHasNoToStringMethod"})
+@SuppressWarnings({"ObjectEquality", "ClassHasNoToStringMethod"})
 @ParametersAreNonnullByDefault
-public class CapabilityProvider implements ICapabilityProvider, INBTSerializable<NBTBase>
+public class CapabilityProvider implements ICapabilityProvider, INBTSerializable<INBT>
 {
     private final IChiseledSheepCapability capability;
 
@@ -23,31 +26,25 @@ public class CapabilityProvider implements ICapabilityProvider, INBTSerializable
         capability = new ChiseledSheepCapability();
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
-    {
-        return capability == CHISELED_SHEEP;
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing)
     {
         if (capability == CHISELED_SHEEP)
         {
-            return CHISELED_SHEEP.cast(this.capability);
+            return LazyOptional.of(() -> this.capability).cast();
         }
-        //noinspection ReturnOfNull
-        return null;
+        return LazyOptional.empty();
     }
 
     @Override
-    public NBTBase serializeNBT()
+    public INBT serializeNBT()
     {
         return ChiseledSheepCapabilityStorage.instance.writeNBT(CHISELED_SHEEP, capability, null);
     }
 
     @Override
-    public void deserializeNBT(NBTBase nbt)
+    public void deserializeNBT(INBT nbt)
     {
         ChiseledSheepCapabilityStorage.instance.readNBT(CHISELED_SHEEP, capability, null, nbt);
     }

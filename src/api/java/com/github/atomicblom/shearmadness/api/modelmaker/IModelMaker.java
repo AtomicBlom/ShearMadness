@@ -1,7 +1,5 @@
 package com.github.atomicblom.shearmadness.api.modelmaker;
 
-import com.github.atomicblom.shearmadness.api.rendering.EntityMesh;
-import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -17,6 +15,11 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
+import com.github.atomicblom.shearmadness.api.rendering.EntityMesh;
+import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
+import com.github.atomicblom.shearmadness.api.rendering.vector.*;
+
+import java.util.Random;
 
 /**
  * Creates a custom Quadruped model
@@ -25,6 +28,7 @@ import net.minecraftforge.client.ForgeHooksClient;
 @OnlyIn(Dist.CLIENT)
 public interface IModelMaker
 {
+
     /**
      * Create a model for a quadruped entity based on what has been chiseled onto it.
      * @param itemStack The item that was in the chisel when it was applied to the entity
@@ -40,7 +44,7 @@ public interface IModelMaker
      * @param model the IBakedModel to transform
      * @return a body part for the entity
      */
-    default ModelRenderer getModelRendererForBlockState(PartDefinition partDefinition, BlockState blockState, IBakedModel model)
+    default ModelRenderer getModelRendererForBlockState(PartDefinition partDefinition, BlockState blockState, IBakedModel model, String partName)
     {
         final ModelRenderer renderer = new ModelRenderer(new SheepWoolModel<>(), 0, 0);
         if (partDefinition == null) {
@@ -53,7 +57,6 @@ public interface IModelMaker
         );
 
         final EntityMesh box = new EntityMesh(renderer);
-
         addBlockModelToEntityMesh(box, partDefinition, blockState, model);
 
         renderer.cubeList.add(box);
@@ -74,37 +77,41 @@ public interface IModelMaker
         return renderer;
     }
 
+    @SuppressWarnings("deprecation")
     default EntityMesh addBlockModelToEntityMesh(EntityMesh box, PartDefinition partDefinition, BlockState blockState, IBakedModel model) {
         final Matrix4f positionTransform = partDefinition.getPositionTransform();
         final Matrix3f textureTransform = partDefinition.getTextureTransform();
+
+        Random random = new Random();
+
         //FIXME: When chisel start reporting their render layers correctly, we can improve this logic.
         //if (blockState == null || blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.SOLID)) {
             ForgeHooksClient.setRenderLayer(RenderType.getSolid());
             for (final Direction value : Direction.values())
             {
-                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, 0));
+                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, random));
             }
-            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, 0));
+            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, random));
         //}
         //if (blockState != null && blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.CUTOUT)) {
             ForgeHooksClient.setRenderLayer(RenderType.getCutout());
             for (final Direction value : Direction.values())
             {
-                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, 0));
+                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, random));
             }
-            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, 0));
+            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, random));
         //}
         //if (blockState != null && blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.CUTOUT_MIPPED)) {
             ForgeHooksClient.setRenderLayer(RenderType.getCutoutMipped());
             for (final Direction value : Direction.values())
             {
-                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, 0));
+                box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, random));
             }
-            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, 0));
+            box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, null, random));
         //}
         /*if (blockState != null && blockState.getBlock().canRenderInLayer(blockState, BlockRenderLayer.TRANSLUCENT)) {
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.TRANSLUCENT);
-            for (final Direction value : Direction.values())
+            for (final EnumFacing value : EnumFacing.VALUES)
             {
                 box.addBakedQuads(positionTransform, textureTransform, model.getQuads(blockState, value, 0));
             }
