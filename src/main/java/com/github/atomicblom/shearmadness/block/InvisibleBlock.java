@@ -4,7 +4,7 @@ import com.github.atomicblom.shearmadness.configuration.Settings;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -33,14 +33,14 @@ public abstract class InvisibleBlock extends Block
     @Nullable
     @Override
     @Deprecated
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos)
+    public AxisAlignedBB getCollisionBoundingBox(BlockState blockState, IBlockAccess worldIn, BlockPos pos)
     {
         return Block.NULL_AABB;
     }
 
     @Override
     @Deprecated
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_) {
+    public void addCollisionBoxToList(BlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_) {
         super.addCollisionBoxToList(state, worldIn, pos, entityBox, collidingBoxes, entityIn, p_185477_7_);
     }
 
@@ -51,14 +51,14 @@ public abstract class InvisibleBlock extends Block
     }
 
     @Override
-    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos)
+    public int getLightOpacity(BlockState state, IBlockAccess world, BlockPos pos)
     {
         return 0;
     }
 
     @Override
     @Deprecated
-    public EnumBlockRenderType getRenderType(IBlockState state)
+    public EnumBlockRenderType getRenderType(BlockState state)
     {
         return Settings.debugInvisibleBlocks() ?
                 EnumBlockRenderType.MODEL :
@@ -67,14 +67,14 @@ public abstract class InvisibleBlock extends Block
 
     @Override
     @Deprecated
-    public boolean isFullBlock(IBlockState state)
+    public boolean isFullBlock(BlockState state)
     {
         return false;
     }
 
     @Override
     @Deprecated
-    public boolean isOpaqueCube(IBlockState state)
+    public boolean isOpaqueCube(BlockState state)
     {
         return false;
     }

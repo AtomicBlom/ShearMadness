@@ -1,8 +1,5 @@
 package com.github.atomicblom.shearmadness.api.events;
 
-import net.minecraft.command.CommandBase;
-import net.minecraftforge.fml.common.eventhandler.Event;
-
 import java.util.List;
 
 public class RegisterShearMadnessCommandEvent extends Event {

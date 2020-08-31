@@ -8,7 +8,7 @@ import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import javax.annotation.Nonnull;
 
@@ -61,10 +61,10 @@ public final class Chiseling
 
     private static boolean changeChiselBlock(ItemStack heldChisel, IChiseledSheepCapability capability, boolean isCreative)
     {
-        final NBTTagCompound tagCompound = heldChisel.getTagCompound();
+        final CompoundNBT tagCompound = heldChisel.getTagCompound();
         assert tagCompound != null;
-        final NBTTagCompound chiselData = tagCompound.getCompoundTag("chiseldata");
-        final NBTTagCompound chiselTarget = chiselData.getCompoundTag("target");
+        final CompoundNBT chiselData = tagCompound.getCompoundTag("chiseldata");
+        final CompoundNBT chiselTarget = chiselData.getCompoundTag("target");
         if (!chiselTarget.hasKey("id")) {
             return false;
         }
@@ -96,11 +96,11 @@ public final class Chiseling
 
     private static boolean hasChiselBlock(ItemStack heldChisel)
     {
-        final NBTTagCompound tagCompound = heldChisel.getTagCompound();
+        final CompoundNBT tagCompound = heldChisel.getTagCompound();
         if (tagCompound != null)
         {
-            final NBTTagCompound chiseldata = tagCompound.getCompoundTag("chiseldata");
-            final NBTTagCompound chiselTarget = chiseldata.getCompoundTag("target");
+            final CompoundNBT chiseldata = tagCompound.getCompoundTag("chiseldata");
+            final CompoundNBT chiselTarget = chiseldata.getCompoundTag("target");
             if (chiselTarget.hasKey("id"))
             {
                 return true;

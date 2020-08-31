@@ -5,8 +5,8 @@ import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapabilit
 import com.github.atomicblom.shearmadness.utility.SoundLibrary;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -47,12 +47,12 @@ public class SheepChiseledMessageHandler implements IMessageHandler<SheepChisele
 
         capability.setItemVariantIdentifier(message.getItemVariantIdentifier());
 
-        final NBTTagCompound extraData = capability.getExtraData();
+        final CompoundNBT extraData = capability.getExtraData();
         for (final String key : extraData.getKeySet()) {
             extraData.removeTag(key);
         }
 
-        final NBTTagCompound newData = message.getExtraData();
+        final CompoundNBT newData = message.getExtraData();
         for (final String key : newData.getKeySet()) {
             extraData.setTag(key, newData.getTag(key).copy());
         }

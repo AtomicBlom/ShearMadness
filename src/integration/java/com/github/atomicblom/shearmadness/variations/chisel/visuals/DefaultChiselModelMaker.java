@@ -3,7 +3,7 @@ package com.github.atomicblom.shearmadness.variations.chisel.visuals;
 import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
 import com.github.atomicblom.shearmadness.api.rendering.PartDefinition;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelRenderer;
@@ -48,7 +48,7 @@ public class DefaultChiselModelMaker implements IModelMaker
 
     private ModelRenderer getChiselBodyModelRenderer(ICarvingVariation variation, PartDefinition partDefinition, World world, BlockPos position)
     {
-        final IBlockState blockState = variation.getBlockState();
+        final BlockState blockState = variation.getBlockState();
         final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
         CTMExtendedState chiselState = new CTMExtendedState(blockState, world, position);
         final IBakedModel model = blockRenderer.getModelForState(blockState);

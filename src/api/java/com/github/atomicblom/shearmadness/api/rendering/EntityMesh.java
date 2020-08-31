@@ -1,20 +1,13 @@
 package com.github.atomicblom.shearmadness.api.rendering;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.PositionTextureVertex;
-import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -26,13 +19,13 @@ import java.util.List;
  * Add BakedQuads using the addBakedQuads method.
  * Note that TexturedQuads only have Position and UV information, other data will be discarded.
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
-public class EntityMesh extends ModelBox
+public class EntityMesh extends ModelRenderer
 {
     private final List<FutureQuad<BakedQuad>> allBakedQuads = new ArrayList<>(6);
-    private final List<FutureQuad<TexturedQuad>> allTexturedQuads = new ArrayList<>(6);
-    private TexturedQuad[] quadList = null;
+    private final List<FutureQuad<ModelRenderer.TexturedQuad>> allTexturedQuads = new ArrayList<>(6);
+    private ModelRenderer.TexturedQuad[] quadList = null;
     private boolean errored;
 
     public EntityMesh(ModelRenderer renderer)
@@ -65,19 +58,19 @@ public class EntityMesh extends ModelBox
 
     @SuppressWarnings("ObjectAllocationInLoop")
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void render(BufferBuilder renderer, float scale)
     {
         if (quadList == null)
         {
-            final List<TexturedQuad> outputQuads = Lists.newArrayList();
+            final List<ModelRenderer.TexturedQuad> outputQuads = Lists.newArrayList();
 
-            for (final FutureQuad<TexturedQuad> texturedQuads : allTexturedQuads) {
-                for (final TexturedQuad texturedQuad : texturedQuads.quads) {
-                    final PositionTextureVertex[] newPositions = new PositionTextureVertex[4];
+            for (final FutureQuad<ModelRenderer.TexturedQuad> texturedQuads : allTexturedQuads) {
+                for (final ModelRenderer.TexturedQuad texturedQuad : texturedQuads.quads) {
+                    final ModelRenderer.PositionTextureVertex[] newPositions = new ModelRenderer.PositionTextureVertex[4];
                     for (int i = 0; i < texturedQuad.vertexPositions.length; i++)
                     {
-                        final PositionTextureVertex vertexPosition = texturedQuad.vertexPositions[i];
+                        final ModelRenderer.PositionTextureVertex vertexPosition = texturedQuad.vertexPositions[i];
                         @SuppressWarnings("NumericCastThatLosesPrecision")
                         final Vector4f position = new Vector4f((float) vertexPosition.vector3D.x,
                                 (float) vertexPosition.vector3D.y,
@@ -91,7 +84,7 @@ public class EntityMesh extends ModelBox
                         final Vector4f transformedPosition = Matrix4f.transform(texturedQuads.positionTransform, position, null);
                         final Vector3f transformedTexture = Matrix3f.transform(texturedQuads.textureTransform, textureCoords, null);
 
-                        newPositions[i] = new PositionTextureVertex(
+                        newPositions[i] = new ModelRenderer.PositionTextureVertex(
                                 transformedPosition.getX(),
                                 transformedPosition.getY(),
                                 transformedPosition.getZ(),
@@ -100,7 +93,7 @@ public class EntityMesh extends ModelBox
                         );
                     }
 
-                    outputQuads.add(new TexturedQuad(newPositions));
+                    outputQuads.add(new ModelRenderer.PositionTextureVertex(newPositions));
                 }
 
             }
@@ -121,11 +114,11 @@ public class EntityMesh extends ModelBox
                 }
             }
 
-            quadList = new TexturedQuad[outputQuads.size()];
+            quadList = new ModelRenderer.PositionTextureVertex[outputQuads.size()];
             quadList = outputQuads.toArray(quadList);
         }
 
-        for (final TexturedQuad texturedquad : quadList)
+        for (final ModelRenderer.PositionTextureVertex texturedquad : quadList)
         {
             texturedquad.draw(renderer, scale);
         }

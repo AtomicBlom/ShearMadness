@@ -6,12 +6,12 @@ import com.github.atomicblom.shearmadness.variations.vanilla.behaviour.NoteBlock
 import com.github.atomicblom.shearmadness.variations.vanilla.interactions.AnvilInteraction;
 import com.github.atomicblom.shearmadness.variations.vanilla.interactions.EnchantmentInteraction;
 import com.github.atomicblom.shearmadness.variations.vanilla.interactions.WorkbenchInteraction;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber
 public class VanillaInteractions {
@@ -19,8 +19,8 @@ public class VanillaInteractions {
     @SubscribeEvent
     public static void onInteraction(ShearMadnessSpecialInteractionEvent event) {
         final ItemStack itemStack = event.getItemStack();
-        final EntitySheep sheep = event.getSheep();
-        final EntityPlayer player = event.getPlayer();
+        final SheepEntity sheep = event.getSheep();
+        final PlayerEntity player = event.getPlayer();
         if (ItemStackHelper.isStackForBlock(itemStack, Blocks.ANVIL)) {
             player.displayGui(new AnvilInteraction(event.getWorld(), sheep));
         }
@@ -30,7 +30,7 @@ public class VanillaInteractions {
         if (ItemStackHelper.isStackForBlock(itemStack, Blocks.ENCHANTING_TABLE)) {
             player.displayGui(new EnchantmentInteraction(event.getWorld(), sheep));
         }
-        if (ItemStackHelper.isStackForBlock(itemStack, Blocks.NOTEBLOCK)) {
+        if (ItemStackHelper.isStackForBlock(itemStack, Blocks.NOTE_BLOCK)) {
             NoteBlockBehaviour.tuneNoteBlockSheep(event.getSheep());
         }
     }

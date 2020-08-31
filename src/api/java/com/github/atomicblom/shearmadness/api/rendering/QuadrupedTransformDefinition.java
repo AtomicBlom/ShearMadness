@@ -1,17 +1,14 @@
 package com.github.atomicblom.shearmadness.api.rendering;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.Optional;
 
 /**
  * A set of transformations for a quadruped's body parts.
  */
 @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "ProtectedField"})
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class QuadrupedTransformDefinition
 {
     public QuadrupedTransformDefinition()

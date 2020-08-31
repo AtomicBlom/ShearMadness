@@ -10,7 +10,7 @@ import com.github.atomicblom.shearmadness.utility.Logger;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -18,7 +18,7 @@ import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -41,7 +41,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
     private ItemStack[] originalCraftingGrid = new ItemStack[9];
 
 
-    public FollowAutoCraftItems(EntitySheep entity) {
+    public FollowAutoCraftItems(SheepEntity entity) {
 
         super(entity);
         for (int i = 0; i < 9; i++) {
@@ -53,7 +53,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
     @Override
     public void updateTask() {
-        final EntitySheep entity = getEntity();
+        final SheepEntity entity = getEntity();
         final World worldObj = entity.getEntityWorld();
 
         if (eatingItemTimer > 0) {
@@ -90,14 +90,14 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         }
     }
 
-    private boolean findItemToConsume(EntitySheep entity, World worldObj, BlockPos position) {
+    private boolean findItemToConsume(SheepEntity entity, World worldObj, BlockPos position) {
         final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         assert capability != null;
-        final NBTTagCompound extraData = capability.getExtraData();
+        final CompoundNBT extraData = capability.getExtraData();
         if (!extraData.hasKey("AUTO_CRAFT")) {
             return true;
         }
-        final NBTTagCompound craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
+        final CompoundNBT craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
         if (craftMatrixNBT.hasKey("lastChanged")) {
             final long lastChanged = craftMatrixNBT.getLong("lastChanged");
             if (lastChanged != autocraftChangeTime) {
@@ -158,7 +158,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
 
     @Override
     public void onBehaviourStopped(BlockPos previousPos) {
-        final EntitySheep entity = getEntity();
+        final SheepEntity entity = getEntity();
         final World entityWorld = entity.getEntityWorld();
 
         for (int i = 0; i < 9; ++i) {
@@ -175,7 +175,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         }
         final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         assert capability != null;
-        final NBTTagCompound extraData = capability.getExtraData();
+        final CompoundNBT extraData = capability.getExtraData();
         extraData.removeTag("AUTO_CRAFT");
     }
 
@@ -218,7 +218,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         return itemsLeft;
     }
 
-    private void createItem(EntitySheep entity, World worldObj) {
+    private void createItem(SheepEntity entity, World worldObj) {
         InventoryCrafting crafting = new InventoryCrafting(new DumbContainer(), 3, 3);
         for (int i = 0; i < 9; ++i) {
             crafting.setInventorySlotContents(i, itemsConsumed[i]);
@@ -251,14 +251,14 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
     private void updateItemsConsumed() {
         final IChiseledSheepCapability capability = getEntity().getCapability(Capability.CHISELED_SHEEP, null);
         assert capability != null;
-        final NBTTagCompound extraData = capability.getExtraData();
+        final CompoundNBT extraData = capability.getExtraData();
         if (!extraData.hasKey("AUTO_CRAFT")) { return; }
-        final NBTTagCompound craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
+        final CompoundNBT craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
 
         if (!craftMatrixNBT.hasKey("CONSUMED")) {
-            craftMatrixNBT.setTag("CONSUMED", new NBTTagCompound());
+            craftMatrixNBT.setTag("CONSUMED", new CompoundNBT());
         }
-        final NBTTagCompound consumed = craftMatrixNBT.getCompoundTag("CONSUMED");
+        final CompoundNBT consumed = craftMatrixNBT.getCompoundTag("CONSUMED");
 
         for (int i = 0; i < 9; ++i)
         {
@@ -269,11 +269,11 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
         }
     }
 
-    private void reloadAutoCraftProperties(NBTTagCompound craftMatrixNBT) {
+    private void reloadAutoCraftProperties(CompoundNBT craftMatrixNBT) {
         if (!craftMatrixNBT.hasKey("CONSUMED")) {
-            craftMatrixNBT.setTag("CONSUMED", new NBTTagCompound());
+            craftMatrixNBT.setTag("CONSUMED", new CompoundNBT());
         }
-        final NBTTagCompound consumed = craftMatrixNBT.getCompoundTag("CONSUMED");
+        final CompoundNBT consumed = craftMatrixNBT.getCompoundTag("CONSUMED");
 
         itemsToCollect = new ItemStack[9];
         originalCraftingGrid = new ItemStack[9];
@@ -329,7 +329,7 @@ public class FollowAutoCraftItems extends BehaviourBase<FollowAutoCraftItems> {
     }
 
     private void updateItemVariantFromCraftingGrid(ItemStack[] originalCraftingGrid) {
-        final EntitySheep sheep = getEntity();
+        final SheepEntity sheep = getEntity();
         final World world = sheep.world;
         InventoryCrafting crafting = new InventoryCrafting(new DumbContainer(), 3, 3);
         for (int i = 0; i < 9; ++i) {

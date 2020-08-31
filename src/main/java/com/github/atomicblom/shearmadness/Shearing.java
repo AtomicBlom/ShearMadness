@@ -5,8 +5,8 @@ import com.github.atomicblom.shearmadness.configuration.Settings;
 import com.github.atomicblom.shearmadness.configuration.ShearBehaviour;
 import com.github.atomicblom.shearmadness.networking.SheepChiseledMessage;
 import com.github.atomicblom.shearmadness.utility.ItemStackUtils;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 
 import static com.github.atomicblom.shearmadness.ShearMadnessMod.CHANNEL;
@@ -15,7 +15,7 @@ public final class Shearing
 {
     private Shearing() {}
 
-    public static void shearSheep(ItemStack itemStack, EntitySheep sheep, IChiseledSheepCapability capability)
+    public static void shearSheep(ItemStack itemStack, SheepEntity sheep, IChiseledSheepCapability capability)
     {
         if (Settings.Shearing.getBehaviour() == ShearBehaviour.CannotShear) {
             //TODO: Play shear cancelled Sound.
@@ -32,7 +32,7 @@ public final class Shearing
         ItemStackUtils.dropItem(sheep, itemToDrop);
 
         sheep.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, 1.0F);
-        itemStack.damageItem(1, sheep);
+        itemStack.damageItem(1, sheep, (s) -> {});
 
         if (Settings.Shearing.getBehaviour() == ShearBehaviour.RevertSheep) {
             capability.unChisel();

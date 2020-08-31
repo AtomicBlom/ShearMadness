@@ -1,16 +1,15 @@
 package com.github.atomicblom.shearmadness.api.events;
 
 import com.github.atomicblom.shearmadness.api.IVariationRegistry;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Fired during the init phase of Forge, provides a mechanism for mods to register
  * how their blocks should be rendered by Shear Madness.
  * This event is only fired on clients.
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RegisterShearMadnessVariationEvent extends Event
 {
     private final IVariationRegistry registry;

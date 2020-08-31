@@ -13,7 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -40,7 +40,7 @@ public class EntityEventHandler
 	{
 		//Process for shearing a sheep
 		if (event.getWorld().isRemote) return;
-		if (!(event.getTarget() instanceof EntitySheep)) return;
+		if (!(event.getTarget() instanceof SheepEntity)) return;
 		final ItemStack itemStack = event.getItemStack();
 		if (itemStack.isEmpty()) {
 			checkSpecialSheepInteraction(event);
@@ -48,7 +48,7 @@ public class EntityEventHandler
 		}
 		if (!(itemStack.getItem() instanceof ItemShears)) return;
 
-		final EntitySheep sheep = (EntitySheep) event.getTarget();
+		final SheepEntity sheep = (SheepEntity) event.getTarget();
 		if (!sheep.isShearable(itemStack, event.getWorld(), event.getPos())) return;
 
 		final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
@@ -63,7 +63,7 @@ public class EntityEventHandler
 
 	private static void checkSpecialSheepInteraction(PlayerInteractEvent.EntityInteract event)
 	{
-		final EntitySheep sheep = (EntitySheep) event.getTarget();
+		final SheepEntity sheep = (SheepEntity) event.getTarget();
 		final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
 		if (capability == null) return;
 		if (!capability.isChiseled()) return;

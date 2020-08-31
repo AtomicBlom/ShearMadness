@@ -9,7 +9,7 @@ import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapabilit
 import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class SheepBehaviourAI extends EntityAIBase
 {
-    private final EntitySheep entity;
+    private final SheepEntity entity;
     private IChiseledSheepCapability capability = null;
     private int lastCheckedId = 0;
     private boolean hasActiveBehaviour = false;
@@ -31,8 +31,8 @@ public class SheepBehaviourAI extends EntityAIBase
         capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         //FIXME: Hack to disable this AI if it's not a sheep.
 
-        if (entity instanceof EntitySheep) {
-            this.entity = (EntitySheep)entity;
+        if (entity instanceof SheepEntity) {
+            this.entity = (SheepEntity)entity;
         } else {
             this.entity = null;
         }

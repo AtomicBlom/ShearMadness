@@ -4,7 +4,7 @@ import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -29,12 +29,12 @@ public class SheepChiselDataUpdatedMessageHandler implements IMessageHandler<She
         }
         capability.setItemVariantIdentifier(message.getItemVariantIdentifier());
 
-        final NBTTagCompound extraData = capability.getExtraData();
+        final CompoundNBT extraData = capability.getExtraData();
         for (final String key : extraData.getKeySet()) {
             extraData.removeTag(key);
         }
 
-        final NBTTagCompound newData = message.getExtraData();
+        final CompoundNBT newData = message.getExtraData();
         for (final String key : newData.getKeySet()) {
             extraData.setTag(key, newData.getTag(key).copy());
         }

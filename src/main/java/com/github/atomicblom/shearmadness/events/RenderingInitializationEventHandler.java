@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelSheep2;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -44,7 +44,7 @@ public class RenderingInitializationEventHandler
 	public static void onEntityRenderingOverridesReady(RegisterShearMadnessBehaviourEvent event) {
 		MinecraftForge.EVENT_BUS.post(new RegisterShearMadnessVariationEvent(VariationRegistry.INSTANCE));
 		final RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-		renderManager.entityRenderMap.remove(EntitySheep.class);
-		renderManager.entityRenderMap.put(EntitySheep.class, new RenderChiselSheep(renderManager, new ModelSheep2(), 0.7f));
+		renderManager.entityRenderMap.remove(SheepEntity.class);
+		renderManager.entityRenderMap.put(SheepEntity.class, new RenderChiselSheep(renderManager, new ModelSheep2(), 0.7f));
 	}
 }

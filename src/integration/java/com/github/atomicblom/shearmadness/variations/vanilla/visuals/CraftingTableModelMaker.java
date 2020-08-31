@@ -13,12 +13,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -62,17 +62,17 @@ public class CraftingTableModelMaker extends DefaultModelMaker {
 
     public ItemStack getCraftingItemStack(EntityLivingBase entity) {
 
-        if (!entity.hasCapability(Capability.CHISELED_SHEEP, null) && !(entity instanceof EntitySheep)) {
+        if (!entity.hasCapability(Capability.CHISELED_SHEEP, null) && !(entity instanceof SheepEntity)) {
             return ItemStack.EMPTY;
         }
 
         final IChiseledSheepCapability capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
         assert capability != null;
 
-        final NBTTagCompound extraData = capability.getExtraData();
+        final CompoundNBT extraData = capability.getExtraData();
         if (!extraData.hasKey("AUTO_CRAFT")) { return ItemStack.EMPTY; }
 
-        final NBTTagCompound craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
+        final CompoundNBT craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
 
         final ItemStack[] originalCraftingGrid = new ItemStack[9];
         for (int i = 0; i < 9; ++i)

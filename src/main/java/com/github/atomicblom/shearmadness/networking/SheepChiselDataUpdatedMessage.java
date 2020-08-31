@@ -3,21 +3,21 @@ package com.github.atomicblom.shearmadness.networking;
 import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class SheepChiselDataUpdatedMessage implements IMessage {
     private int sheepId;
-    private NBTTagCompound extraData;
+    private CompoundNBT extraData;
     private int itemVariantIdentifier;
 
     public SheepChiselDataUpdatedMessage() {
-        extraData = new NBTTagCompound();
+        extraData = new CompoundNBT();
     }
 
-    public SheepChiselDataUpdatedMessage(EntitySheep sheep) {
+    public SheepChiselDataUpdatedMessage(SheepEntity sheep) {
         sheepId = sheep.getEntityId();
         final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
         assert capability != null;
@@ -47,7 +47,7 @@ public class SheepChiselDataUpdatedMessage implements IMessage {
         return itemVariantIdentifier;
     }
 
-    public NBTTagCompound getExtraData() {
+    public CompoundNBT getExtraData() {
         return extraData;
     }
 }

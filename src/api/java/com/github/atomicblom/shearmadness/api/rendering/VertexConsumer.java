@@ -1,32 +1,27 @@
 package com.github.atomicblom.shearmadness.api.rendering;
 
-import net.minecraft.client.model.PositionTextureVertex;
-import net.minecraft.client.model.TexturedQuad;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
+
 import javax.annotation.Nullable;
 
 /**
  * Pipes a BakedQuad into a TexturedQuad
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 class VertexConsumer implements IVertexConsumer
 {
 
     private final VertexFormat vertexFormat;
     private final Matrix4f positionTransform;
     private final Matrix3f textureTransform;
-    private final PositionTextureVertex[] vertices = new PositionTextureVertex[4];
+    private final ModelRenderer.PositionTextureVertex[] vertices = new ModelRenderer.PositionTextureVertex[4];
 
     private int currentVertexIndex = -1;
     @Nullable
@@ -41,9 +36,9 @@ class VertexConsumer implements IVertexConsumer
         this.textureTransform = textureTransform;
     }
 
-    TexturedQuad getOutputQuad()
+    ModelRenderer.TexturedQuad getOutputQuad()
     {
-        return new TexturedQuad(vertices);
+        return new ModelRenderer.TexturedQuad(vertices);
     }
 
     @Override
@@ -59,7 +54,7 @@ class VertexConsumer implements IVertexConsumer
     }
 
     @Override
-    public void setQuadOrientation(EnumFacing orientation)
+    public void setQuadOrientation(Direction orientation)
     {
 
     }
@@ -84,7 +79,7 @@ class VertexConsumer implements IVertexConsumer
             ++currentVertexIndex;
         }
 
-        final VertexFormatElement element1 = vertexFormat.getElement(element);
+        final VertexFormatElement element1 = vertexFormat.getElements().get(element);
         switch (element1.getUsage())
         {
             case POSITION:
@@ -124,7 +119,7 @@ class VertexConsumer implements IVertexConsumer
                 throw new RuntimeException("Unexpected Vertex Format:\n" + vertexInfo);
             }
 
-            vertices[currentVertexIndex] = new PositionTextureVertex(currentPosition, currentTexture.x, currentTexture.y);
+            vertices[currentVertexIndex] = new ModelRenderer.PositionTextureVertex(currentPosition, currentTexture.x, currentTexture.y);
             currentPosition = null;
             currentTexture = null;
         }

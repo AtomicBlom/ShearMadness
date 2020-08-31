@@ -1,13 +1,12 @@
 package com.github.atomicblom.shearmadness.api.modelmaker;
 
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelQuadruped;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.ModelSheep1;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.entity.model.QuadrupedModel;
+import net.minecraft.client.renderer.entity.model.SheepWoolModel;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
 
 @SuppressWarnings("ClassHasNoToStringMethod")
@@ -15,7 +14,7 @@ public class DefaultModelMaker implements IModelMaker
 {
     private final QuadrupedTransformDefinition transforms;
 
-    public static ModelRenderer defaultRenderer = new ModelRenderer(new ModelSheep1(), 0, 0);
+    public static ModelRenderer defaultRenderer = new ModelRenderer(new SheepWoolModel<>(), 0, 0);
 
     public DefaultModelMaker(QuadrupedTransformDefinition transforms) {
         this.transforms = transforms;
@@ -25,10 +24,10 @@ public class DefaultModelMaker implements IModelMaker
     }
 
     @Override
-    public ModelQuadruped createModel(ItemStack itemStack, EntityLivingBase entity)
+    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity)
     {
         transforms.defineParts();
-        final ModelQuadruped quadrupedModel = new ModelSheep1();
+        final QuadrupedModel<SheepEntity> quadrupedModel = new SheepWoolModel<>();
         quadrupedModel.body = defaultRenderer;
         quadrupedModel.head = defaultRenderer;
         quadrupedModel.leg1 = defaultRenderer;

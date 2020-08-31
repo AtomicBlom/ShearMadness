@@ -7,7 +7,7 @@ import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
@@ -16,12 +16,12 @@ public class SheepChiseledMessage implements IMessage
     private int sheepId;
     private boolean isChiseled;
     private ItemStack itemStack = ItemStack.EMPTY;
-    private NBTTagCompound extraData;
+    private CompoundNBT extraData;
     private int itemVariantIdentifier;
 
     @SuppressWarnings("unused")
     public SheepChiseledMessage() {
-        extraData = new NBTTagCompound();
+        extraData = new CompoundNBT();
     }
 
     public SheepChiseledMessage(Entity sheep)
@@ -74,7 +74,7 @@ public class SheepChiseledMessage implements IMessage
         return itemVariantIdentifier;
     }
 
-    public NBTTagCompound getExtraData() {
+    public CompoundNBT getExtraData() {
         return extraData;
     }
 

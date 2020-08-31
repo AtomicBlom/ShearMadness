@@ -2,7 +2,7 @@ package com.github.atomicblom.shearmadness.api.capability;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -24,5 +24,5 @@ public interface IChiseledSheepCapability
 
     int getItemVariantIdentifier();
 
-    NBTTagCompound getExtraData();
+    CompoundNBT getExtraData();
 }

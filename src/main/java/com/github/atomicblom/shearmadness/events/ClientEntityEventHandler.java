@@ -2,7 +2,7 @@ package com.github.atomicblom.shearmadness.events;
 
 import com.github.atomicblom.shearmadness.networking.CheckSheepChiseledRequestMessage;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -18,7 +18,7 @@ public class ClientEntityEventHandler
 	public static void onEntityJoinWorldEvent(EntityJoinWorldEvent event)
 	{
 		final Entity entity = event.getEntity();
-		if (entity instanceof EntitySheep)
+		if (entity instanceof SheepEntity)
 		{
 			CHANNEL.sendToServer(new CheckSheepChiseledRequestMessage(entity));
 		}

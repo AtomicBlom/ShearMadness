@@ -3,20 +3,20 @@ package com.github.atomicblom.shearmadness.variations.vanilla.behaviour;
 import com.github.atomicblom.shearmadness.api.Capability;
 import com.github.atomicblom.shearmadness.api.behaviour.BehaviourBase;
 import com.github.atomicblom.shearmadness.api.capability.IChiseledSheepCapability;
-import net.minecraft.block.BlockNote;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.NoteBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.world.NoteBlockEvent;
 
 import java.util.function.Supplier;
@@ -24,14 +24,14 @@ import java.util.function.Supplier;
 public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
 
     private final World world;
-    private final IChiseledSheepCapability capability;
+    private final LazyOptional<IChiseledSheepCapability> capability;
     private boolean isTriggered = false;
     private BlockPos currentLocation = null;
 
-    public NoteBlockBehaviour(EntitySheep entity, Supplier<Boolean> configuration) {
+    public NoteBlockBehaviour(SheepEntity entity, Supplier<Boolean> configuration) {
         super(entity, configuration);
         world = entity.getEntityWorld();
-        capability = entity.getCapability(Capability.CHISELED_SHEEP, null);
+        capability = entity.getCapability(Capability.CHISELED_SHEEP);
     }
 
 
@@ -57,12 +57,12 @@ public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
         isTriggered = powered;
     }
 
-    public static void tuneNoteBlockSheep(EntitySheep sheep) {
+    public static void tuneNoteBlockSheep(SheepEntity sheep) {
         final World world = sheep.getEntityWorld();
 
         final IChiseledSheepCapability capability = sheep.getCapability(Capability.CHISELED_SHEEP, null);
         assert capability != null;
-        final NBTTagCompound extraData = capability.getExtraData();
+        final CompoundNBT extraData = capability.getExtraData();
         byte note = getTuning(extraData);
         note = (byte)((note + 1) % 25);
         extraData.setByte("NOTEBLOCK_TUNING", note);
@@ -71,13 +71,13 @@ public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
 
     }
 
-    public static byte getTuning(NBTTagCompound extraData) {
-        return extraData.hasKey("NOTEBLOCK_TUNING") ? extraData.getByte("NOTEBLOCK_TUNING") : 12;
+    public static byte getTuning(CompoundNBT extraData) {
+        return extraData.contains("NOTEBLOCK_TUNING") ? extraData.getByte("NOTEBLOCK_TUNING") : 12;
     }
 
     public static void triggerNoteBlock(World world, BlockPos currentLocation, IChiseledSheepCapability capability) {
-        final IBlockState blockState = world.getBlockState(currentLocation);
-        final IBlockState blockStateBeneath = world.getBlockState(currentLocation.down());
+        final BlockState blockState = world.getBlockState(currentLocation);
+        final BlockState blockStateBeneath = world.getBlockState(currentLocation.down());
         Material material = blockStateBeneath.getMaterial();
         int id = 0;
 
@@ -94,7 +94,7 @@ public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
             id = 4;
         }
 
-        final NBTTagCompound extraData = capability.getExtraData();
+        final CompoundNBT extraData = capability.getExtraData();
 
         int param = getTuning(extraData);
 
@@ -108,8 +108,8 @@ public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
             float f = (float) Math.pow(2.0D, (param - 12) / 12.0D);
             world.playSound(null, currentLocation, getInstrument(id), SoundCategory.RECORDS, 3.0F, f);
 
-            if (world instanceof WorldServer) {
-                WorldServer worldserver = (WorldServer) world;
+            if (world instanceof ServerWorld) {
+                ServerWorld worldserver = (ServerWorld) world;
                 worldserver.spawnParticle(
                         EnumParticleTypes.NOTE,
                         true,
@@ -130,12 +130,12 @@ public class NoteBlockBehaviour extends BehaviourBase<NoteBlockBehaviour> {
         if (id == -1) {
             return SoundEvents.ENTITY_SHEEP_AMBIENT;
         }
-        if (id < 0 || id >= BlockNote.INSTRUMENTS.size())
+        if (id < 0 || id >= NoteBlock.INSTRUMENTS.size())
         {
             id = 0;
         }
 
-        return BlockNote.INSTRUMENTS.get(id);
+        return NoteBlock.INSTRUMENTS.get(id);
     }
 
     @Override

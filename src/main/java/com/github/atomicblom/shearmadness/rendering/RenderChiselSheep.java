@@ -3,7 +3,7 @@ package com.github.atomicblom.shearmadness.rendering;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -12,7 +12,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @SideOnly(Side.CLIENT)
 @ParametersAreNonnullByDefault
-public class RenderChiselSheep extends RenderLiving<EntitySheep>
+public class RenderChiselSheep extends RenderLiving<SheepEntity>
 {
     private static final ResourceLocation SHEARED_SHEEP_TEXTURES = new ResourceLocation("textures/entity/sheep/sheep.png");
 
@@ -28,7 +28,7 @@ public class RenderChiselSheep extends RenderLiving<EntitySheep>
      * Render.bindEntityTexture.
      */
     @Override
-    protected ResourceLocation getEntityTexture(EntitySheep entity)
+    protected ResourceLocation getEntityTexture(SheepEntity entity)
     {
         return SHEARED_SHEEP_TEXTURES;
     }

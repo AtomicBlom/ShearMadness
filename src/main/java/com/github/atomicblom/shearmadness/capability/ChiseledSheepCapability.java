@@ -7,7 +7,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,7 +19,7 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability, IWrite
     private ItemStack itemStack = ItemStack.EMPTY;
     private int itemIdentifier;
     private int variantIdentifier;
-    private NBTTagCompound customData = null;
+    private CompoundNBT customData = null;
 
 
     @Override
@@ -65,15 +65,15 @@ public class ChiseledSheepCapability implements IChiseledSheepCapability, IWrite
     }
 
     @Override
-    public NBTTagCompound getExtraData() {
+    public CompoundNBT getExtraData() {
         if (customData == null) {
-            customData = new NBTTagCompound();
+            customData = new CompoundNBT();
         }
         return customData;
     }
 
     @Override
-    public void setExtraData(NBTTagCompound extraData) {
+    public void setExtraData(CompoundNBT extraData) {
         customData = extraData;
     }
 

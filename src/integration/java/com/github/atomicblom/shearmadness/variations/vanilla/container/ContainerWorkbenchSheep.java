@@ -9,7 +9,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -45,8 +45,8 @@ public class ContainerWorkbenchSheep extends ContainerWorkbench
 
     private void onContainerOpened() {
         if (!world.isRemote) {
-            final NBTTagCompound extraData = capability.getExtraData();
-            final NBTTagCompound craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
+            final CompoundNBT extraData = capability.getExtraData();
+            final CompoundNBT craftMatrixNBT = extraData.getCompoundTag("AUTO_CRAFT");
 
             for (int i = 0; i < 9; ++i)
             {
@@ -71,8 +71,8 @@ public class ContainerWorkbenchSheep extends ContainerWorkbench
     {
         if (!world.isRemote)
         {
-            final NBTTagCompound extraData = capability.getExtraData();
-            final NBTTagCompound craftMatrixNBT = new NBTTagCompound();
+            final CompoundNBT extraData = capability.getExtraData();
+            final CompoundNBT craftMatrixNBT = new CompoundNBT();
 
             for (int i = 0; i < 9; ++i)
             {

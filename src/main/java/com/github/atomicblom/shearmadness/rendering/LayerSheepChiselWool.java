@@ -18,7 +18,7 @@ import net.minecraft.client.model.ModelSheep2;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("StaticNonFinalField")
 @SideOnly(Side.CLIENT)
 @ParametersAreNonnullByDefault
-public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
+public class LayerSheepChiselWool implements LayerRenderer<SheepEntity>
 {
     private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/sheep/sheep_fur.png");
 
@@ -57,7 +57,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void doRenderLayer(EntitySheep sheep, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+    public void doRenderLayer(SheepEntity sheep, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
         if (!sheep.getSheared() && !sheep.isInvisible())
         {
@@ -109,7 +109,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
                 sheepModel = defaultBody;
                 sheepRenderer.bindTexture(TEXTURE);
 
-                final float[] afloat = EntitySheep.getDyeRgb(sheep.getFleeceColor());
+                final float[] afloat = SheepEntity.getDyeRgb(sheep.getFleeceColor());
                 GlStateManager.color(afloat[0], afloat[1], afloat[2]);
 
                 renderModel(sheep, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
@@ -117,7 +117,7 @@ public class LayerSheepChiselWool implements LayerRenderer<EntitySheep>
         }
     }
 
-    public void renderModel(EntitySheep sheep, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void renderModel(SheepEntity sheep, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         sheepModel.setModelAttributes(sheepRenderer.getMainModel());
         sheepModel.setLivingAnimations(sheep, limbSwing, limbSwingAmount, partialTicks);
         sheepModel.render(sheep, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
