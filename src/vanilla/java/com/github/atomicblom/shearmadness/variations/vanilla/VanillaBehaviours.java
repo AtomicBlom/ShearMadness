@@ -70,11 +70,4 @@ public class VanillaBehaviours
                 sheep -> new FollowAutoCraftItems(sheep, IntegrationSettings.Vanilla::allowAutoCrafting)
         );
     }
-
-    @SubscribeEvent
-    public static void onSheepKilled(ShearMadnessSheepKilledEvent event) {
-        if (ItemStackHelper.isStackForBlock(event.getChiselItemStack(), Blocks.TNT) && event.getSource().isExplosion()) {
-            event.noDrops();
-        }
-    }
 }

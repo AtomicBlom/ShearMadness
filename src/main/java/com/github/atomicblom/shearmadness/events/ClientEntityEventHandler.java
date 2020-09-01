@@ -30,7 +30,7 @@ public class ClientEntityEventHandler {
 
     @SubscribeEvent
     public static void onEntityJoinWorldEvent(EntityJoinWorldEvent event) {
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> {
+        if (event.getWorld().isRemote) {
             final Entity entity = event.getEntity();
             if (entity instanceof SheepEntity) {
                 CheckSheepChiseledRequestMessage message = new CheckSheepChiseledRequestMessage((SheepEntity) entity);
@@ -40,6 +40,6 @@ public class ClientEntityEventHandler {
                     ShearMadnessMod.CHANNEL.send(PacketDistributor.SERVER.noArg(), message);
                 }
             }
-        });
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.github.atomicblom.shearmadness.rendering;
 
 import com.github.atomicblom.shearmadness.api.modelmaker.IModelMaker;
+import com.github.atomicblom.shearmadness.api.rendering.TexturedQuadBuilder;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.QuadrupedModel;
@@ -9,9 +10,11 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.ModelRenderer.PositionTextureVertex;
 import net.minecraft.client.renderer.model.ModelRenderer.TexturedQuad;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.SpriteMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import com.github.atomicblom.shearmadness.api.rendering.EntityMesh;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
@@ -30,7 +33,7 @@ class ErrorModelMaker implements IModelMaker {
     }
 
     @Override
-    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity) {
+    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity, SpriteMap spriteMap) {
 
         transforms.defineParts(entity);
         final QuadrupedModel<SheepEntity> quadrupedModel = new SheepWoolModel<>();
@@ -42,8 +45,8 @@ class ErrorModelMaker implements IModelMaker {
         quadrupedModel.legFrontLeft = defaultRenderer;
         quadrupedModel.legFrontRight = defaultRenderer;
 
-        final AtlasTexture blockTextureMap = Minecraft.getInstance().getTextureMap();
-        final TextureAtlasSprite errorModelSprite = blockTextureMap.getAtlasSprite(Reference.Textures.BAD_RENDER.toString());
+        final AtlasTexture atlasTexture = spriteMap.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+        final TextureAtlasSprite errorModelSprite = atlasTexture.getSprite(Reference.Textures.BAD_RENDER);
 
         final EntityMesh bodyMesh = new EntityMesh();
         final EntityMesh headMesh = new EntityMesh();
@@ -53,7 +56,7 @@ class ErrorModelMaker implements IModelMaker {
         final Matrix4f bodyTransformRight = new Matrix4f()
                 .translate(new Vector3f(-5.0f, -7, -6));
         bodyMesh.addTexturedQuads(bodyTransformRight, new Matrix3f(),
-                new TexturedQuad(
+                TexturedQuadBuilder.TexturedQuad(
                         new PositionTextureVertex[]{
                                 new PositionTextureVertex(0, 0, 6, errorModelSprite.getInterpolatedU(9.75), errorModelSprite.getInterpolatedV(0.625)),
                                 new PositionTextureVertex(0, 10, 6, errorModelSprite.getInterpolatedU(0), errorModelSprite.getInterpolatedV(0.625)),
@@ -65,7 +68,7 @@ class ErrorModelMaker implements IModelMaker {
         final Matrix4f bodyTransformLeft = new Matrix4f()
                 .translate(new Vector3f(5.0f, -7, -6));
         bodyMesh.addTexturedQuads(bodyTransformLeft, new Matrix3f(),
-                new TexturedQuad(
+                TexturedQuadBuilder.TexturedQuad(
                         new PositionTextureVertex[]{
                                 new PositionTextureVertex(0, 0, 6, errorModelSprite.getInterpolatedU(0), errorModelSprite.getInterpolatedV(0.625)),
                                 new PositionTextureVertex(0, 10, 6, errorModelSprite.getInterpolatedU(9.75), errorModelSprite.getInterpolatedV(0.625)),
@@ -78,7 +81,7 @@ class ErrorModelMaker implements IModelMaker {
                 .rotate(-fifteenDegrees, new Vector3f(0, 0, 1))
                 .translate(new Vector3f(-8, -10, -8));
         headMesh.addTexturedQuads(headTransform1, new Matrix3f(),
-                new TexturedQuad(
+                TexturedQuadBuilder.TexturedQuad(
                         new PositionTextureVertex[]{
                                 new PositionTextureVertex(0, 0, 0, errorModelSprite.getInterpolatedU(0), errorModelSprite.getInterpolatedV(5.5)),
                                 new PositionTextureVertex(8, 0, 0, errorModelSprite.getInterpolatedU(14.25), errorModelSprite.getInterpolatedV(5.5)),
@@ -93,7 +96,7 @@ class ErrorModelMaker implements IModelMaker {
                 .rotate(1.5f * fifteenDegrees, new Vector3f(0, 0, 1))
                 .translate(new Vector3f(-3, -8, -8));
         headMesh.addTexturedQuads(headTransform2, new Matrix3f(),
-                new TexturedQuad(
+                TexturedQuadBuilder.TexturedQuad(
                         new PositionTextureVertex[]{
                                 new PositionTextureVertex(0, 0, 0, errorModelSprite.getInterpolatedU(0), errorModelSprite.getInterpolatedV(3.25)),
                                 new PositionTextureVertex(8, 0, 0, errorModelSprite.getInterpolatedU(16), errorModelSprite.getInterpolatedV(3.25)),
@@ -106,7 +109,7 @@ class ErrorModelMaker implements IModelMaker {
                 .rotate(1.5f * fifteenDegrees, new Vector3f(0, 0, 1))
                 .translate(new Vector3f(3, -4, -8));
         headMesh.addTexturedQuads(headTransform3, new Matrix3f(),
-                new TexturedQuad(
+                TexturedQuadBuilder.TexturedQuad(
                         new PositionTextureVertex[]{
                                 new PositionTextureVertex(0, 0, 0, errorModelSprite.getInterpolatedU(0), errorModelSprite.getInterpolatedV(11.375)),
                                 new PositionTextureVertex(8, 0, 0, errorModelSprite.getInterpolatedU(14.5), errorModelSprite.getInterpolatedV(11.375)),

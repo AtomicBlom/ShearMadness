@@ -15,6 +15,8 @@ import net.minecraft.client.renderer.entity.model.QuadrupedModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.entity.model.SheepWoolModel;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.SpriteMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
@@ -35,9 +37,9 @@ public class DefaultChiselModelMaker implements IModelMaker
     }
 
     @Override
-    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity)
+    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity, SpriteMap spriteMap)
     {
-        transforms.defineParts();
+        transforms.defineParts(entity);
         final ICarvingVariation variation = CarvingUtils.getChiselRegistry().getVariation(itemStack);
 
         final BlockPos position = entity.getPosition();
@@ -53,7 +55,7 @@ public class DefaultChiselModelMaker implements IModelMaker
         return quadrupedModel;
     }
 
-    private RendererModel getChiselBodyModelRenderer(ICarvingVariation variation, PartDefinition partDefinition, World world, BlockPos position)
+    private ModelRenderer getChiselBodyModelRenderer(ICarvingVariation variation, PartDefinition partDefinition, World world, BlockPos position)
     {
         final BlockState blockState = variation.getBlockState();
         final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();

@@ -27,7 +27,7 @@ public class TeslaCoilTransformations extends QuadrupedTransformDefinition {
                 new Vector3f(0.0f, 5.0f, 2.0f),
                 Matrix4f.mul(
                         createPartMatrix(
-                                new Vector3f(32, 32, 32),
+                                new Vector3f(12, 12, 12),
                                 new Vector3f(0, -1, offsetY == null ? 0 : offsetY.get())), rotate, null),
                 new Matrix3f()
         ));

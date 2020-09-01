@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.model.QuadrupedModel;
 import net.minecraft.client.renderer.entity.model.SheepWoolModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.SpriteMap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
@@ -33,9 +34,10 @@ public interface IModelMaker
      * Create a model for a quadruped entity based on what has been chiseled onto it.
      * @param itemStack The item that was in the chisel when it was applied to the entity
      * @param entity The entity to create a model for
+     * @param spriteMap
      * @return a model for the given itemStack
      */
-    QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity);
+    QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity, SpriteMap spriteMap);
 
     /**
      * Utility method to convert an IBakedModel to a ModelRenderer for use on an entity body part.

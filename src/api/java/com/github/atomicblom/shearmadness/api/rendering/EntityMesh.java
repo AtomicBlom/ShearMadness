@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.ModelRenderer.ModelBox;
 import net.minecraft.client.renderer.model.ModelRenderer.PositionTextureVertex;
 import net.minecraft.client.renderer.model.ModelRenderer.TexturedQuad;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
@@ -31,8 +32,8 @@ public class EntityMesh extends ModelBox
 {
     private final List<FutureQuad<BakedQuad>> allBakedQuads = new ArrayList<>(6);
     private final List<FutureQuad<TexturedQuad>> allTexturedQuads = new ArrayList<>(6);
-    private TexturedQuad[] quadList = null;
     private boolean errored;
+    private boolean built;
 
     public EntityMesh()
     {
@@ -47,27 +48,31 @@ public class EntityMesh extends ModelBox
     {
         if (!bakedQuads.isEmpty()) {
             allBakedQuads.add(new FutureQuad<>(bakedQuads, positionTransform, textureTransform));
+            built = false;
         }
+        apply();
     }
 
     public void addTexturedQuads(Matrix4f positionTransform, Matrix3f textureTransform, Collection<TexturedQuad> texturedQuads) {
         if (!texturedQuads.isEmpty()) {
             allTexturedQuads.add(new FutureQuad<>(texturedQuads, positionTransform, textureTransform));
+            built = false;
         }
+        apply();
     }
 
     public void addTexturedQuads(Matrix4f positionTransform, Matrix3f textureTransform, TexturedQuad... texturedQuads) {
         if (texturedQuads.length > 0) {
             allTexturedQuads.add(new FutureQuad<>(Lists.newArrayList(texturedQuads), positionTransform, textureTransform));
+            built = false;
         }
+        apply();
     }
 
-    @SuppressWarnings("ObjectAllocationInLoop")
-    @Override
     @OnlyIn(Dist.CLIENT)
-    public void render(BufferBuilder renderer, float scale)
+    public void apply()
     {
-        if (quadList == null)
+        if (!built)
         {
             final List<TexturedQuad> outputQuads = Lists.newArrayList();
 
@@ -99,7 +104,7 @@ public class EntityMesh extends ModelBox
                         );
                     }
 
-                    outputQuads.add(new TexturedQuad(newPositions));
+                    outputQuads.add(TexturedQuadBuilder.TexturedQuad(newPositions));
                 }
 
             }
@@ -108,7 +113,7 @@ public class EntityMesh extends ModelBox
             {
                 for (final BakedQuad bakedQuad : bakedQuads.quads) {
                     try {
-                        final VertexConsumer consumer = new VertexConsumer(bakedQuad.getFormat(), bakedQuads.positionTransform, bakedQuads.textureTransform);
+                        final VertexConsumer consumer = new VertexConsumer(DefaultVertexFormats.POSITION_TEX, bakedQuads.positionTransform, bakedQuads.textureTransform);
                         bakedQuad.pipe(consumer);
                         outputQuads.add(consumer.getOutputQuad());
                     } catch (Exception e) {
@@ -120,13 +125,10 @@ public class EntityMesh extends ModelBox
                 }
             }
 
-            quadList = new TexturedQuad[outputQuads.size()];
-            quadList = outputQuads.toArray(quadList);
-        }
+            quads = new TexturedQuad[outputQuads.size()];
+            quads = outputQuads.toArray(quads);
 
-        for (final TexturedQuad texturedquad : quadList)
-        {
-            texturedquad.draw(renderer, scale);
+            built = true;
         }
     }
 

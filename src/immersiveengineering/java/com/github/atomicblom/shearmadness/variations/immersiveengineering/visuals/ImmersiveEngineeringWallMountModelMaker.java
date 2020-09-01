@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.entity.model.QuadrupedModel;
 import net.minecraft.client.renderer.entity.model.SheepWoolModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.SpriteMap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
@@ -20,11 +21,12 @@ import net.minecraft.item.ItemStack;
 public class ImmersiveEngineeringWallMountModelMaker extends DefaultModelMaker {
 
     @Override
-    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity)
+    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity, SpriteMap spriteMap)
     {
-        QuadrupedModel<SheepEntity> quadruped = super.createModel(itemStack, entity);
+        QuadrupedModel<SheepEntity> quadruped = super.createModel(itemStack, entity, spriteMap);
 
         final float nintyDegrees = (float) Math.toRadians(90);
+        final float oneEightyDegrees = (float) Math.toRadians(180);
 
         quadruped.body = new ModelRenderer(new SheepWoolModel<>(), 0, 0);
         quadruped.headModel = createModelRenderer(getTransforms().getHeadPartDefinition().get());
@@ -34,8 +36,9 @@ public class ImmersiveEngineeringWallMountModelMaker extends DefaultModelMaker {
 
         final Matrix4f antenna1Matrix = new Matrix4f();
 
-        antenna1Matrix.translate(new Vector3f(8, 0, -2));
-        antenna1Matrix.scale(new Vector3f(20, -20, 20));
+        antenna1Matrix.translate(new Vector3f(5.8f, 0, -2));
+        antenna1Matrix.scale(new Vector3f(6, 6, 6));
+        antenna1Matrix.rotate(-oneEightyDegrees, new Vector3f(1, 0, 0));
         antenna1Matrix.rotate(-nintyDegrees, new Vector3f(0, 1, 0));
         antenna1Matrix.translate(new Vector3f(-0.5f, -0.5f, -0.5f));
 
@@ -51,8 +54,9 @@ public class ImmersiveEngineeringWallMountModelMaker extends DefaultModelMaker {
 
         final Matrix4f antenna2Matrix = new Matrix4f();
 
-        antenna2Matrix.translate(new Vector3f(-8, 0, -2));
-        antenna2Matrix.scale(new Vector3f(20, -20, 20));
+        antenna2Matrix.translate(new Vector3f(-5.8f, 0, -2));
+        antenna2Matrix.scale(new Vector3f(6, 6, 6));
+        antenna2Matrix.rotate(-oneEightyDegrees, new Vector3f(1, 0, 0));
         antenna2Matrix.rotate(nintyDegrees, new Vector3f(0, 1, 0));
         antenna2Matrix.translate(new Vector3f(-0.5f, -0.5f, -0.5f));
 

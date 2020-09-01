@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.entity.model.QuadrupedModel;
 import net.minecraft.client.renderer.entity.model.SheepWoolModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.SpriteMap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
@@ -24,7 +25,7 @@ public class DefaultModelMaker implements IModelMaker
     }
 
     @Override
-    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity)
+    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity, SpriteMap spriteMap)
     {
         transforms.defineParts(entity);
         final QuadrupedModel<SheepEntity> quadrupedModel = new SheepWoolModel<>();

@@ -40,7 +40,7 @@ class VertexConsumer implements IVertexConsumer
 
     TexturedQuad getOutputQuad()
     {
-        return new TexturedQuad(vertices);
+        return TexturedQuadBuilder.TexturedQuad(vertices);
     }
 
     @Override

@@ -27,38 +27,52 @@ public class IEVariations
 
     private static void registerVariations(IVariationRegistry registry) {
         registry.registerVariation(
-                itemStack -> ItemStackHelper.isStackForBlock(itemStack, IELibrary.metalDecoration2, 0) ||
-                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.metalDecoration2, 2) ||
-                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.woodenDevice1, 3),
+                itemStack ->
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.alu_post) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.steel_post) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.treated_post),
                 new ImmersiveEngineeringPostModelMaker()
         );
 
         registry.registerVariation(
                 itemStack ->
-                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.metalDecoration2, 1) ||
-                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.metalDecoration2, 3) ||
-                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.woodenDevice1, 4),
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.alu_wallmount) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.steel_wallmount) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.treated_wallmount),
                 new ImmersiveEngineeringWallMountModelMaker()
         );
 
         registry.registerVariation(
-                itemStack -> ItemStackHelper.isStackForBlock(itemStack, IELibrary.conveyor),
+                itemStack ->
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.conveyor_basic) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.conveyor_redstone) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.conveyor_dropper) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.conveyor_splitter) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.conveyor_extract) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.conveyor_covered),
                 new ConveyorTransformations()
         );
 
         registry.registerVariation(
-                itemStack -> ItemStackHelper.isStackForBlock(itemStack, IELibrary.clothDevice),
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, IELibrary.balloon),
                 new ClothDeviceTransformations()
         );
 
         registry.registerVariation(
-                itemStack -> ItemStackHelper.isStackForBlock(itemStack, IELibrary.metalDevice1, 8),
-                new TeslaCoilTransformations(() -> -28)
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, IELibrary.tesla_coil),
+                new TeslaCoilTransformations(() -> 0)
         );
 
         registry.registerVariation(
-                itemStack -> ItemStackHelper.isStackForBlock(itemStack, IELibrary.connector, 11),
-                new TeslaCoilTransformations(() -> -15)
+                itemStack ->
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.connector_lv) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.connector_mv) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.connector_hv) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.connector_structural) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.connector_redstone) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.connector_probe) ||
+                        ItemStackHelper.isStackForBlock(itemStack, IELibrary.connector_bundled),
+                new TeslaCoilTransformations(() -> -8)
         );
     }
 }

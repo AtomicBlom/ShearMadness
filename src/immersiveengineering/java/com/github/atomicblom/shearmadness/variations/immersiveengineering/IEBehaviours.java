@@ -22,7 +22,7 @@ public class IEBehaviours
     //FIXME: May as well send these as individual IMC messages rather than a big batch.
     private static void registerBehaviours(IBehaviourRegistry registry) {
         registry.registerBehaviour(
-                itemStack -> ItemStackHelper.isStackForBlock(itemStack, IELibrary.clothDevice),
+                itemStack -> ItemStackHelper.isStackForBlock(itemStack, IELibrary.balloon),
                 sheep -> new FlightBehaviour(sheep, 1, false)
         );
     }

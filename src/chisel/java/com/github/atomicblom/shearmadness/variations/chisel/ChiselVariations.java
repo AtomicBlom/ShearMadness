@@ -21,9 +21,9 @@ public class ChiselVariations
 
     private static void registerVariations(IVariationRegistry registry) {
         //FIXME: Requires CTM support.
-//        registry.registerVariation(
-//                itemStack -> CarvingUtils.getChiselRegistry().getVariation(itemStack) != null,
-//                new DefaultChiselModelMaker()
-//        );
+        registry.registerVariation(
+                itemStack -> CarvingUtils.getChiselRegistry().getVariation(itemStack) != null,
+                new DefaultChiselModelMaker()
+        );
     }
 }

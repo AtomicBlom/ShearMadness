@@ -82,7 +82,7 @@ public class EntityEventHandler
 			}
 			final ServerPlayerEntity entityPlayer = (ServerPlayerEntity)event.getPlayer();
 
-			ShearMadnessMod.MOD_EVENT_BUS.post(new ShearMadnessSpecialInteractionEvent(event.getWorld(), entityPlayer, sheep, capability));
+			MinecraftForge.EVENT_BUS.post(new ShearMadnessSpecialInteractionEvent(event.getWorld(), entityPlayer, sheep, capability));
 		});
 	}
 

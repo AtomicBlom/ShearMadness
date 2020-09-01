@@ -14,7 +14,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = CommonReference.MOD_ID)
+@Mod.EventBusSubscriber(modid = CommonReference.MOD_ID)
 public class VanillaInteractions {
     @SubscribeEvent
     public static void onInteraction(ShearMadnessSpecialInteractionEvent event) {

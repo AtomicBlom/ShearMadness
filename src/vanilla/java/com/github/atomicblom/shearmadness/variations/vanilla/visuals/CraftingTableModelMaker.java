@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.entity.model.QuadrupedModel;
 import net.minecraft.client.renderer.entity.model.SheepWoolModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.SpriteMap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -32,8 +33,8 @@ import java.util.Optional;
 @ParametersAreNonnullByDefault
 public class CraftingTableModelMaker extends DefaultModelMaker {
     @Override
-    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity) {
-        QuadrupedModel<SheepEntity> baseModel = super.createModel(itemStack, entity);
+    public QuadrupedModel<SheepEntity> createModel(ItemStack itemStack, LivingEntity entity, SpriteMap spriteMap) {
+        QuadrupedModel<SheepEntity> baseModel = super.createModel(itemStack, entity, spriteMap);
 
         final ItemStack craftedItem = getCraftingItemStack(entity);
 
