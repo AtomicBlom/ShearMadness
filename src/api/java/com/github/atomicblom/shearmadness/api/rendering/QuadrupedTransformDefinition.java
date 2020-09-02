@@ -21,10 +21,10 @@ public class QuadrupedTransformDefinition
     {
         bodyPartDefinition = Optional.empty();
         headPartDefinition = Optional.empty();
-        leg1PartDefinition = Optional.empty();
-        leg2PartDefinition = Optional.empty();
-        leg3PartDefinition = Optional.empty();
-        leg4PartDefinition = Optional.empty();
+        frontRightLegPartDefinition = Optional.empty();
+        frontLeftLegPartDefinition = Optional.empty();
+        rearRightLegPartDefinition = Optional.empty();
+        rearLeftLegPartDefinition = Optional.empty();
         defineParts(null);
     }
 
@@ -32,10 +32,10 @@ public class QuadrupedTransformDefinition
 
     protected Optional<PartDefinition> bodyPartDefinition = Optional.empty();
     protected Optional<PartDefinition> headPartDefinition = Optional.empty();
-    protected Optional<PartDefinition> leg1PartDefinition = Optional.empty();
-    protected Optional<PartDefinition> leg2PartDefinition = Optional.empty();
-    protected Optional<PartDefinition> leg3PartDefinition = Optional.empty();
-    protected Optional<PartDefinition> leg4PartDefinition = Optional.empty();
+    protected Optional<PartDefinition> frontRightLegPartDefinition = Optional.empty();
+    protected Optional<PartDefinition> frontLeftLegPartDefinition = Optional.empty();
+    protected Optional<PartDefinition> rearRightLegPartDefinition = Optional.empty();
+    protected Optional<PartDefinition> rearLeftLegPartDefinition = Optional.empty();
 
     public void defineParts(@Nullable LivingEntity entity)
     {
@@ -57,7 +57,7 @@ public class QuadrupedTransformDefinition
                 new Matrix3f()
         ));
 
-        leg1PartDefinition = Optional.of(new PartDefinition(
+        frontRightLegPartDefinition = Optional.of(new PartDefinition(
                 new Vector3f(-3.0f, 12.0f, 7.0f),
                 createPartMatrix(
                         new Vector3f(5.6f, 7.4f, 5.6f),
@@ -65,7 +65,7 @@ public class QuadrupedTransformDefinition
                 new Matrix3f()
         ));
 
-        leg2PartDefinition = Optional.of(new PartDefinition(
+        frontLeftLegPartDefinition = Optional.of(new PartDefinition(
                 new Vector3f(3.0f, 12.0f, 7.0f),
                 createPartMatrix(
                         new Vector3f(5.6f, 7.4f, 5.6f),
@@ -73,7 +73,7 @@ public class QuadrupedTransformDefinition
                 new Matrix3f()
         ));
 
-        leg3PartDefinition = Optional.of(new PartDefinition(
+        rearRightLegPartDefinition = Optional.of(new PartDefinition(
                 new Vector3f(-3.0f, 12.0f, -5.0f),
                 createPartMatrix(
                         new Vector3f(5.6f, 7.4f, 5.6f),
@@ -81,7 +81,7 @@ public class QuadrupedTransformDefinition
                 new Matrix3f()
         ));
 
-        leg4PartDefinition = Optional.of(new PartDefinition(
+        rearLeftLegPartDefinition = Optional.of(new PartDefinition(
                 new Vector3f(3.0f, 12.0f, -5.0f),
                 createPartMatrix(
                         new Vector3f(5.6f, 7.4f, 5.6f),
@@ -118,21 +118,21 @@ public class QuadrupedTransformDefinition
 
     public Optional<PartDefinition> getLegFrontRightPartDefinition()
     {
-        return leg1PartDefinition;
+        return frontRightLegPartDefinition;
     }
 
     public Optional<PartDefinition> getLegFrontLeftPartDefinition()
     {
-        return leg2PartDefinition;
+        return frontLeftLegPartDefinition;
     }
 
     public Optional<PartDefinition> getLegBackRightPartDefinition()
     {
-        return leg3PartDefinition;
+        return rearRightLegPartDefinition;
     }
 
     public Optional<PartDefinition> getLegBackLeftPartDefinition()
     {
-        return leg4PartDefinition;
+        return rearLeftLegPartDefinition;
     }
 }

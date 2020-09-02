@@ -46,11 +46,11 @@ sourceSets {
                     'src/api/java',
 
                     //Integrations
-                    //'src/chancecubes/java',
-                    //'src/chisel/java',
-                    'src/vanilla/java',
-                    'src/immersiveengineering/java',
-                    'src/silly/java'
+                    //'src/integrations/chancecubes/java',
+                    //'src/integrations/chisel/java',
+                    'src/integrations/vanilla/java',
+                    'src/integrations/immersiveengineering/java',
+                    'src/integrations/silly/java'
             ])
         }
         resources {
@@ -58,10 +58,11 @@ sourceSets {
                     'src/main/resources',
 
                     //Integrations
-                    //'src/chancecubes/resources',
-                    'src/silly/resources'
+                    //'src/integrations/chancecubes/resources',
+                    'src/integrations/silly/resources'
             ])
         }
+
     }
     api {
         java {

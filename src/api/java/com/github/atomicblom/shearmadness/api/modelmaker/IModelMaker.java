@@ -130,4 +130,8 @@ public interface IModelMaker
         itemModel = itemModel.getOverrides().func_239290_a_(itemModel, item, Minecraft.getInstance().world, entity);
         return itemModel;
     }
+
+    default boolean shouldRenderWool(ItemStack itemStack) {
+        return false;
+    };
 }

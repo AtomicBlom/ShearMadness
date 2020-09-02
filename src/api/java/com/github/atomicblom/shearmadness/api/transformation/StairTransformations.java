@@ -33,13 +33,13 @@ public class StairTransformations extends QuadrupedTransformDefinition
         matrix.translate(new Vector3f(0, -0.83f, 1));
         matrix.rotate(nintyDegrees, new Vector3f(0, 1, 0));
         PartDefinition leg;
-        leg = leg1PartDefinition.get();
+        leg = frontRightLegPartDefinition.get();
         leg.setPositionTransform(Matrix4f.mul(leg.getPositionTransform(), matrix, null));
-        leg = leg2PartDefinition.get();
+        leg = frontLeftLegPartDefinition.get();
         leg.setPositionTransform(Matrix4f.mul(leg.getPositionTransform(), matrix, null));
-        leg = leg3PartDefinition.get();
+        leg = rearRightLegPartDefinition.get();
         leg.setPositionTransform(Matrix4f.mul(leg.getPositionTransform(), matrix, null));
-        leg = leg4PartDefinition.get();
+        leg = rearLeftLegPartDefinition.get();
         leg.setPositionTransform(Matrix4f.mul(leg.getPositionTransform(), matrix, null));
     }
 }

@@ -7,8 +7,11 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.SpriteMap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import com.github.atomicblom.shearmadness.api.rendering.QuadrupedTransformDefinition;
+
+import java.util.Optional;
 
 @SuppressWarnings("ClassHasNoToStringMethod")
 public class DefaultModelMaker implements IModelMaker
@@ -16,12 +19,15 @@ public class DefaultModelMaker implements IModelMaker
     private final QuadrupedTransformDefinition transforms;
 
     public static ModelRenderer defaultRenderer = new ModelRenderer(new SheepWoolModel<>());
+    private final Optional<Boolean> renderWool;
 
-    public DefaultModelMaker(QuadrupedTransformDefinition transforms) {
+    public DefaultModelMaker(QuadrupedTransformDefinition transforms, boolean renderWool) {
         this.transforms = transforms;
+        this.renderWool = Optional.of(renderWool);
     }
     public DefaultModelMaker() {
         transforms = new QuadrupedTransformDefinition();
+        renderWool = Optional.empty();
     }
 
     @Override
@@ -48,5 +54,10 @@ public class DefaultModelMaker implements IModelMaker
 
     protected QuadrupedTransformDefinition getTransforms() {
         return transforms;
+    }
+
+    @Override
+    public boolean shouldRenderWool(ItemStack itemStack) {
+        return renderWool.orElseGet(() -> !(itemStack.getItem() instanceof BlockItem));
     }
 }

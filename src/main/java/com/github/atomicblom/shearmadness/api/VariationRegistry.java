@@ -28,9 +28,9 @@ public class VariationRegistry implements IVariationRegistry
     }
 
     @Override
-    public void registerVariation(Function<ItemStack, Boolean> handlesVariant, QuadrupedTransformDefinition transformDefinition)
+    public void registerVariation(Function<ItemStack, Boolean> handlesVariant, QuadrupedTransformDefinition transformDefinition, boolean renderWool)
     {
-        variations.add(new ShearMadnessVariation(handlesVariant, new DefaultModelMaker(transformDefinition)));
+        variations.add(new ShearMadnessVariation(handlesVariant, new DefaultModelMaker(transformDefinition, renderWool)));
     }
 
     public IModelMaker getVariationModelMaker(ItemStack itemStack) {

@@ -17,7 +17,7 @@ public class TexturedQuadBuilder {
         t.vertexPositions = vertices;
 
         Vector3f p2 = vertices[1].position.copy();
-        Vector3f p3 = vertices[2].position.copy();
+        Vector3f p3 = vertices[3].position.copy();
         p2.sub(vertices[0].position);
         p3.sub(vertices[0].position);
         p2.cross(p3);

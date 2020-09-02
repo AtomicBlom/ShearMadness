@@ -27,5 +27,5 @@ public interface IVariationRegistry
      * @param handlesVariant a function that should return true if your IModelMaker applies to the itemStack
      * @param transformDefinition the transforms for the model
      */
-    void registerVariation(Function<ItemStack, Boolean> handlesVariant, QuadrupedTransformDefinition transformDefinition);
+    void registerVariation(Function<ItemStack, Boolean> handlesVariant, QuadrupedTransformDefinition transformDefinition, boolean renderWool);
 }
