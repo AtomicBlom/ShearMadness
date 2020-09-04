@@ -43,5 +43,4 @@ public final class Shearing
             CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> sheep), new SheepChiseledMessage(sheep));
         }
     }
-
 }

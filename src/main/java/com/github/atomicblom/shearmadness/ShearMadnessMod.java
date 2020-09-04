@@ -10,14 +10,19 @@ import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapability;
 import com.github.atomicblom.shearmadness.capability.ChiseledSheepCapabilityStorage;
 import com.github.atomicblom.shearmadness.client.gui.NotAChiselScreen;
 import com.github.atomicblom.shearmadness.configuration.ConfigurationHandler;
+import com.github.atomicblom.shearmadness.events.ClientOnlyIMCEventHandler;
+import com.github.atomicblom.shearmadness.events.IIMCEventHandler;
+import com.github.atomicblom.shearmadness.events.UniversalServerIMCEventHandler;
 import com.github.atomicblom.shearmadness.networking.*;
 import com.github.atomicblom.shearmadness.utility.ContainerTypeLibrary;
 import com.github.atomicblom.shearmadness.utility.Reference;
 import com.github.atomicblom.shearmadness.api.CommonReference;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -92,15 +97,11 @@ public class ShearMadnessMod
     }
 
     private void processIMC(final InterModProcessEvent event) {
-        event.getIMCStream(CommonReference.IMCMethods.REGISTER_VARIATIONS::equals).forEach(imcMessage -> {
-            IRegisterShearMadnessVariations messageSupplier = imcMessage.<IRegisterShearMadnessVariations>getMessageSupplier().get();
-            messageSupplier.registerVariations(VariationRegistry.INSTANCE);
-        });
-
-        event.getIMCStream(CommonReference.IMCMethods.REGISTER_BEHAVIOURS::equals).forEach(imcMessage -> {
-            IRegisterShearMadnessBehaviours messageSupplier = imcMessage.<IRegisterShearMadnessBehaviours>getMessageSupplier().get();
-            messageSupplier.registerBehaviours(BehaviourRegistry.INSTANCE);
-        });
+        IIMCEventHandler handler = DistExecutor.safeRunForDist(
+                () -> ClientOnlyIMCEventHandler::new,
+                () -> UniversalServerIMCEventHandler::new
+        );
+        handler.processIMC(event);
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {

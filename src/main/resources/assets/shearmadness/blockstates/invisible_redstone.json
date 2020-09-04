@@ -1,9 +1,7 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "shearmadness:block/invisible_redstone"
-  },
   "variants": {
-    "": [{}]
+    "": {
+      "model": "shearmadness:block/invisible_redstone"
+    }
   }
 }

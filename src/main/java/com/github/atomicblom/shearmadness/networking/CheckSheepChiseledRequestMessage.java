@@ -17,7 +17,7 @@ public class CheckSheepChiseledRequestMessage {
     private String sheepUUID;
 
     public CheckSheepChiseledRequestMessage(PacketBuffer buf) {
-        sheepUUID = buf.readString();
+        sheepUUID = buf.readString(32767);
     }
 
     public CheckSheepChiseledRequestMessage(SheepEntity sheep) {
