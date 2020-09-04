@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "shearmadness:not_a_chisel",
+    "count": 1
+  },
+  "pattern": [
+    "w",
+    "g"
+  ],
+  "key": {
+    "g": {
+      "tag": "forge:ingots/gold"
+    },
+    "w": {
+      "item": "minecraft:white_wool"
+    }
+  }
+}
