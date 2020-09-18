@@ -23,6 +23,13 @@ if (isCIBuild) {
     println("This build will produce an unsactioned release")
 }
 
+// combine in the dependency properties file
+Properties props = new Properties()
+props.load(new FileInputStream("./dependency.properties"))
+props.each { prop ->
+    project.ext.set(prop.key, prop.value)
+}
+
 version = (hasProperty("CIRevision") ? CIRevision : project.mod_version)
 group = project.group_name
 archivesBaseName = "${project.mod_id}-${project.minecraft_version}"
