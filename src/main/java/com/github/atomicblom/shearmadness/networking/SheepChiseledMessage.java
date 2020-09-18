@@ -92,7 +92,9 @@ public class SheepChiseledMessage
     @SuppressWarnings({"ReturnOfNull", "ConstantConditions"})
     public void handle(Supplier<NetworkEvent.Context> ctx)
     {
-        ctx.get().enqueueWork(() -> {
+        final NetworkEvent.Context context = ctx.get();
+        context.setPacketHandled(true);
+        context.enqueueWork(() -> {
             final int sheepId = this.sheepId;
             final Entity entity = Minecraft.getInstance().world.getEntityByID(sheepId);
 
