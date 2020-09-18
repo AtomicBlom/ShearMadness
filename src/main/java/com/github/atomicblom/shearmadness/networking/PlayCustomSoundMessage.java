@@ -63,7 +63,9 @@ public class PlayCustomSoundMessage
     }
 
     public void handle(Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
+        final NetworkEvent.Context context = ctx.get();
+        context.setPacketHandled(true);
+        context.enqueueWork(() -> {
             final IForgeRegistry<SoundEvent> registry = GameRegistry.findRegistry(SoundEvent.class);
 
             Minecraft.getInstance().player.world.playSound(

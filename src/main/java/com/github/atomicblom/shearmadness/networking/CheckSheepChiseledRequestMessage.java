@@ -39,8 +39,10 @@ public class CheckSheepChiseledRequestMessage {
 
     public void handle(Supplier<NetworkEvent.Context> ctx)
     {
-        ctx.get().enqueueWork(() -> {
-            ServerWorld worldObj = ctx.get().getSender().getServerWorld();
+        final NetworkEvent.Context context = ctx.get();
+        context.setPacketHandled(true);
+        context.enqueueWork(() -> {
+            ServerWorld worldObj = context.getSender().getServerWorld();
             final Entity entity = worldObj.getEntityByUuid(UUID.fromString(sheepUUID));
             if (entity == null) return;
 
