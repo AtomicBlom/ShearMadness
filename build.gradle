@@ -175,9 +175,9 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:' + project.minecraft_version + '-' + project.forge_version
-    compile fg.deobf("mezz.jei:jei-1.16.2:" + project.jei_version)
-    compile fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:" + project.immersive_engineering_version)
     compile fg.deobf('team.chisel.ctm:CTM:MC' + project.ctm_version)
+    //compile fg.deobf("mezz.jei:jei-1.16.2:" + project.jei_version)
+    //compile fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:" + project.immersive_engineering_version)
     //compile fg.deobf('team.chisel:Chisel:MC' + project.chisel_version)
     //compile fg.deobf(group: 'com.theprogrammingturkey.chancecubes', name: 'ChanceCubes', version: project.chancecubes_version)
 }
