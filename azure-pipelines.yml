@@ -84,7 +84,7 @@ steps:
 
   - task: AzureFileCopy@4
     inputs:
-      SourcePath: '$(build.artifactStagingDirectory)'
+      SourcePath: '$(build.artifactStagingDirectory)\*'
       azureSubscription: 'Artifact Storage'
       Destination: 'AzureBlob'
       storage: 'modartifacts'
