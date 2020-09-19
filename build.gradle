@@ -32,6 +32,13 @@ if (isCIBuild) {
     println("This build will produce an unsactioned release")
 }
 
+// combine in the dependency properties file
+Properties props = new Properties()
+props.load(new FileInputStream("./dependency.properties"))
+props.each { prop ->
+    project.ext.set(prop.key, prop.value)
+}
+
 version = (hasProperty("CIRevision") ? CIRevision : project.mod_version)
 group = project.group_name
 archivesBaseName = "${project.mod_id}-${project.minecraft_version}"
@@ -168,9 +175,8 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:' + project.minecraft_version + '-' + project.forge_version
-
-    compile fg.deobf("mezz.jei:jei-1.16.1:7.0.0.6")
-    compile fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.16.1-4.0.0-pre.45")
+    compile fg.deobf("mezz.jei:jei-1.16.2:" + project.jei_version)
+    compile fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:" + project.immersive_engineering_version)
     compile fg.deobf('team.chisel.ctm:CTM:MC' + project.ctm_version)
     //compile fg.deobf('team.chisel:Chisel:MC' + project.chisel_version)
     //compile fg.deobf(group: 'com.theprogrammingturkey.chancecubes', name: 'ChanceCubes', version: project.chancecubes_version)
