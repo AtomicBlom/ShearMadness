@@ -89,4 +89,5 @@ steps:
       Destination: 'AzureBlob'
       storage: 'modartifacts'
       ContainerName: '$(blob_bucket)'
+      blobPrefix: '$(javaprops_minecraft_version)'
     condition: and(succeeded(), eq(variables['CreateArtifacts'], 'True'))
