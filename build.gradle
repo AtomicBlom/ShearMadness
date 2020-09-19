@@ -175,11 +175,21 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:' + project.minecraft_version + '-' + project.forge_version
-    compile fg.deobf('team.chisel.ctm:CTM:MC' + project.ctm_version)
-    //compile fg.deobf("mezz.jei:jei-1.16.2:" + project.jei_version)
-    //compile fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:" + project.immersive_engineering_version)
-    //compile fg.deobf('team.chisel:Chisel:MC' + project.chisel_version)
-    //compile fg.deobf(group: 'com.theprogrammingturkey.chancecubes', name: 'ChanceCubes', version: project.chancecubes_version)
+    compile fg.deobf(group: 'team.chisel.ctm', name: 'CTM', version: project.ctm_version)
+
+    //These are all optional dependencies, used for dev time. I don't use their APIs specifically
+    if (!isCIBuild && project.hasProperty('project.jei_version')) {
+        compile fg.deobf(group: 'mezz.jei', name: 'jei-1.16.2', version: project.jei_version)
+    }
+    if (!isCIBuild && project.hasProperty('immersive_engineering_version')) {
+        compile fg.deobf(group: 'blusunrize.immersiveengineering', name: 'ImmersiveEngineering', version: project.immersive_engineering_version)
+    }
+    if (!isCIBuild && project.hasProperty('chisel_version')) {
+        compile fg.deobf(group: 'team.chisel', name: 'Chisel', version: project.chisel_version)
+    }
+    if (!isCIBuild && project.hasProperty('chancecubes_version')) {
+        compile fg.deobf(group: 'com.theprogrammingturkey.chancecubes', name: 'ChanceCubes', version: project.chancecubes_version)
+    }
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
