@@ -143,7 +143,7 @@ public class LayerSheepChiselWool extends LayerRenderer<SheepEntity, SheepModel<
     }
 
     private void renderNormalWool(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, SheepEntity sheep, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float red, float green, float blue, float alpha) {
-        RenderType rendertype = RenderType.func_239268_f_(SHEEP_WOOL_TEXTURE);
+        RenderType rendertype = RenderType.getItemEntityTranslucentCull(SHEEP_WOOL_TEXTURE);
         this.getEntityModel().copyModelAttributesTo(this.defaultBody);
         defaultBody.setLivingAnimations(sheep, limbSwing, limbSwingAmount, partialTicks);
         defaultBody.setRotationAngles(sheep, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);

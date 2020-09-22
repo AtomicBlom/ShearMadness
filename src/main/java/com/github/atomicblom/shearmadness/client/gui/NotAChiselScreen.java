@@ -14,7 +14,6 @@ public class NotAChiselScreen extends ContainerScreen<NotAChiselContainer> {
 
     @Override
     protected void init() {
-
         super.init();
         playerInventoryTitleY = 40;
     }
